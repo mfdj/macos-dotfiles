@@ -1,0 +1,35 @@
+
+append_source() {
+   local source_path=$1
+   local append_to=$2
+   local execute
+   local paths
+
+   [[ $3 == --exectue ]] && execute=true
+
+   # wrap paths in an array
+   [[ -f $source_path ]] && paths=($source_path)
+   [[ -d $source_path ]] && paths=($source_path/*)
+
+   [[ $paths ]] || {
+      echo "did not find anything at '$source_path'?"
+      return 1
+   }
+
+   for file in "${paths[@]}"; do
+      if [[ $execute ]]; then
+         if [[ -f $file && -x $file ]]; then
+            source $file >> "$append_to"
+         else
+            echo "append-source - '$file' is not executable?"
+         fi
+      elif [[ -f $file ]]; then
+         echo "source $file" >> "$append_to"
+      elif [[ -d $file ]]; then
+         # ignore folders
+         :
+      elif [[ $file ]]; then # not blank
+         echo "append-source - skipping '$file'?"
+      fi
+   done
+}
