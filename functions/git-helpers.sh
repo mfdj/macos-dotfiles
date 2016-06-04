@@ -19,7 +19,8 @@ gchb() {
    }
 
    # start matching
-   echo -e "\nbranches like '$1':\n"
+   [[ $branch ]] && echo -e "\nbranches like '$branch':\n" \
+                 || echo -e "\nall branches:\n"
 
    # $branches is a list of local and remote word-tuples:
    #   local, branch-path
@@ -44,28 +45,32 @@ gchb() {
    # }' | column -s "~" -t | nl -ba -s '. ' -w 4
 
    # prompt user to select an index
-   echo
-   echo -n " select: "
+   echo -en "\n select: "
    read -r selection
+   echo
 
-   # grab tuple by index (NOTE: validate's selection
+   # grab tuple by index; NOTE: validates selection
    selection=$(echo "$branches" | sed "${selection}q;d") || return 1
 
-   # parse selection tuple
-
+   # local-branches are easy
    if grep '^local ' -q <<< "$selection"; then
-      # local-branches are easy
-      branch=$(echo "$selection" | awk '{print $2}')
+      branch=$(awk '{print $2}' <<< "$selection")
       git checkout "$branch"
-   else
-      # remotes are less easy
-      local remote=$(echo "$selection" | awk '{print $2}')
-      branch=$(echo "$selection" | awk '{print $3}')
-      git checkout -b "$branch" "$remote/$branch" || {
-         echo "prefixing branch with remote name: '$remote'"
-         git checkout -b "$remote-$branch" "$remote/$branch"
-      }
+      return 0
    fi
+
+   # remotes are less easy
+   local remote=$(awk '{print $2}' <<< "$selection")
+   branch=$(awk '{print $3}' <<< "$selection")
+
+   git checkout -b "$branch" "$remote/$branch" || {
+      echo -e "\033[1mprefixing branch with remote name: '$remote-$branch'\033[0m"
+      git rev-parse --verify "$remote-$branch" &> /dev/null && {
+         git checkout "$remote-$branch"
+         return 0
+      }
+      git checkout -b "$remote-$branch" "$remote/$branch"
+   }
 }
 
 # aka: git-push-upstream
@@ -98,8 +103,7 @@ gsrb() {
       [[ -z $branch ]] && branch='.*'
       list=$(git branch -r | cut -f 2- -d / | grep -i "$branch")
       echo "$list" | nl -ba -s '. ' -w 4
-      echo
-      echo -n " select: "
+      echo -en "\n select: "
       read -r selection
       branch=$(echo "$list" | sed "${selection}q;d") || echo return
    }
