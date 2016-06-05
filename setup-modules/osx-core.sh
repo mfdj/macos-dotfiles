@@ -49,12 +49,11 @@ preferred_shell=/usr/local/bin/bash
       echo                           >> ~/new-etc-shells
       cat /etc/shells >> ~/new-etc-shells
       user=$(whoami)
-      # shellcheck disable=SC1078
-      sudo -s -- "mv ~/new-etc-shells /etc/shells && {
+      sudo -s -- mv ~/new-etc-shells /etc/shells && {
          chsh -s "$preferred_shell" $user && {
             echo 'start new session to use changed shell'
          }
-      }"
+      }
    elif [[ $SHELL != "$preferred_shell" ]]; then
       echo "• changing shell to '$preferred_shell'"
       chsh -s $preferred_shell && {
