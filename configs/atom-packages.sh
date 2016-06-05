@@ -11,7 +11,7 @@ apm_ensure \
    seti-syntax \
    seti-ui
 
-[[ $do_optional ]] && {
+[[ $DO_OPTIONAL ]] && {
    apm_ensure \
       atom-handlebars \
       language-gherkin \

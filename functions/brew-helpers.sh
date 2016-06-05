@@ -39,9 +39,9 @@ cask_deep_clean() {
    local base='/opt/homebrew-cask/Caskroom' # NOTE: is this configurable? discoverable?
    local cask_versions
    local stale_versions
-   local do_clean
+   local DO_CLEAN
 
-   [[ $1 == go ]] && do_clean=true
+   [[ $1 == go ]] && DO_CLEAN=true
 
    for cask in $(brew cask list); do
       cask_versions="$base/$cask"
@@ -49,7 +49,7 @@ cask_deep_clean() {
 
       [[ $stale_versions ]] && {
          for stale in $stale_versions; do
-            if [[ $do_clean ]]; then
+            if [[ $DO_CLEAN ]]; then
                echo "Removing $cask $stale..."
                rm -rf "$cask_versions/$stale"
             else

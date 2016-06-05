@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 require 'functions/input-helpers'
 require 'functions/plist-helpers'
@@ -5,10 +6,10 @@ require 'functions/plist-helpers'
 # Set ComputerName, HostName, LocalHostName
 # http://ilostmynotes.blogspot.com/2012/03/computername-vs-localhostname-vs.html
 echo 'Ensuring ComputerName, HostName, LocalHostName are set'
-[[ -f $dotfiles_path/local/machine-name ]] || {
+[[ -f $DOTFILES_DIR/local/machine-name ]] || {
    machine_name=$(scutil --get ComputerName)
    promptfor machine_name
-   echo "$machine_name" > $dotfiles_path/local/machine-name
+   echo "$machine_name" > $DOTFILES_DIR/local/machine-name
    sudo -s -- "scutil --set ComputerName $machine_name; scutil --set HostName $machine_name; scutil --set LocalHostName $machine_name"
 }
 
@@ -38,7 +39,8 @@ defaults read com.apple.Terminal > /dev/null
 # use Homebrew installed bash (maybe zsh/fish someday)
 preferred_shell=/usr/local/bin/bash
 [[ -f $preferred_shell ]] && {
-   echo 'Ensuring using curent BASH'
+   echo "Ensuring use of preferred shell: $preferred_shell"
+
    if ! grep "$preferred_shell" /etc/shells -q; then
       echo "• adding '$preferred_shell' to /etc/shells"
       echo "• changing shell to '$preferred_shell'"
@@ -47,6 +49,7 @@ preferred_shell=/usr/local/bin/bash
       echo                           >> ~/new-etc-shells
       cat /etc/shells >> ~/new-etc-shells
       user=$(whoami)
+      # shellcheck disable=SC1078
       sudo -s -- "mv ~/new-etc-shells /etc/shells && {
          chsh -s "$preferred_shell" $user && {
             echo 'start new session to use changed shell'
@@ -58,5 +61,6 @@ preferred_shell=/usr/local/bin/bash
          echo 'start new session to use changed shell'
       }
    fi
+
    echo -n "$SHELL — " && $SHELL --version | head -n 1
 }

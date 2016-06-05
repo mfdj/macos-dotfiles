@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 require 'functions/apm-helpers'
 require 'functions/ensure-symlink'
@@ -11,7 +12,7 @@ require 'functions/path-helpers'
 
 echo 'Ensuring global gitignore symlinked'
 ensure_symlink \
-   "$dotfiles_path/configs/global-gitignore" \
+   "$DOTFILES_DIR/configs/global-gitignore" \
    ~/.gitignore_global
 
 # + + + + + + + + + + + +
@@ -46,7 +47,7 @@ ensure_symlink \
 [[ -d ~/Library/Application\ Support/MacDown ]] && {
    echo 'Ensuring MacDown styles'
    ensure_symlink \
-      $dotfiles_path/configs/markdown-css \
+      $DOTFILES_DIR/configs/markdown-css \
       ~/Library/Application\ Support/MacDown/Styles
 }
 
@@ -55,7 +56,7 @@ ensure_symlink \
 [[ -d ~/Library/Application\ Support/Mou ]] && {
    echo 'Ensuring Mou styles'
    ensure_symlink \
-      $dotfiles_path/configs/markdown-css \
+      $DOTFILES_DIR/configs/markdown-css \
       ~/Library/Application\ Support/Mou/CSS
 }
 
@@ -69,7 +70,7 @@ ensure_symlink \
 command -v apm >/dev/null && {
    echo 'Ensuring Atom packages'
    require 'configs/atom-packages'
-   [[ $do_updates ]] && apm update --confirm false # skips interactive confirmation
+   [[ $DO_UPDATES ]] && apm update --confirm false # skips interactive confirmation
 }
 
 # + + + + + + + + + + +
@@ -91,7 +92,7 @@ command -v apm >/dev/null && {
 phpstorm_prefs=$(find ~/Library/Preferences | grep 'PhpStorm[0-9]*\.[0-9]*$')
 [[ -d $phpstorm_prefs ]] && {
    echo 'Ensuring PhpStorm Templates'
-   ensure_symlink $dotfiles_path/configs/phpstorm-themes $phpstorm_prefs/colors
+   ensure_symlink $DOTFILES_DIR/configs/phpstorm-themes $phpstorm_prefs/colors
 }
 
 # + + + + + + + + + + +
@@ -108,9 +109,9 @@ phpstorm_prefs=$(find ~/Library/Preferences | grep 'PhpStorm[0-9]*\.[0-9]*$')
 # +  iTunes Scripts   +
 # + + + + + + + + + + +
 
-[[ -d $dotfiles_path/local/iTunesScripts ]] && {
+[[ -d $DOTFILES_DIR/local/iTunesScripts ]] && {
    echo 'Ensuring iTunesScripts are linked'
    ensure_symlink \
-      $dotfiles_path/local/iTunesScripts \
+      $DOTFILES_DIR/local/iTunesScripts \
       ~/Library/iTunes/Scripts
 }

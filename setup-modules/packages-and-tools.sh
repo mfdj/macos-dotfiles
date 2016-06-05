@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 require 'functions/brew-helpers'
 require 'functions/ensure-symlink'
@@ -31,20 +32,20 @@ brewfile() {
    echo
 }
 
-[[ $do_updates ]] && brew update
+[[ $DO_UPDATES ]] && brew update
 
 # homebrew minimum
 brewfile core
 
 # homebrew optional
-[[ $do_optional             ]] && brewfile optional
-[[ $do_cask                 ]] && brewfile cask-core
-[[ $do_cask && $do_optional ]] && brewfile cask-optional
+[[ $DO_OPTIONAL             ]] && brewfile optional
+[[ $DO_CASK                 ]] && brewfile cask-core
+[[ $DO_CASK && $DO_OPTIONAL ]] && brewfile cask-optional
 
 # homebrew maintenance
 # cask upgrade conversation: https://github.com/caskroom/homebrew-cask/issues/16033
-[[ $do_updates ]] && brew upgrade --all
-[[ $do_clean   ]] && { brew cleanup; brew cask cleanup; cask_deep_clean; }
+[[ $DO_UPDATES ]] && brew upgrade --all
+[[ $DO_CLEAN   ]] && { brew cleanup; brew cask cleanup; cask_deep_clean; }
 
 # + + + + + + + + + + + + + + + +
 # +         Composer            +
@@ -66,7 +67,7 @@ if [[ ! -f /usr/local/bin/composer ]]; then
       echo "composer-setup verification issue (sha384: ${composerSHA384}"
       echo 'check https://composer.github.io/pubkeys.html'
    fi
-elif [[ $do_updates ]]; then
+elif [[ $DO_UPDATES ]]; then
    composer selfupdate
 else
    composer --version
@@ -80,7 +81,7 @@ fi
 echo Ensuring N
 if [[ ! -d ~/.n ]]; then
    git clone https://github.com/tj/n ~/.n
-elif [[ $do_updates ]]; then
+elif [[ $DO_UPDATES ]]; then
    cd ~/.n
    git pull
 fi

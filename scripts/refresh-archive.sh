@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-script_path="$(cd "$(dirname "$0")"; pwd -P)"
-source "$script_path/../functions/input-helpers.sh"
+[[ $DOTFILES_DIR ]] || { echo 'DOTFILES_DIR not set'; exit 1; }
 
-original_args=$@
+echo here
+exit 0
+
+# shellcheck source=../functions/input-helpers.sh
+source "$DOTFILES_DIR/functions/input-helpers.sh"
+
+original_args=$*
 backup_target=$1
 [[ $2 == 'go' ]] && dry_run='' || dry_run='--dry-run'
 
@@ -36,16 +41,17 @@ else
    list=($(ls -l1 /Volumes | grep -i "$backup_target"))
 
    if [[ ${#list[@]} == 1 ]]; then
-      echo "Found '/Volumes/$list'"
-      backup_base=/Volumes/$list/$default_bin
+      match=${list[0]}
+      echo "Found '/Volumes/$match'"
+      backup_base=/Volumes/$match/$default_bin
 
       echo "Setting path to $backup_base"
       [[ -d $backup_base ]] || {
          echo 'Making backup path'
          mkdir -p $backup_base
       }
-   elif [[ ${#list[@]} > 1 ]]; then
-      echo "Too many matches: ${list[@]}"
+   elif (( ${#list[@]} > 1 )); then
+      echo "Too many matches: ${list[*]}"
       exit
    else
       echo "No matches"
@@ -61,7 +67,7 @@ fi
 rsync_version=$(rsync --version | grep version | awk '{print $3}')
 
 progress='--progress'
-[[ $rsync_version && ${rsync_version:0:1} > 2 ]] && {
+[[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )) && {
    progress='--info=progress2'
 }
 
@@ -72,7 +78,7 @@ destination() {
 do_sync() {
    [[ ! $rsync_destination || $rsync_destination == '/' ]] && {
       echo
-      echo -e "\033[7;91m rsync_destination is set to '$rsync_destination' which is invalid \033[0m \033[1;07m skipping \033[0m\033[1;35m $@ \033[0m"
+      echo -e "\033[7;91m rsync_destination is set to '$rsync_destination' which is invalid \033[0m \033[1;07m skipping \033[0m\033[1;35m $* \033[0m"
       return
    }
 
@@ -124,15 +130,19 @@ destination "$backup_base"/LibraryAppSuport_DeviceBackups
 do_sync     ~/Library/Application\ Support/MobileSync/Backup/
 
 ## 1Password
-onepass_backups=$(find ~/Library -iname '*onepassword*' -o -iname '*1password*' -d | xargs -I{} find {} -name 'Backups')
+onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backups.*')
 [[ $onepass_backups ]] && {
    destination "$backup_base"/1PasswordBackups
    do_sync $onepass_backups
 }
 
-## stickies
+## Knox
 destination "$backup_base"
 do_sync     ~/Library/StickiesDatabase
+
+## stickies
+destination "$backup_base"
+do_sync     ~/Knox
 
 ## beaTunes
 destination "$backup_base"/LibraryApplicationSupport_beaTunes

@@ -1,6 +1,6 @@
 
 dotfiles() {
-   local dotfiles_path=${DOTFILES_DIR:-~/dotfiles}
+   local DOTFILES_DIR=${DOTFILES_DIR:-~/dotfiles}
 
    [[ $# == 0 || $1 == help ]] && {
       echo "
@@ -44,7 +44,7 @@ commands:
       done
 
       # run setup-script with arguments
-      $dotfiles_path/setup.sh "$@"
+      $DOTFILES_DIR/setup.sh "$@"
 
       [[ $do_reload ]] && dotfiles reload
 
@@ -56,10 +56,10 @@ commands:
    if [[ $cmd == run ]]; then
       local script_name=${1%.sh}
       shift
-      local script_path=$dotfiles_path/scripts/${script_name}.sh
+      local script_path=$DOTFILES_DIR/scripts/${script_name}.sh
 
       [[ -f $script_path ]] || {
-         echo "could not find ${script_name}.sh in ${dotfiles_path}/scripts"
+         echo "could not find ${script_name}.sh in ${DOTFILES_DIR}/scripts"
          return
       }
 
@@ -87,7 +87,7 @@ commands:
 
    if [[ $cmd == edit ]]; then
 
-      cd $dotfiles_path
+      cd $DOTFILES_DIR
       if [[ $1 == local ]]; then
          $EDITOR ./local
       else
@@ -99,7 +99,7 @@ commands:
 
    # edit, scripts
    case $cmd in
-      scripts) (cd $dotfiles_path/scripts; find . -name '*.sh' | cut -c 3- | cut -d '.' -f 1);;
+      scripts) (cd $DOTFILES_DIR/scripts; find . -name '*.sh' | cut -c 3- | cut -d '.' -f 1);;
             *) echo "don't understand '$cmd'";;
    esac
 }
