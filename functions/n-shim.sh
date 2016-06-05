@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 << 'MARKDOWN'
 n is a function that extends [n](https://github.com/tj/n)

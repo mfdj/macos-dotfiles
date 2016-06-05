@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 # promptfor variable-name prompt
 promptfor() {

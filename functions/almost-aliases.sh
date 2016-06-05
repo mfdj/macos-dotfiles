@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 psg() {
    ps -ef | grep $1 | grep -v grep

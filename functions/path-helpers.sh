@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 clean_path() {
   [[ -d $1 ]] && rm -rf $1

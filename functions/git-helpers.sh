@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 # aka: git-checkout-branch-plus-fuzzy-matching
 gchb() {

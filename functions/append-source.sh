@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 append_source() {
    local source_path=$1

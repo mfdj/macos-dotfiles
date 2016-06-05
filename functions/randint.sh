@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 randint() {
    local min=$1

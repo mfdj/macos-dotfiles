@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 curlh() {
    curl -s -D - $1 -o /dev/null
