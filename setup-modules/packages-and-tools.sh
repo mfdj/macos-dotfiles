@@ -45,7 +45,7 @@ brewfile core
 # homebrew maintenance
 # cask upgrade conversation: https://github.com/caskroom/homebrew-cask/issues/16033
 [[ $DO_UPDATES ]] && brew upgrade --all
-[[ $DO_CLEAN   ]] && { brew cleanup; brew cask cleanup; cask_deep_clean; }
+[[ $DO_CLEAN   ]] && { brew cleanup; brew cask cleanup; }
 
 # + + + + + + + + + + + + + + + +
 # +         Composer            +
@@ -82,6 +82,5 @@ echo Ensuring N
 if [[ ! -d ~/.n ]]; then
    git clone https://github.com/tj/n ~/.n
 elif [[ $DO_UPDATES ]]; then
-   cd ~/.n
-   git pull
+   { cd ~/.n && git pull; }
 fi

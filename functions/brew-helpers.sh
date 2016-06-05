@@ -1,9 +1,10 @@
+# shellcheck disable=SC2148
 
 # install package if not found
 brew_ensure() {
    local package=$1
 
-   if ! ls -l1 "$(brew --prefix)/opt/" | grep $package -q; then
+   if ! ls -l1 "$(brew --prefix)/opt/$package" &> /dev/null; then
       (( $# != 1 )) && shift
       brew install "$@" && echo -n " ✔ $package"
    else
@@ -51,7 +52,7 @@ cask_deep_clean() {
          for stale in $stale_versions; do
             if [[ $DO_CLEAN ]]; then
                echo "Removing $cask $stale..."
-               rm -rf "$cask_versions/$stale"
+               rm -rf "${cask_versions:?}/$stale"
             else
                echo "Found stale: $cask $stale..."
             fi

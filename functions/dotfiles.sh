@@ -1,6 +1,7 @@
+# shellcheck disable=SC2148
 
 dotfiles() {
-   local DOTFILES_DIR=${DOTFILES_DIR:-~/dotfiles}
+   DOTFILES_DIR=${DOTFILES_DIR:-~/dotfiles}
 
    [[ $# == 0 || $1 == help ]] && {
       echo "
@@ -34,9 +35,9 @@ commands:
             reload)
                do_reload=true
                if [[ $index -gt 1 ]]; then
-                  set -- ${@:1:((index - 1))} ${@:((index + 1)):$#}
+                  set -- "${@:1:((index - 1))}" "${@:((index + 1)):$#}"
                else
-                  set -- ${@:((index + 1)):$#};
+                  set -- "${@:((index + 1)):$#}"
                fi
             ;;
          esac
@@ -78,6 +79,7 @@ commands:
    if [[ $cmd == reload ]]; then
       echo && echo "============ reloading bash_profile ============"
 
+      # shellcheck disable=SC1090
       time source ~/.bash_profile
 
       return
@@ -86,20 +88,16 @@ commands:
    # -=-=-=- reload -=-=-=-
 
    if [[ $cmd == edit ]]; then
-
-      cd $DOTFILES_DIR
-      if [[ $1 == local ]]; then
-         $EDITOR ./local
-      else
-         $EDITOR ./
-      fi
+      cd "$DOTFILES_DIR" && {
+         [[ $1 == local ]] && $EDITOR ./local || $EDITOR ./
+      }
 
       return
    fi
 
    # edit, scripts
    case $cmd in
-      scripts) (cd $DOTFILES_DIR/scripts; find . -name '*.sh' | cut -c 3- | cut -d '.' -f 1);;
+      scripts) { cd $DOTFILES_DIR/scripts && find . -name '*.sh' | cut -c 3- | cut -d '.' -f 1; };;
             *) echo "don't understand '$cmd'";;
    esac
 }

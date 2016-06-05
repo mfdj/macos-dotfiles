@@ -20,7 +20,7 @@ echo "# bash_profile built: $(date '+%Y-%m-%d %T')" > ~/.bash_profile
 # - append sources to bash_profile
 
 # bind DOTFILES_DIR to this pacakge
-echo "DOTFILES_DIR=$DOTFILES_DIR" >> ~/.bash_profile
+echo "export DOTFILES_DIR=$DOTFILES_DIR" >> ~/.bash_profile
 
 # ----------- STATIC --------------
 #     (simply appends files)

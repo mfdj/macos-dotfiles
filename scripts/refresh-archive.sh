@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-[[ $DOTFILES_DIR ]] || { echo 'DOTFILES_DIR not set'; exit 1; }
-
-echo here
-exit 0
+[[ $DOTFILES_DIR ]] || {
+   echo "DOTFILES_DIR not set"; exit 1;
+}
 
 # shellcheck source=../functions/input-helpers.sh
 source "$DOTFILES_DIR/functions/input-helpers.sh"
@@ -38,24 +37,21 @@ if [[ -d $backup_target ]]; then
    fi
 else
    echo "'$backup_target' is not a path, checking as a volume name"
-   list=($(ls -l1 /Volumes | grep -i "$backup_target"))
-
-   if [[ ${#list[@]} == 1 ]]; then
-      match=${list[0]}
-      echo "Found '/Volumes/$match'"
-      backup_base=/Volumes/$match/$default_bin
+   if [[ -d /Volumes/$backup_target ]]; then
+      {
+         cd "/Volumes/$backup_target" || exit 1
+         # http://apple.stackexchange.com/a/240328/37418
+         backup_base=$(/bin/pwd -P)/$default_bin
+      }
 
       echo "Setting path to $backup_base"
       [[ -d $backup_base ]] || {
          echo 'Making backup path'
          mkdir -p $backup_base
       }
-   elif (( ${#list[@]} > 1 )); then
-      echo "Too many matches: ${list[*]}"
-      exit
    else
-      echo "No matches"
-      exit
+      echo 'No matches'
+      exit 1
    fi
 fi
 

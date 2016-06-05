@@ -1,3 +1,5 @@
+# shellcheck disable=SC2148
+
 # keep in mind:
 # - http://unix.stackexchange.com/questions/173916/is-it-better-to-use-pwd-or-pwd
 # - http://unix.stackexchange.com/questions/79571/symbolic-link-recursion-what-makes-it-reset/79621#79621
@@ -43,9 +45,13 @@ cdp() {
    if [[ $1 == '--add' || $1 == '-a' ]]; then
       local addpath=$PWD
       local aliasname
-      [[ $addpath == $CDP_ALIASES ]] && return
+      [[ $addpath == "$CDP_ALIASES" ]] && return
       [[ $2 ]] && aliasname=$2 || aliasname=${addpath##*/}
-      $(cd $CDP_ALIASES; rm $aliasname 2> /dev/null; ln -s "$addpath" $aliasname)
+      {
+         cd "$CDP_ALIASES" || return
+         rm "$aliasname" 2> /dev/null
+         ln -s "$addpath" "$aliasname"
+      }
 
    # remove option
    # - remove the alias
@@ -58,20 +64,21 @@ cdp() {
    # list option
    # - list all aliases
 
-   elif [[ $1 == "--list" || $1 == '-l' ]]; then
-      (for file in $CDP_ALIASES/*; do
+   elif [[ $1 == '--list' || $1 == '-l' ]]; then
+      for file in $CDP_ALIASES/*; do
          if [[ -h $file ]]; then
             aliasname=$(basename $file)
             symlink=$(readlink $file)
             echo -e " \033[1;35m${aliasname}\033[0m:${symlink}" | sed "s#$HOME#~#"
          fi
-      done) | column -t -s ':'
+      done | column -t -s ':'
 
    # change to alias (when first agument isn't a valid flag)
    # - temporarily sets CDPATH variable (NOTE: not the same as CDP_ALIASES!)
    # - uses cd -P to resolve the alias
 
    else
+      # shellcheck disable=SC2164
       CDPATH=$CDP_ALIASES cd -P $1 > /dev/null
    fi
 }
