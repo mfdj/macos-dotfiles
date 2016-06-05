@@ -1,3 +1,4 @@
+cask_ensure  app-tamer
 cask_ensure  dockertoolbox
 cask_ensure  firefox
 cask_ensure  heroku-toolbelt
