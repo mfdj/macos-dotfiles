@@ -13,7 +13,7 @@ backup_target=$1
 
 [[ $backup_target ]] || {
    echo "No backup_target passed (argument 1 empty)"
-   exit
+   exit 1
 }
 
 default_bin=$(/usr/sbin/scutil --get ComputerName)-$(whoami)-backup
