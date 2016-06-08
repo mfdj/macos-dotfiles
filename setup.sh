@@ -53,17 +53,16 @@ export -f require
 rundot() {
    if [[ $DO_QUIETLY ]]; then
       "$DOTFILES_DIR/$1.sh" > /dev/null
-   else
-      echo -e "\n============ $1 ============"
-      # log \
-      #    verbose "\n============ $1 ============" \
-      #    quiet "run: $1"
+   elif [[ $1 =~ setup-modules ]]; then
+     echo -e "\n============ ${1##*setup-modules/} ============"
 
       if [[ $DO_TIME ]]; then
          time "$DOTFILES_DIR/$1.sh"
       else
          "$DOTFILES_DIR/$1.sh"
       fi
+   else
+      "$DOTFILES_DIR/$1.sh"
    fi
 }
 
