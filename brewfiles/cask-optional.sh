@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+require 'functions/brew-helpers'
+
 cask_ensure  app-tamer
 cask_ensure  dockertoolbox
 cask_ensure  firefox

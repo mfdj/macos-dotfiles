@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+require 'functions/brew-helpers'
+
 # newer versions than el-captain
 brew_ensure  bash
 brew_ensure  git

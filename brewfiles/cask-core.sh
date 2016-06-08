@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+require 'functions/brew-helpers'
+
 cask_ensure  atom
 cask_ensure  flux
 cask_ensure  kaleidoscope

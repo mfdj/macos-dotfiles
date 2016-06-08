@@ -50,9 +50,9 @@ require() {
 export -f require
 
 # shellcheck disable=SC1090
-run_module() {
+rundot() {
    if [[ $DO_QUIETLY ]]; then
-      "$DOTFILES_DIR/setup-modules/$1.sh" > /dev/null
+      "$DOTFILES_DIR/$1.sh" > /dev/null
    else
       echo -e "\n============ $1 ============"
       # log \
@@ -60,19 +60,20 @@ run_module() {
       #    quiet "run: $1"
 
       if [[ $DO_TIME ]]; then
-         "$DOTFILES_DIR/setup-modules/$1.sh"
+         time "$DOTFILES_DIR/$1.sh"
       else
-         "$DOTFILES_DIR/setup-modules/$1.sh"
+         "$DOTFILES_DIR/$1.sh"
       fi
    fi
 }
 
-run_module packages-and-tools
-[[ $DO_LANGUAGES ]] && run_module languages
-run_module application-configuration
-run_module osx-core
-[[ $DO_OPTIONAL ]] && run_module osx-optional
-run_module build-bash-profile
+export -f rundot
+
+rundot setup-modules/packages-and-tools
+rundot setup-modules/application-configuration
+rundot setup-modules/osx-core
+[[ $DO_OPTIONAL ]] && rundot setup-modules/osx-optional
+rundot setup-modules/build-bash-profile
 
 [[ $DO_QUIETLY ]] || {
    echo '============ Finished ============'

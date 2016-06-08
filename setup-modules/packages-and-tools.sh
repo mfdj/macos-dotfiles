@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-require 'functions/brew-helpers'
 require 'functions/ensure-symlink'
 
 # + + + + + + + + + + + + + + + +
@@ -28,7 +27,7 @@ echo Ensuring Homebrew
 # }
 
 brewfile() {
-   require "configs/brewfiles/$1"
+   rundot "brewfiles/$1"
    echo
 }
 
