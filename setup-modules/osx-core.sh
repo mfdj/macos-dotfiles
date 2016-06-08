@@ -23,7 +23,7 @@ autohide_dock=$(defaults read com.apple.dock autohide 2> /dev/null)
 
 echo 'Ensuring mission-control symbolichotkeys are disabled (requires restart)'
 for n in {32..37} {60..63}; do
-   plist-disable ~/Library/Preferences/com.apple.symbolichotkeys.plist \
+   plist_disable ~/Library/Preferences/com.apple.symbolichotkeys.plist \
       :AppleSymbolicHotKeys:$n
 done
 defaults read com.apple.symbolichotkeys > /dev/null # http://stackoverflow.com/a/26564334/934195

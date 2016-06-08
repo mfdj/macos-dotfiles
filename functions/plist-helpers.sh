@@ -1,6 +1,6 @@
 # shellcheck disable=SC2148
 
-plist-set-array() {
+plist_set_array() {
    plistbuddy=${plistbuddy:-/usr/libexec/PlistBuddy}
    local plist=$1; shift
    local key=$1; shift
@@ -17,7 +17,7 @@ plist-set-array() {
       return
    fi
 
-   for value in $@; do
+   for value in "$@"; do
       if [[ $value =~ ^[0-9]+$ ]]; then
          datatype=integer
       elif [[ $value =~ ^[0-9]+\.[0-9]+$ ]]; then
@@ -30,7 +30,7 @@ plist-set-array() {
    done
 }
 
-plist-disable() {
+plist_disable() {
    plistbuddy=${plistbuddy:-/usr/libexec/PlistBuddy}
    local plist=$1
    local key=$2
