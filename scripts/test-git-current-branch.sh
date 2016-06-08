@@ -7,6 +7,7 @@ fi
 
 # commands-to-profile
 bash_subshell() {
+   # shellcheck disable=SC2155
    local ref=$(git symbolic-ref HEAD 2> /dev/null)
    echo "${ref##refs/heads/}"
 }
@@ -25,9 +26,10 @@ bash_cut() {
 
 # profiler
 saturate() {
-   echo "running: $@"
+   echo "running: $*"
+   # shellcheck disable=SC2155
    local start=$(gdate +%s%3N)
-   for n in {1..300}; do
+   for _ in {1..300}; do
       "$@" > /dev/null
    done
    stop=$(gdate +%s%3N)
@@ -41,8 +43,8 @@ echo "setup"
 echo
 
 rm -rf /tmp/test-git-current-branch 2> /dev/null
-mkdir -p $_
-cd $_
+mkdir -p "$_"
+cd "$_" || exit
 echo 'abc' > abc
 git init
 git add .

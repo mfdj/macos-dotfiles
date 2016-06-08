@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 echo 'line1-a line1-b
 line2-a
@@ -29,7 +30,7 @@ echo
 echo '# create "my_echo" and export so sub-processes have access'
 echo export -f 'my_echo'
 echo 'my_echo() { echo "my_echoed: $@"; }'
-my_echo() { echo "my_echoed: $@"; }
+my_echo() { echo "my_echoed: $*"; }
 export -f 'my_echo'
 
 echo

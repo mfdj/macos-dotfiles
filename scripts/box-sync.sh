@@ -6,7 +6,7 @@ mkdir -p "$backup_dir"
 rsync_version=$(rsync --version | grep version | awk '{print $3}')
 
 progress='--progress'
-[[ $rsync_version && ${rsync_version:0:1} > 2 ]] && {
+[[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )) && {
    progress='--info=progress2'
 }
 
@@ -16,7 +16,7 @@ do_sync () {
       --exclude 'node_modules'  --exclude 'vendor' --exclude 'bower_components' \
       --exclude 'var' --exclude 'tmp' --exclude 'cache' --exclude 'neo4j' --exclude 'log' \
       --exclude '_local_only_' \
-      "$1" "${backup_dir}"
+      "$1" "$backup_dir"
 }
 
 do_sync ~/dotfiles

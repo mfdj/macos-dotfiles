@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # fastest (2 + 2 on average)
 ls_brew_prefix_memoization() {
@@ -36,7 +37,7 @@ brew_install() {
 
 saturate() {
    start=$(gdate +%s%3N)
-   for n in {1..50}; do
+   for _ in {1..50}; do
       $1 $2 > /dev/null
    done
    stop=$(gdate +%s%3N)

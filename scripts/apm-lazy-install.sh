@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
 apm_lazy_install() {
-   for package in $@; do
-      apm list | grep $package -q ||
-         apm install $pacakge
+   for package in "$@"; do
+      apm list | grep "$package" -q || apm install "$pacakge"
    done
 }
 
 apm_lazier_install() {
-   for package in $@; do
-      ls -l ~/.atom/packages | grep $package -q ||
+   for package in "$@"; do
+      ls -l ~/.atom/packages | grep "$package" -q ||
          apm list | grep $package -q ||
          apm install $package
    done
