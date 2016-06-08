@@ -47,11 +47,11 @@ cdp() {
       local aliasname
       [[ $addpath == "$CDP_ALIASES" ]] && return
       [[ $2 ]] && aliasname=$2 || aliasname=${addpath##*/}
-      {
+      (
          cd "$CDP_ALIASES" || return
          rm "$aliasname" 2> /dev/null
          ln -s "$addpath" "$aliasname"
-      }
+      )
 
    # remove option
    # - remove the alias
