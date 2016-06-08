@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-require 'functions/apm-helpers'
 require 'functions/ensure-symlink'
 require 'functions/path-helpers'
 
@@ -69,7 +68,7 @@ ensure_symlink \
 
 command -v apm >/dev/null && {
    echo 'Ensuring Atom packages'
-   require 'configs/atom-packages'
+   rundot 'configs/atom-packages'
    [[ $DO_UPDATES ]] && apm update --confirm false # skips interactive confirmation
 }
 

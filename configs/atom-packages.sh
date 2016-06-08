@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+require 'functions/apm-helpers'
+
 apm_ensure \
    atom-beautify \
    editorconfig \
