@@ -5,5 +5,5 @@ search_itunes() {
 }
 
 itunes_search() {
-   search-itunes "$@"
+   search_itunes "$@"
 }
