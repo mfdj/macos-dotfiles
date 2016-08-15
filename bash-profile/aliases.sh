@@ -26,7 +26,7 @@ alias mage='./bin/magento'
 
 # vagrant + virtualbox
 alias vag='vagrant'
-alias vags='vagrant global-status'
+alias vags='[[ -f Vagrantfile || -f vagrantfile  ]] && vagrant status || vagrant global-status'
 alias vagp='vagrant global-status --prune'
 alias vbox='VBoxManage'
 alias vboxvms='VBoxManage list vms'
