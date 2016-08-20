@@ -10,5 +10,5 @@ curlpjson() {
    curl "$1" \
       --request POST \
       --header 'Accept: application/json' --header 'Content-Type: application/json' \
-      --data "$2" | grep } | python -mjson.tool
+      --data "$2" | grep '}' | python -mjson.tool
 }

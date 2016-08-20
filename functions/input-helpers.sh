@@ -54,6 +54,7 @@ promptifempty() {
          && promptwith secret "$prompt" "$export_name" "$default_value" \
          || promptwith "$prompt" "$export_name" "$default_value"
    else
+      # shellcheck disable=SC2140
       [[ $is_secret ]] \
          && echo "$prompt: (already set in "\$"${export_name})" \
          || echo "$prompt: (already set '${!export_name}' in "\$"${export_name})"
@@ -61,6 +62,7 @@ promptifempty() {
 }
 
 whenready() {
+   # shellcheck disable=2034
    echo -n "$1 [enter when ready] " && read _ignore_
 }
 

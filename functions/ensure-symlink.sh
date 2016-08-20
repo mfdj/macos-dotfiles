@@ -12,7 +12,7 @@ ensure_symlink() {
    # - if $dest is a file/folder back it up
    if [[ -h $dest ]]; then
       current_src=$(readlink $dest)
-      [[ $src != $current_src ]] && {
+      [[ $src != "$current_src" ]] && {
          [[ ! $with_sudo ]] && rm "$dest"
          [[   $with_sudo ]] && sudo rm "$dest"
       }

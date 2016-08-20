@@ -20,6 +20,7 @@ append_source() {
    for file in "${paths[@]}"; do
       if [[ $execute ]]; then
          if [[ -f $file && -x $file ]]; then
+            # shellcheck disable=SC1090
             source $file >> "$append_to"
          else
             echo "append-source - '$file' is not executable?"

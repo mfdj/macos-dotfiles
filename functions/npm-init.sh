@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 npm_init() {
    [[ -f package.json  ]] || echo "{\"name\": \"${PWD##*/}\", \"private\": true}" > package.json

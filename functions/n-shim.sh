@@ -18,7 +18,7 @@ MARKDOWN
 
 n() {
    # forward straght to n
-   [[ $# > 0 ]] && {
+   [[ $# -gt 0 ]] && {
       command n "$@"
       return
    }
@@ -27,14 +27,14 @@ n() {
 
    [[ -f .node-version ]] && {
       echo using .node-version
-      command n $(cat .node-version) && node --version
+      command n "$(cat .node-version)" && node --version
       return
    }
 
    [[ -f package.json ]] && {
       echo checking package.json
       if command -v jq > /dev/null; then
-         command n $(jq -r '.engines.node | match("[>= ]*(.+)") | .captures[0].string' package.json) && node --version
+         command n "$(jq -r '.engines.node | match("[>= ]*(.+)") | .captures[0].string' package.json)" && node --version
          return
       else
          echo "could not parse package.json, missing jq — please 'brew install jq'"

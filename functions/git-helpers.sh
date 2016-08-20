@@ -2,10 +2,9 @@
 
 # aka: git-checkout-branch-plus-fuzzy-matching
 gchb() {
-   local branch=$1
-   local selection
-   local branches
-   local remote
+   local branch selection branches remote
+
+   branch=$1
 
    # special-meta-character
    [[ $branch == '-' ]] && {
@@ -61,7 +60,7 @@ gchb() {
    fi
 
    # remotes are less easy
-   local remote=$(awk '{print $2}' <<< "$selection")
+   remote=$(awk '{print $2}' <<< "$selection")
    branch=$(awk '{print $3}' <<< "$selection")
 
    git checkout -b "$branch" "$remote/$branch" || {
@@ -76,9 +75,11 @@ gchb() {
 
 # aka: git-push-upstream
 gpu() {
-   local remote=${1:-origin}
-   local local_name=$(git branch | grep '*' | tr -d '* ')
-   local repo_name
+   local remote local_name
+   remote=${1:-origin}
+   # shellcheck disable=SC2063
+   local_name=$(git branch | grep '*' | tr -d '* ')
+
    git push "$remote" --set-upstream $local_name
    remote_url=$(git remote -v | grep "$remote" | grep push | awk '{print $2}')
    [[ $remote_url =~ git@github.com ]] && {
@@ -115,6 +116,7 @@ gsrb() {
       git checkout -
       git --no-pager diff $branch --stat
       echo -en "\n [enter to continue]"
+      # shellcheck disable=SC2034
       read -r noop
       git rebase "$branch"
    }
