@@ -1,22 +1,31 @@
+# shellcheck disable=SC2148
 
 shush() {
-   local proc matches match binary pid
+   local procName matches match binary pid
 
-   for proc in "$@"; do
-      matches=$(ps aux | grep "$proc" | grep -v grep | sed -e 's/[[:space:]]\{2,\}/ /g')
+   for procName in "$@"; do
+      matches=$(ps aux | grep -i "$procName" | grep -v grep | sed -e 's/[[:space:]]\{2,\}/ /g')
 
       if [[ $matches ]]; then
-         # pids=$(ps aux | grep "$proc" | grep -v grep | awk '{print $4}')
-         echo "shushing process that match '$proc'"
+         echo "shushing process that match '$procName'"
 
-         for match in $matches; do
-            pid=$(echo "$match" | awk '{print $2}')
-            binary=$(echo "$match" | cut -d ' ' -f 11-)
-            echo "   pid '$pid' command '$binary'"
-            kill -9 "$pid"
-         done
+         (
+            # line-by-line instead of word-by-word
+            IFS=$'\n'
+            for match in $matches; do
+               pid=$(echo "$match" | awk '{print $2}')
+               binary=$(echo "$match" | cut -d ' ' -f 11-)
+
+               # gaurd against over-shushing processes that quieted down when
+               # one of their friends got shushed
+               if ps aux | awk '{print $2}' | grep "$pid" > /dev/null; then
+                  echo "   pid '$pid' command '${binary:0:128}'"
+                  kill -9 "$pid"
+               fi
+            done
+         )
       else
-         echo "'$proc' already quiet!"
+         echo "'$procName' already quiet!"
       fi
    done
 }

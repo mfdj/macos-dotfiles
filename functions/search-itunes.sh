@@ -1,9 +1,9 @@
 # shellcheck disable=SC2148
 
 search_itunes() {
-   grep -i "$@" ~/Music/iTunes/iTunes\ Music\ Library.xml
+   grep -i "$*" ~/Music/iTunes/iTunes\ Music\ Library.xml -A2
 }
 
 itunes_search() {
-   search_itunes "$@"
+   search_itunes "$*"
 }
