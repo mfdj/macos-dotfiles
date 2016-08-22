@@ -9,12 +9,12 @@ require 'functions/append-source'
 
 # - bashrc should point at bash_profile
 
-echo '• pointing .bashrc to .bash_profile'
+echo 'Pointing .bashrc at .bash_profile'
 echo '[[ -n $PS1 ]] && source ~/.bash_profile' > ~/.bashrc
 
 # - clobber bash_profile so we can append to it
 
-echo '• building .bash_profile'
+echo 'Building .bash_profile'
 echo "# bash_profile built: $(date '+%Y-%m-%d %T')" > ~/.bash_profile
 
 # - append sources to bash_profile

@@ -75,7 +75,9 @@ rundot setup-modules/osx-core
 rundot setup-modules/build-bash-profile
 
 [[ $DO_QUIETLY ]] || {
+   echo
    echo '============ Finished ============'
    echo
    echo Rebuilt ~/.bash_profile
+   echo
 }

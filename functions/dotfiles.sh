@@ -77,7 +77,7 @@ commands:
    # -=-=-=- reload -=-=-=-
 
    if [[ $cmd == reload ]]; then
-      echo && echo "============ reloading bash_profile ============"
+      echo "============ reloading bash_profile ============"
 
       # shellcheck disable=SC1090
       time source ~/.bash_profile
@@ -85,7 +85,7 @@ commands:
       return
    fi
 
-   # -=-=-=- reload -=-=-=-
+   # -=-=-=- edit -=-=-=-
 
    if [[ $cmd == edit ]]; then
       cd "$DOTFILES_DIR" && {
