@@ -13,7 +13,7 @@ alias gacm='git add -A . && git commit -am'
 alias gch='git checkout'
 # gchb see: functions/git-helpers.sh
 #alias gl='git --no-pager log --date=iso --pretty=format:"%h%x09%an%x09%ad%x09%s" -n'
-alias gl='git --no-pager log --date=iso --pretty=format:"%h   %an   %aD   %s" -n 5'
+alias gl='git --no-pager log --date=iso --pretty=format:"%h   %an   %aD   %s" -n'
 alias gp='git push'
 # gpu see: functions/git-helpers.sh
 alias gpl='git pull'
