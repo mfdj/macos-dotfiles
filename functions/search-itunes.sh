@@ -4,6 +4,4 @@ search_itunes() {
    grep -i "$*" ~/Music/iTunes/iTunes\ Music\ Library.xml -A2
 }
 
-itunes_search() {
-   search_itunes "$*"
-}
+alias itunes_search='search_itunes'
