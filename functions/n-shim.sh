@@ -34,10 +34,17 @@ n() {
    [[ -f package.json ]] && {
       echo checking package.json
       if command -v jq > /dev/null; then
-         command n "$(jq -r '.engines.node | match("[>= ]*(.+)") | .captures[0].string' package.json)" && node --version
-         return
+         local version="$(jq -r '.engines.node | match("[>= ]*(.+)") | .captures[0].string' package.json 2> /dev/null)"
+         if [[ $version ]]; then
+            command n "$(echo $version)" && node --version
+            return
+         else
+            echo "package.json missing 'engines' key"
+            sleep 1.5
+         fi
       else
          echo "could not parse package.json, missing jq — please 'brew install jq'"
+         sleep 1.5
       fi
    }
 
