@@ -18,6 +18,7 @@ alias gp='git push'
 # gpu see: functions/git-helpers.sh
 alias gpl='git pull'
 alias gs='git status'
+alias gsm="git status | grep modified | awk '{print \$2}'"
 alias gdt='git difftool'
 # gdf see: functions/git-helpers.sh
 alias gmt='git mergetool'
