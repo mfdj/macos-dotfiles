@@ -134,19 +134,11 @@ onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backu
 
 ## Knox
 destination "$backup_base"
-do_sync     ~/Library/StickiesDatabase
-
-## stickies
-destination "$backup_base"
 do_sync     ~/Knox
 
 ## beaTunes
 destination "$backup_base"/LibraryApplicationSupport_beaTunes
 do_sync     ~/Library/Application\ Support/beaTunes/
-
-## SublimeText
-destination "$backup_base"/LibraryApplicationSupport_SublimeText3
-do_sync     ~/Library/Application\ Support/Sublime\ Text\ 3/*Packages*
 
 [[ $dry_run ]] && {
    echo
