@@ -22,6 +22,7 @@ brew_ensure  pv # monitor data's progress through a pipe
 brew_ensure  ruby-build
 brew_ensure  rbenv
 brew_ensure  rbenv-vars
+brew_ensure  ripgrep # 'rg' like the-silve-surfer but faster and better yet
 brew_ensure  shellcheck # static analysis and lint tool, for (ba)sh scripts
 brew_ensure  the_silver_searcher # 'ag' like ack but faster
 brew_ensure  tree

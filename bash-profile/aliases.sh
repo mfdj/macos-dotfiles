@@ -31,19 +31,19 @@ alias vagp='vagrant global-status --prune'
 alias vbox='VBoxManage'
 alias vboxvms='VBoxManage list vms'
 alias vboxrm='VBoxManage unregistervm'
-alias pstorm='open -a PhpStorm'
+alias vnight='VBoxManage list runningvms | cut -d" " -f1 | xargs -I X VBoxManage controlvm X poweroff'
 
 # GUI shortcuts
 alias st='open -a SourceTree .'
 alias mou='open -a Mou'
 alias md='open -a Macdown'
+alias pstorm='open -a PhpStorm'
 
+# misc
 alias cofp='coffee --print'
 # cofpr see: dynamic/aliases.sh
-
-alias speed="wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip"
+alias speed='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip'
 alias wanip="curl -qs http://ifconfig.co"
-
 alias dot='dotfiles'
 
 # + + + + + + + + +
