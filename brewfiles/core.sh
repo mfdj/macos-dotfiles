@@ -10,7 +10,7 @@ brew_ensure  rsync homebrew/dupes/rsync # v3 (osx has v2)
 
 # variant implemenations of BSD's builtins/commands
 brew_ensure  coreutils
-brew_ensure  grep homebrew/dupes/grep # ggrep
+brew_ensure  grep homebrew/dupes/grep # 'ggrep' gnu-grep
 
 # not on osx
 brew_ensure  ack # like grep but better
