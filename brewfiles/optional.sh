@@ -15,6 +15,7 @@ brew_ensure  imagemagick
 brew_ensure  libsodium # crypto
 brew_ensure  mongodb # Webscale
 brew_ensure  multitail # Tail multiple files in one terminal simultaneously
+brew_ensure  n98-magerun2
 brew_ensure  pdfgrep
 brew_ensure  phantomjs
 brew_ensure  pyenv
