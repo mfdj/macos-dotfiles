@@ -12,10 +12,10 @@ progress='--progress'
 
 do_sync () {
    rsync --recursive --perms --times --delete $progress --stats \
-      --exclude '.svn' --exclude '.git' --exclude '.vagrant' --exclude 'dump.rdb'  \
+      --exclude '.svn' --exclude '.git' --exclude '.vagrant' --exclude '.idea' \
       --exclude 'node_modules'  --exclude 'vendor' --exclude 'bower_components' \
       --exclude 'var' --exclude 'tmp' --exclude 'cache' --exclude 'neo4j' --exclude 'log' \
-      --exclude '_local_only_' \
+      --exclude 'dump.rdb' --exclude '_local_only_' \
       "$1" "$backup_dir"
 }
 
