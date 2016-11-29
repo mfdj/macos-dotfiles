@@ -14,6 +14,7 @@ brew_ensure  grep homebrew/dupes/grep # 'ggrep' gnu-grep
 
 # not on osx
 brew_ensure  ack # like grep but better
+brew_ensure  colordiff # 'cdiff'
 brew_ensure  diff-so-fancy
 brew_ensure  figlet
 brew_ensure  jq # parse json from stdin
