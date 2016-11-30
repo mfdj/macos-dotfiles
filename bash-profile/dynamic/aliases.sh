@@ -5,3 +5,11 @@ if ((BASH_VERSINFO[0] >= 4)) && shopt globstar &> /dev/null; then
 else
    echo alias cofpr=\'echo globstar not available, only doing current directory\; cofp ./\*.coffee\'
 fi
+
+command -v subl > /dev/null || {
+   if command -v atom > /dev/null; then
+      echo alias subl=\'echo SublimeText is not installed, here is atom\; sleep 0.5\; atom\'
+   else
+      echo alias subl=\'echo SublimeText is not installed\'
+   fi
+}
