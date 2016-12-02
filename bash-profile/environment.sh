@@ -3,6 +3,9 @@
 # +  common across multiple machines    +
 # + + + + + + + + + + + + + + + + + + + +
 
+# dotfiles-commands
+export PATH=$PATH:$DOTFILES_DIR/commands
+
 # contextual bin folders
 export PATH=$PATH:./node_modules/.bin # npm
 export PATH=$PATH:./vendor/bin        # composer
