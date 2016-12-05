@@ -5,6 +5,7 @@ require 'functions/brew-helpers'
 brew_ensure  blueutil # control bluetooth
 brew_ensure  casperjs casperjs --devel
 brew_ensure  direnv # Load/unload environment variables based on $PWD
+brew_ensure  grc # Generic Colouriser `grc ps aux`
 brew_ensure  gnupg2 # http://superuser.com/questions/655246/are-gnupg-1-and-gnupg-2-compatible-with-each-other
 brew_ensure  htop-osx
 brew_ensure  hhvm hhvm/hhvm/hhvm
@@ -27,8 +28,15 @@ brew_ensure  tmux
 brew_ensure  valgrind # Dynamic analysis tools (memory, debug, profiling)
 brew_ensure  watchman # file-watcher
 
-# osx el-cap has very up-to-date versions of:
-# • curl --version -> system: 7.43.0 - homebrew: 7.49.0
-# brew_ensure curl
-# • expect -v -> system: 5.45 - homebrew: 5.45
-# brew_ensure homebrew/dupes/expect
+## ripgrep seems to obviate these…
+#brew_ensure  the_silver_searcher # 'ag' like ack but faster
+#brew_ensure  ack # like grep but better
+
+# macOS up-to-date versions of:
+#
+# curl (curl --version)
+# • sierra --> system: 7.49.1 - homebrew: 7.51.0 (dec 2016)
+# • el-cap --> system: 7.43.0 - homebrew: 7.49.0
+#
+# homebrew/dupes/expect (expect -v)
+# • system: 5.45 - homebrew: 5.45 (Poured from bottle on 2016-03-25)
