@@ -8,6 +8,11 @@ alias sshp='ssh -o PubkeyAuthentication=no'
 alias crone='EDITOR=nano crontab -e'
 alias clearexit='cat /dev/null > ~/.bash_history && history -c && exit'
 
+# ls
+alias ll='ls -lF'
+alias la='ls -laF'
+alias lsg='ls -lF | grep --color'
+
 # osx
 alias showdot='defaults write com.apple.finder AppleShowAllFiles TRUE && killall Finder'
 alias hidedot='defaults write com.apple.finder AppleShowAllFiles FALSE && killall Finder'

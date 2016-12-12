@@ -8,18 +8,6 @@ else
    colorflag='-G'
 fi
 
-# all files colorized in long format
-echo alias l=\'ls -lF ${colorflag}\'
-
-# ditto ^ + dot files
-echo alias la=\'ls -laF ${colorflag}\'
-
-# directories
-echo alias lsd=\'ls -lF ${colorflag} \| grep --color=never \"^d\"\'
-
-# ls the current directory + grep
-echo alias lsg=\'ls -lF ${colorflag} \| grep --color=never\'
-
 # use color output always
 echo alias ls=\'command ls ${colorflag}\'
 
