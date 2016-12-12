@@ -38,6 +38,9 @@ if [[ \$UID == '0' || \$USER == 'root' ]]; then
    USER_COLOR='$ERED'
 fi"
 
+## time vcprompt -f '%b'   --> 70ms
+## time git_current_branch --> 110ms
+
 if command -v vcprompt > /dev/null; then
    echo "PS1='\n\[$LGREY\]\h \['"'"'\$USER_COLOR'"'"'\]\u\[$NO_COLOR\] \[$MAGENTA\]\w \[$CYAN\]\$(vcprompt -f '%b')\[$NO_COLOR\] \n→ '"
 
@@ -48,9 +51,6 @@ else
    echo 'PS1="'"\n\[$LGREY\]\h \[\${USER_COLOR}\]\u\[$NO_COLOR\] \[$MAGENTA\]\w\[$NO_COLOR\] \n→ "'"'
 fi
 
-## time vcprompt -f '%b'   --> 70ms
-## time git_current_branch --> 110ms
-#
 ## sample output:
 #
 #    USER_COLOR='\e[0;33m'
