@@ -5,6 +5,7 @@ require 'functions/brew-helpers'
 brew_ensure  blueutil # control bluetooth
 brew_ensure  casperjs casperjs --devel
 brew_ensure  direnv # Load/unload environment variables based on $PWD
+brew_ensure  figlet
 brew_ensure  grc # Generic Colouriser `grc ps aux`
 brew_ensure  gnupg2 # http://superuser.com/questions/655246/are-gnupg-1-and-gnupg-2-compatible-with-each-other
 brew_ensure  htop-osx

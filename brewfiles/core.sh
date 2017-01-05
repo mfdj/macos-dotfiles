@@ -15,7 +15,6 @@ brew_ensure  grep homebrew/dupes/grep # 'ggrep' gnu-grep
 # not on osx
 brew_ensure  colordiff # 'cdiff' — rbenv shims this from time to time?
 brew_ensure  diff-so-fancy
-brew_ensure  figlet
 brew_ensure  jq # parse json from stdin
 brew_ensure  md5sha1sum
 brew_ensure  pv # monitor data's progress through a pipe
