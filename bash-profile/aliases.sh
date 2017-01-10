@@ -26,8 +26,7 @@ alias cul='composer update --lock'
 alias sf='[[ -f app/console ]] && app/console || bin/console'
 alias phpext="ls -l1 $(php -i | grep ^extension_dir | sed 's/.* => //')"
 alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"
-alias magento='./bin/magento'
-alias mage='./bin/magento'
+alias mage='magento'
 alias magerun='n98-magerun2'
 
 # vagrant + virtualbox
