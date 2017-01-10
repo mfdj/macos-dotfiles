@@ -20,6 +20,7 @@ brew_ensure  multitail # Tail multiple files in one terminal simultaneously
 brew_ensure  n98-magerun2
 brew_ensure  pdfgrep
 brew_ensure  phantomjs
+brew_ensure  pv # monitor data's progress through a pipe
 brew_ensure  pyenv
 brew_ensure  qt5 # For webkit things like capybara
 brew_ensure  rabbitmq-c
