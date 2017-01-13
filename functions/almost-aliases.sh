@@ -1,5 +1,13 @@
 # shellcheck disable=SC2148
 
+grc() {
+   if [[ -d .git && $(git status | head -n1 | grep rebase\ in\ progress) ]]; then
+      echo use gitrc for git rebase --continue
+   else
+      command grc "$@"
+   fi
+}
+
 psg() {
    ps -ef | grep $1 | grep -v grep
 }

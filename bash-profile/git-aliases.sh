@@ -22,7 +22,6 @@ alias gsm="git status | grep modified | awk '{print \$2}'"
 alias gdt='git difftool'
 # gdf see: functions/git-helpers.sh
 alias gmt='git mergetool'
-alias grc='echo use gitrc for git rebase --continue; echo forwarding to grc command; sleep 0.2; command grc'
 alias grs='echo use gitrs;'
 alias gitrc='git rebase --continue'
 alias gitrs='git rebase --skip'
