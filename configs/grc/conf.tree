@@ -1,6 +1,10 @@
 # see: ll /usr/local/Cellar/grc/1.*/share/grc
 
-# any word character
-# test with: tree . | grcat conf.tree
-regexp=[\w]
-colours=green bold
+regexp=[├──│]
+colours=dark
+
+-
+
+regexp=^[^├]+
+colours=cyan
+

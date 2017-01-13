@@ -13,3 +13,7 @@ command -v subl > /dev/null || {
       echo alias subl=\'echo SublimeText is not installed\'
    fi
 }
+
+command -v grc > /dev/null && {
+   echo alias tree=\'grc tree\'
+}
