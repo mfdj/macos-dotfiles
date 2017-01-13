@@ -1,7 +1,8 @@
 # shellcheck disable=SC2148
 
+# temporary shim to remind myself about gitrc for rebase workflows
 grc() {
-   if [[ -d .git && $(git status | head -n1 | grep rebase\ in\ progress) ]]; then
+   if [[ -d .git && $(git status | grep rebase\ in\ progress) ]]; then
       echo use gitrc for git rebase --continue
    else
       command grc "$@"
