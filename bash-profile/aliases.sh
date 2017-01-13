@@ -4,16 +4,17 @@
 # + + + + + + + + +
 
 # general shell
-alias sshp='ssh -o PubkeyAuthentication=no'
-alias crone='EDITOR=nano crontab -e'
 alias clearexit='cat /dev/null > ~/.bash_history && history -c && exit'
+alias crone='EDITOR=nano crontab -e'
+alias grep='command grep --color'
+alias sshp='ssh -o PubkeyAuthentication=no'
 
 # ls
 alias ll='ls -lF'
 alias la='ls -laF'
 alias lsg='ls -lF | grep --color'
 
-# osx
+# macos
 alias showdot='defaults write com.apple.finder AppleShowAllFiles TRUE && killall Finder'
 alias hidedot='defaults write com.apple.finder AppleShowAllFiles FALSE && killall Finder'
 alias blueoff='blueutil power 0'
