@@ -7,7 +7,7 @@ require 'functions/ensure-symlink'
 # + + + + + + + + + + + + + + + +
 
 echo Ensuring XCode Command Line Tools
-# if xcode has already installed it will evaulate to false
+# if xcode has already installed it will evaluate to false
 if xcode-select --install 2> /dev/null; then
    # is there is a way to check this w/o sudo?
    sudo xcodebuild -license 2> /dev/null

@@ -116,3 +116,13 @@ phpstorm_prefs=$(find ~/Library/Preferences | grep 'PhpStorm[0-9]*\.[0-9]*$')
       $DOTFILES_DIR/local/iTunesScripts \
       ~/Library/iTunes/Scripts
 }
+
+# + + + + + + + + + + + +
+# +   load grc aliases  +
+# + + + + + + + + + + + +
+
+command -v grc >/dev/null && {
+   ensure_symlink \
+      $DOTFILES_DIR/configs/grc \
+      ~/.grc
+}

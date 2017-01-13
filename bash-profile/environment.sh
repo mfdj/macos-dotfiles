@@ -39,3 +39,8 @@ fi
 
 # phpbrew
 #source /Users/markfox/.phpbrew/bashrc
+
+# add grc aliases to path
+if [[ -f /usr/local/etc/grc.bashrc ]]; then
+   source /usr/local/etc/grc.bashrc
+fi
