@@ -3,9 +3,7 @@
 require 'functions/brew-helpers'
 
 cask_ensure  app-tamer
-cask_ensure  dockertoolbox
 cask_ensure  firefox
-cask_ensure  heroku-toolbelt
 cask_ensure  licecap
 cask_ensure  lighttable
 cask_ensure  mou
@@ -17,3 +15,4 @@ cask_ensure  screenflow
 cask_ensure  sketch
 cask_ensure  vagrant
 cask_ensure  virtualbox
+cask_ensure  vlc
