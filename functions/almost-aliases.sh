@@ -9,6 +9,10 @@ grc() {
    fi
 }
 
+magerun() {
+   [[ -f app/Mage.php ]] && n98-magerun "$@" || n98-magerun2 "$@"
+}
+
 psg() {
    ps -ef | grep $1 | grep -v grep
 }
