@@ -12,7 +12,7 @@ alias sshp='ssh -o PubkeyAuthentication=no'
 # ls
 alias ll='ls -lF'
 alias la='ls -laF'
-alias lsg='ls -lF | grep --color'
+alias lsg='ls -lF | grep -i --color'
 
 # macos
 alias showdot='defaults write com.apple.finder AppleShowAllFiles TRUE && killall Finder'
