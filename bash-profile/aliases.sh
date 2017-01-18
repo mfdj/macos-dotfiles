@@ -6,6 +6,7 @@
 # general shell
 alias clearexit='cat /dev/null > ~/.bash_history && history -c && exit'
 alias crone='EDITOR=nano crontab -e'
+alias egrep='command egrep --color'
 alias grep='command grep --color'
 alias sshp='ssh -o PubkeyAuthentication=no'
 
