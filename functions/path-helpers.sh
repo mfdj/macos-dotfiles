@@ -41,7 +41,7 @@ cp_path() {
       #echo "'$src' into '$dest' as '$dest/$src'"
 
       src_base=$(dirname $src)
-      ensure_path "$dest/$src_base"
+      mkdir -p "$dest/$src_base" || continue
       rsync -a "$src" "$dest/$src_base"
    done
 }
