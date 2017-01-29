@@ -3,6 +3,7 @@
 require 'functions/brew-helpers'
 
 cask_ensure  app-tamer
+cask_ennsure chefdk
 cask_ensure  firefox
 cask_ensure  licecap
 cask_ensure  lighttable
