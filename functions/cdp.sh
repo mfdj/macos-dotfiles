@@ -69,7 +69,11 @@ cdp() {
          if [[ -h $file ]]; then
             aliasname=$(basename $file)
             symlink=$(readlink $file)
-            echo -e " \033[1;35m${aliasname}\033[0m:${symlink}" | sed "s#$HOME#~#"
+            if [ -t 1 ]; then
+               echo -e " \033[1;35m${aliasname}\033[0m:${symlink}" | sed "s#$HOME#~#"
+            else
+               echo "${aliasname}:${symlink}" | sed "s#$HOME#~#"
+            fi
          fi
       done | column -t -s ':'
 
