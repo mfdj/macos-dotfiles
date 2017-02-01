@@ -19,6 +19,6 @@ do_sync () {
       "$1" "$backup_dir"
 }
 
-do_sync ~/dotfiles
+do_sync ~/dotfiles/local
 do_sync ~/projects
 do_sync ~/Documents
