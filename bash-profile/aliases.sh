@@ -31,8 +31,11 @@ alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"
 alias mage='magento'
 # magerun see: functions/almost-aliases
 
-# virtualbox
-# vag see: functions/vag
+# vagrant + virtualbox
+# vagrant see: functions/vagrant-shim
+alias vg='vagrant'
+alias vag='echo "deprecated: use vg"; vagrant'
+alias vags='echo "deprecated: use vg status"; vagrant status'
 alias vboxvms='VBoxManage list vms'
 alias vboxrm='VBoxManage unregistervm'
 alias vnight='VBoxManage list runningvms | cut -d" " -f1 | xargs -I X VBoxManage controlvm X poweroff'
