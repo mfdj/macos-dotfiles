@@ -29,12 +29,10 @@ alias sf='[[ -f app/console ]] && app/console || bin/console'
 alias phpext="ls -l1 $(php -i | grep ^extension_dir | sed 's/.* => //')"
 alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"
 alias mage='magento'
+# magerun see: functions/almost-aliases
 
-# vagrant + virtualbox
-alias vag='vagrant'
-alias vags='[[ -f Vagrantfile || -f vagrantfile  ]] && vagrant status || vagrant global-status'
-alias vagp='vagrant global-status --prune'
-alias vbox='VBoxManage'
+# virtualbox
+# vag see: functions/vag
 alias vboxvms='VBoxManage list vms'
 alias vboxrm='VBoxManage unregistervm'
 alias vnight='VBoxManage list runningvms | cut -d" " -f1 | xargs -I X VBoxManage controlvm X poweroff'
@@ -47,7 +45,7 @@ alias pstorm='open -a PhpStorm'
 
 # misc
 alias cofp='coffee --print'
-# cofpr see: dynamic/aliases.sh
+# cofpr see: dynamic/aliases
 alias speed='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip'
 alias wanip="curl -qs http://ifconfig.co"
 alias dot='dotfiles'
