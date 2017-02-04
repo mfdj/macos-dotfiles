@@ -34,7 +34,7 @@ else
    echo bash $BASH_VERSINFO does not support globstar
 fi
 
-# ensure default editor is not empty; otherwise git defaults to vim, et al.
+# if editor is empty use nano; otherwise git, et al. default to vim
 [[ $EDITOR ]] || export EDITOR=nano
 
 # phpbrew
