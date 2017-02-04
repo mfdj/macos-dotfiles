@@ -5,7 +5,15 @@
 # - http://unix.stackexchange.com/questions/79571/symbolic-link-recursion-what-makes-it-reset/79621#79621
 
 cdp() {
+   local use_color
+
    CDP_ALIASES=${CDP_ALIASES:-~/.cdp_aliases}
+
+   if [ -t 0 -a -t 1 ]; then
+      # not in-a-pipe or file-redireciton
+      use_color=true
+   fi
+
    # path option
    # - print or set $CDP_ALIASES environment variable
 
@@ -69,10 +77,10 @@ cdp() {
          if [[ -h $file ]]; then
             aliasname=$(basename $file)
             symlink=$(readlink $file)
-            if [ -t 1 ]; then
-               echo "${aliasname}:${symlink}" | sed "s#$HOME#~#"
-            else
+            if [[ $use_color ]]; then
                echo -e " \033[1;35m${aliasname}\033[0m:${symlink}" | sed "s#$HOME#~#"
+            else
+               echo "${aliasname}:${symlink}" | sed "s#$HOME#~#"
             fi
          fi
       done | column -t -s ':'
