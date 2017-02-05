@@ -10,46 +10,64 @@ vagrant() {
    local vagrant_option_found
    local active_hosts
    local selected_host
+   local is_tty
 
-   _pipe_safe_color() {
-      if [ -t 1 ] && [ -t 0 ]; then
-         # not in-a-pipe or file-redireciton
-         if [[ $1 =~ (red|green|bold|yellow) ]]; then
-            [[ $1 == red    ]] && (>&2 echo -e "\033[1;91m${*:2}\033[0m")
-            [[ $1 == green  ]] && (>&2 echo -e "\033[1;32m${*:2}\033[0m")
-            [[ $1 == yellow ]] && (>&2 echo -e "\033[1;33m${*:2}\033[0m")
-            [[ $1 == bold   ]] && (>&2 echo -e "\033[1;1m${*:2}\033[0m")
-            return 0
-         fi
+   _color_to_stderr() {
+      local color
+      color=$1
+      shift
+
+      # valid colors
+      if [[ $color =~ (bold|green|yellow|grey|red) ]]; then
+         [[ $color == bold   ]] && (>&2 echo -e "\033[1;1m${*}\033[0m")
+         [[ $color == green  ]] && (>&2 echo -e "\033[1;32m${*}\033[0m")
+         [[ $color == yellow ]] && (>&2 echo -e "\033[1;33m${*}\033[0m")
+         [[ $color == grey   ]] && (>&2 echo -e "\033[37m${*}\033[0m")
+         [[ $color == red    ]] && (>&2 echo -e "\033[1;91m${*}\033[0m")
+         return 0
       fi
 
-      (>&2 echo "$@")
+      # otherwise plain
+      (>&2 echo "${*}")
+      return 0
    }
 
    _log() {
+      local level
       local color
 
-      if [[ $1 == debug ]]; then
-         [[ $DEBUG ]] && _pipe_safe_color "vagrant-shim: ${*:2}"
-      else
-         color=bold # info is default
-         [[ $1 == success ]] && color=green
-         [[ $1 == error   ]] && color=red
-         [[ $1 == info    ]] && color=bold
-         [[ $1 == warn    ]] && color=yellow
-         [[ $1 =~ (error|success|info|warn) ]] && shift
+      level=info
+      [[ $1 =~ (debug|info|success|warn|error) ]] && {
+         level=$1
+         shift
+      }
 
-         if [[ $DEBUG ]]; then
-            _pipe_safe_color "$color" "vagrant-shim: $*"
-         else
-            _pipe_safe_color "$color" "$@"
-         fi
+      color=plain # no-level
+      [[ $level == debug   ]] && color=grey
+      [[ $level == info    ]] && color=bold
+      [[ $level == success ]] && color=green
+      [[ $level == warn    ]] && color=yellow
+      [[ $level == error   ]] && color=red
+
+      if [[ $is_tty ]]; then
+         _color_to_stderr plain "vagrant-shim [$level]: $*"
+
+      elif [[ $DEBUG ]]; then
+         _color_to_stderr "$color" "vagrant-shim: $*"
+
+      elif [[ $level != debug ]]; then
+         _color_to_stderr "$color" "$*"
       fi
 
       return 0
    }
 
-   # ~=~=~=~ basic-setup ~=~=~=~
+   # ~=~=~=~~=~=~=~ basic-setup ~=~=~=~~=~=~=~
+
+   # not in a pipe or file-redirection
+   if [ ! -t 1 ] && [ ! -t 0 ]; then
+      is_tty=true
+   fi
 
    if [[ -f Vagrantfile ]]; then
       has_vagrantfile=true
@@ -63,10 +81,10 @@ vagrant() {
       _log debug "ssh_config_path '$ssh_config_path'"
    fi
 
-   # ~=~=~=~ status-shim ~=~=~=~
+   # ~=~=~=~~=~=~=~ @extension: status ~=~=~=~~=~=~=~
 
    if [[ $1 == status ]]; then
-      _log debug 'shimming vagrant status'
+      _log debug 'extending vagrant status'
 
       if [[ -z $has_vagrantfile ]]; then
          _log warn 'Vagrantfile missing, showing global-status'
@@ -81,7 +99,7 @@ vagrant() {
       return $?
    fi
 
-   # ~=~=~=~ ssh-shim ~=~=~=~
+   # ~=~=~=~~=~=~=~ @extension: ssh ~=~=~=~~=~=~=~
 
    _check_sssh_config() {
       if command grep -q 'User vagrant' "$1"; then
@@ -114,8 +132,10 @@ vagrant() {
    _ssh_shim() {
       local sshexit
 
-      _log debug "ssh_shim options - config: '$1' host: '$2' command: '$3'"
-      _log "ssh-shim running '$3' on '$2'"
+      _log debug "ssh-shim options - config: '$1' host: '$2' command: '$3'"
+
+      [[ ! $3 ]] && _log "ssh into '$2'"
+      [[   $3 ]] && _log "running '$3' on '$2'"
 
       ssh -F "$1" "$2" "$3"
       # \
@@ -130,15 +150,18 @@ vagrant() {
 
       if (( $sshexit == 255 )); then
          _log 'ssh-shim retrying'
+
          _update_ssh_config "$1" && {
             _log debug 'ssh-shim second attempt'
+
             ssh -F "$1" "$2" "$3"
+            _log debug "ssh second exit-code: $?"
          }
       fi
    }
 
    if [[ $1 == ssh && $has_vagrantfile ]]; then
-      _log debug 'shimming vagrant ssh'
+      _log debug 'extending vagrant ssh'
 
       vagrant_option_found=''
 
@@ -161,13 +184,13 @@ vagrant() {
 
             # check host against active-hosts
             active_hosts=$(grep -E '^Host .+' "$ssh_config_path" | awk '{print $2}')
-            _log debug "active-hosts [$(tr '\n' ',' <<< "$hosts" | sed 's/,$//')]"
+            _log debug "active-hosts [$(tr '\n' ',' <<< "$active_hosts" | sed 's/,$//')]"
 
             # check if param-2 is active-host
             selected_host=$(grep -E "^${2}\$" <<< "$active_hosts")
 
             if [[ $selected_host ]]; then
-               _log debug "using '$selected_host'"
+               _log debug "using param-2 '$selected_host' as host"
                shift
             else
                _log debug "param-2: '$2' is not an active host"
@@ -186,23 +209,30 @@ vagrant() {
       fi
    fi
 
+   # ~=~=~=~~=~=~=~ @extension: ssh-config ~=~=~=~~=~=~=~
+
    if [[ $1 == ssh-config && $has_vagrantfile ]]; then
-      _log debug "ssh-config refreshing $ssh_config_path"
+      _log debug 'extending vagrant ssh-config'
 
       if _update_ssh_config "$ssh_config_path"; then
          cat "$ssh_config_path"
          return 0
       fi
+
       return 1
    fi
 
+   # ~=~=~=~~=~=~=~ @new-command: ssh-config-file ~=~=~=~~=~=~=~
+
    if [[ $1 == ssh-config-file && $has_vagrantfile ]]; then
-      _log debug "ssh-config refreshing $ssh_config_path"
+      _log debug "ssh-config-file echoing $ssh_config_path"
       echo "$ssh_config_path"
       return 0
    fi
 
-   _log debug "passing '$*' to vagrant"
+   # ~=~=~=~~=~=~=~ vagrant fall through ~=~=~=~~=~=~=~
+
+   _log debug "no commands to extend: passing '$*' to vagrant"
 
    command vagrant "$@"
 }
