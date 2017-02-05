@@ -1,7 +1,4 @@
 
-# alias vag='vagrant'
-# alias vags='[[ -f Vagrantfile || -f vagrantfile  ]] && vagrant status || vagrant global-status'
-# alias vbox='VBoxManage'
 # alias vagp='vagrant global-status --prune'
 
 vagrant() {
@@ -10,6 +7,10 @@ vagrant() {
    local project_path
    local project_hash
    local ssh_config_cache
+   local vagrant_option_found
+   local active_hosts
+   local selected_host
+   local ssh_config
 
    pipe_safe_color() {
       if [ -t 1 -a -t 0 ]; then
@@ -19,7 +20,7 @@ vagrant() {
             [[ $1 == green  ]] && echo -e "\033[1;32m${@:2}\033[0m"
             [[ $1 == yellow ]] && echo -e "\033[1;33m${@:2}\033[0m"
             [[ $1 == bold   ]] && echo -e "\033[1;1m${@:2}\033[0m"
-            return
+            return 0
          fi
       fi
 
@@ -44,7 +45,11 @@ vagrant() {
             pipe_safe_color "$color" "${@}"
          fi
       fi
+
+      return 0
    }
+
+   # ~=~=~=~ basic-setup ~=~=~=~
 
    if [[ -f Vagrantfile ]]; then
       has_vagrantfile=true
@@ -61,6 +66,8 @@ vagrant() {
    # ~=~=~=~ status-shim ~=~=~=~
 
    if [[ $1 == status ]]; then
+      log debug 'shimming vagrant status'
+
       if [[ -z $has_vagrantfile ]]; then
          log warn 'Vagrantfile missing, showing global-status'
          command vagrant global-status
@@ -76,6 +83,16 @@ vagrant() {
 
    # ~=~=~=~ ssh-shim ~=~=~=~
 
+   check_sssh_config() {
+      if command grep -q 'User vagrant' "$1"; then
+         log debug "'$1' looks like valid ssh-config"
+         return 0
+      else
+         log warn "'$1' does not look like valid ssh-config"
+         return 1
+      fi
+   }
+
    update_ssh_config() {
       if [[ -z $1 ]]; then
          log warn 'update_ssh_config missing cache-path'
@@ -85,25 +102,80 @@ vagrant() {
          command vagrant ssh-config > "$1" || return 1
       fi
 
-      if grep -q 'User vagrant' "$1" 2> /dev/null; then
-         log debug "'$1' looks like valid ssh-config"
-      else
-         log debug "'$1' does not look like valid ssh-config"
-         return 1
+      check_sssh_config "$1"
+   }
+
+   ssh_shim() {
+      local sshexit
+
+      log debug "ssh_shim options - config: '$1' host: '$2' command: '$3'"
+      log "ssh-shim running '$3' on '$2'"
+
+      ssh -F "$1" "$2" "$3"
+      # \
+      #    1> /tmp/vagranth-ssh-${project_hash}-first \
+      #    2> /tmp/vagranth-ssh-${project_hash}-first-err
+
+      sshexit=$?
+      log debug "ssh first exit-code: $sshexit"
+
+      # cat /tmp/vagranth-ssh-${project_hash}-first-err
+      # cat /tmp/vagranth-ssh-${project_hash}-first
+
+      if (( $sshexit == 255 )); then
+         log 'ssh-shim retrying'
+         update_ssh_config "$1" && {
+            log debug 'ssh-shim second attempt'
+            ssh -F "$1" "$2" "$3"
+         }
       fi
    }
 
    if [[ $1 == ssh && $has_vagrantfile ]]; then
-      [[ -s "$ssh_config_cache" ]] || update_ssh_config "$ssh_config_cache"
+      log debug 'shimming vagrant ssh'
 
-      update_ssh_config '/tmp/asdf' || return 1
+      vagrant_option_found=''
 
-      if [[ -s "$ssh_config_cache" ]]; then
-         log debug "trying ssh with '$ssh_config_cache'"
+      for word in "${@:2}"; do
+         log debug "checking parameter '$word'"
+         [[ $word =~ ^- ]] && {
+            log debug "shipping-ssh-shim becuase of '$word'"
+            vagrant_option_found=true
+         }
+      done
 
-         return
-      else
-         log error "skipping ssh-shim because ssh_config_cache is empty"
+      if [[ ! $vagrant_option_found ]]; then
+         log debug 'no vagrant-flags found, proceeding with ssh-shim'
+
+         [[ -s $ssh_config_cache ]] || update_ssh_config "$ssh_config_cache"
+
+         if check_sssh_config "$ssh_config_cache"; then
+            log debug "trying ssh with '$ssh_config_cache'"
+
+            # check host against active-hosts
+            active_hosts=$(grep -E '^Host .+' "$ssh_config_cache" | awk '{print $2}')
+            log debug "active-hosts [$(tr '\n' ',' <<< "$hosts" | sed 's/,$//')]"
+
+            # check if param-2 is active-host
+            selected_host=$(grep -E "^${2}\$" <<< "$active_hosts")
+
+            if [[ $selected_host ]]; then
+               log debug "using '$selected_host'"
+               shift
+            else
+               log debug "param-2: '$2' is not a valid host"
+
+               # select default
+               selected_host=$(head -n1 <<< "$active_hosts")
+               log debug "using default '$selected_host'"
+            fi
+
+            ssh_shim "$ssh_config_cache" "$selected_host" "$2"
+            return $?
+         else
+            log error "skipping ssh-shim because ssh_config_cache is empty"
+            return 1
+         fi
       fi
    fi
 
