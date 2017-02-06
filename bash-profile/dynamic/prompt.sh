@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-# git autocomplete
-if brew --prefix git &> /dev/null; then
-   git_prefix=$(brew --prefix git)
-   echo source "${git_prefix}"/etc/bash_completion.d/git-completion.bash
-fi
-
 ## None
 NO_COLOR='\e[0m'
 
