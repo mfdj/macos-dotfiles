@@ -145,4 +145,3 @@ command -v vagrant > /dev/null && {
       > /dev/null
    }
 }
-
