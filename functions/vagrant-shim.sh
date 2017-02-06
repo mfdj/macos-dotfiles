@@ -33,7 +33,7 @@ vagrant() {
    }
 
    log() {
-      log error "use _log not log"
+      _log error "use _log not log"
       _log "$@"
    }
 
