@@ -138,10 +138,9 @@ vagrant() {
       local ssh_exit
       local retry_with_updated_config
       local ssh_err
-      local ssh_out
       local inspect_line
 
-      ssh_out=/tmp/vagrant-${project_hash}-ssh-stderr
+      ssh_err=/tmp/vagrant-${project_hash}-ssh-stderr
 
       _log debug "ssh-shim options
   config   : '$1'
@@ -178,7 +177,7 @@ vagrant() {
          _log debug "last line of stderr: $inspect_line"
 
          [[ $inspect_line =~ ssh.+Connection\ refused ]] && {
-            _log info 'Connection refused: retrying with new ssh-config'
+            _log debug 'matched "… Connection refused" marking retrying with new ssh-config'
             retry_with_updated_config=true
          }
       }
