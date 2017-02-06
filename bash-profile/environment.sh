@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 # + + + + + + + + + + + + + + + + + + + +
 # +  common across multiple machines    +
@@ -31,7 +32,7 @@ PROMPT_COMMAND='printf "\e]1;%s\a" "$HOSTNAME: $PWD" | sed s#$HOME#~#'
 if ((BASH_VERSINFO[0] >= 4)); then
    shopt -s globstar
 else
-   echo bash $BASH_VERSINFO does not support globstar
+   echo bash "${BASH_VERSINFO[0]}" does not support globstar
 fi
 
 # if editor is empty use nano; otherwise git, et al. default to vim
