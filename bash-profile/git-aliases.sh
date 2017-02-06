@@ -1,3 +1,4 @@
+# shellcheck disable=SC2148
 
 # + + + + + + + + + +
 # +   git aliases   +
@@ -18,6 +19,7 @@ alias gp='git push'
 # gpu see: functions/git-helpers.sh
 alias gpl='git pull'
 alias gs='git status'
+# shellcheck disable=SC2142
 alias gsm="git status | grep modified | awk '{print \$2}'"
 alias gdt='git difftool'
 # gdf see: functions/git-helpers.sh
