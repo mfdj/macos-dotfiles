@@ -32,6 +32,11 @@ vagrant() {
       return 0
    }
 
+   log() {
+      log error "use _log not log"
+      _log "$@"
+   }
+
    _log() {
       local level
       local color
@@ -73,7 +78,7 @@ vagrant() {
       has_vagrantfile=true
       project_path=$(pwd)
       project_hash=$(md5 <<< "$(pwd)")
-      ssh_config_path=/tmp/vagrant-ssh-config-${project_hash}
+      ssh_config_path=/tmp/vagrant-${project_hash}-ssh-config
 
       _log debug "has_vagrantfile '$has_vagrantfile'"
       _log debug "project_path    '$project_path'"
@@ -130,34 +135,59 @@ vagrant() {
    }
 
    _ssh_shim() {
-      local sshexit
+      local ssh_exit
+      local retry_with_updated_config
+      local ssh_err
+      local ssh_out
+      local inspect_line
 
-      _log debug "ssh-shim options - config: '$1' host: '$2' command: '$3'"
+      ssh_out=/tmp/vagrant-${project_hash}-ssh-stderr
 
-      [[ ! $3 ]] && _log "ssh into '$2'"
-      [[   $3 ]] && _log "running '$3' on '$2'"
+      _log debug "ssh-shim options
+  config   : '$1'
+  host     : '$2'
+  command  : '$3'
+  err-file : '$ssh_err'"
 
-      ssh -F "$1" "$2" "$3"
-      # \
-      #    1> /tmp/vagranth-ssh-${project_hash}-first \
-      #    2> /tmp/vagranth-ssh-${project_hash}-first-err
+      [[ $3 ]] && _log "running '$3' on '$2'" || _log "ssh'ing into '$2'"
 
-      sshexit=$?
-      _log debug "ssh first exit-code: $sshexit"
+      ssh -F "$1" "$2" "$3" 2> "$ssh_err"
 
-      # cat /tmp/vagranth-ssh-${project_hash}-first-err
-      # cat /tmp/vagranth-ssh-${project_hash}-first
+      ssh_exit=$?
+      (( $ssh_exit == 0 )) && _log debug "ssh first exit-code: $ssh_exit"
+      (( $ssh_exit > 0  )) && _log warn  "ssh exited with non-zero status: $ssh_exit"
 
-      if (( $sshexit == 255 )); then
-         _log 'ssh-shim retrying'
+      [[ -s $ssh_err ]] && {
+         _log debug "cat'ing stderr from ssh"
+         (>&2 cat "$ssh_err")
+      }
 
-         _update_ssh_config "$1" && {
-            _log debug 'ssh-shim second attempt'
+      (( $ssh_exit == 255 )) && [[ ! -s $ssh_err ]] && {
+         _log debug 'ssh logged nothing to stderr, retrying verbosely'
 
-            ssh -F "$1" "$2" "$3"
-            _log debug "ssh second exit-code: $?"
+         ssh -v -F "$1" "$2" "$3" 2> "$ssh_err"
+
+         ssh_exit=$?
+         _log debug "ssh-verbose exit-code: $ssh_exit"
+      }
+
+      retry_with_updated_config=''
+
+      (( $ssh_exit == 255 )) && {
+         inspect_line=$(tail -n1 "$ssh_err")
+         _log debug "last line of stderr: $inspect_line"
+
+         [[ $inspect_line =~ ssh.+Connection\ refused ]] && {
+            _log info 'Connection refused: retrying with new ssh-config'
+            retry_with_updated_config=true
          }
-      fi
+      }
+
+      [[ $retry_with_updated_config ]] && {
+         _log debug 'ssh retrying with updated config'
+
+         _update_ssh_config "$1" && ssh -F "$1" "$2" "$3"
+      }
    }
 
    if [[ $1 == ssh && $has_vagrantfile ]]; then
