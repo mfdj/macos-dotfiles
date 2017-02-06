@@ -84,13 +84,12 @@ cdp() {
             fi
          fi
       done | column -t -s ':'
+   fi
 
    # change to alias (when first agument isn't a valid flag)
-   # - temporarily sets CDPATH variable (NOTE: not the same as CDP_ALIASES!)
-   # - uses cd -P to resolve the alias
+   # - sets CDPATH variable for a single command
+   # - uses cd -P to follow symlinks
 
-   else
-      # shellcheck disable=SC2164
-      CDPATH=$CDP_ALIASES cd -P $1 > /dev/null
-   fi
+   # shellcheck disable=SC2164
+   CDPATH=$CDP_ALIASES cd -P $1 > /dev/null
 }
