@@ -150,16 +150,11 @@ vagrant() {
 
       [[ $3 ]] && _log "running '$3' on '$2'" || _log "ssh'ing into '$2'"
 
-      ssh -F "$1" "$2" "$3" 2> "$ssh_err"
+      ssh -F "$1" "$2" "$3" 2> >(tee "$ssh_err" >&2)
 
       ssh_exit=$?
       (( $ssh_exit == 0 )) && _log debug "ssh first exit-code: $ssh_exit"
       (( $ssh_exit > 0  )) && _log warn  "ssh exited with non-zero status: $ssh_exit"
-
-      [[ -s $ssh_err ]] && {
-         _log debug "cat'ing stderr from ssh"
-         (>&2 cat "$ssh_err")
-      }
 
       (( $ssh_exit == 255 )) && [[ ! -s $ssh_err ]] && {
          _log debug 'ssh logged nothing to stderr, retrying verbosely'
