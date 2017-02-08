@@ -1,0 +1,14 @@
+
+regexp=\srunning\s
+colours=green
+
+-
+
+regexp=(saved|poweroff|pasued)
+colours=yellow
+
+-
+
+regexp=(aborted)
+colours=red
+

@@ -1,4 +1,3 @@
-# see: ll /usr/local/Cellar/grc/1.*/share/grc
 
 regexp=[├──│]
 colours=dark
