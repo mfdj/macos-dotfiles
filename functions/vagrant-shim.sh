@@ -11,6 +11,7 @@ vagrant() {
    local active_hosts
    local selected_host
    local is_tty
+   local vg_cmd
 
    _color_to_stderr() {
       local color
@@ -69,6 +70,13 @@ vagrant() {
 
    # ~=~=~=~~=~=~=~ basic-setup ~=~=~=~~=~=~=~
 
+   # use grc if available
+   if type -f grc > /dev/null; then
+      vg_cmd='grc vagrant'
+   else
+      vg_cmd='vagrant'
+   fi
+
    # not in a pipe or file-redirection
    if [ ! -t 1 ] && [ ! -t 0 ]; then
       is_tty=true
@@ -93,14 +101,14 @@ vagrant() {
 
       if [[ -z $has_vagrantfile ]]; then
          _log warn 'Vagrantfile missing, showing global-status'
-         command vagrant global-status
+         command $vg_cmd global-status
 
          # preserves behavior for scripts that use exit code of `vagrant status`
          # to test if current directory has Vagrantfile
          return 1
       fi
 
-      command vagrant status
+      command $vg_cmd status
       return $?
    fi
 
@@ -123,7 +131,7 @@ vagrant() {
       fi
 
       _log 'updating cached ssh-config'
-      command vagrant ssh-config > "$1" 2> "$ssh_config_path-err"
+      command $vg_cmd ssh-config > "$1" 2> "$ssh_config_path-err"
 
       _log debug "vagrant ssh-config exited with: $?"
 
@@ -258,5 +266,5 @@ vagrant() {
 
    _log debug "no commands to extend: passing '$*' to vagrant"
 
-   command vagrant "$@"
+   command $vg_cmd "$@"
 }
