@@ -1,5 +1,5 @@
-*~
-*.vagrant
-*.DS_Store
-*.idea
+~
+.vagrant
+.DS_Store
+.idea
 dump.rdb
