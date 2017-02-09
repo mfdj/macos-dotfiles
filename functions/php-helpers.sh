@@ -20,3 +20,11 @@ xdebugon() {
 xdebugoff() {
    xdebugenable false
 }
+
+xdebugstatus() {
+   if php -m | grep xdebug -q; then
+      php -i | grep --color=none 'Xdebug v' | awk '{print $2" "$3}' | tr -d ','
+   else
+      echo xdebug not enabled
+   fi
+}
