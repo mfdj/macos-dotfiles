@@ -26,4 +26,8 @@ apm_ensure \
       language-haml \
       language-json5 \
       pretty-json
+
+   echo 'atom-package suggestions:
+• nuclide - Hack IDE
+'
 }
