@@ -25,6 +25,7 @@ cdp() {
       else
          echo "CDP_ALIASES set '$CDP_ALIASES' which is not a directory. Run: cdp --init"
       fi
+
       return
    fi
 
@@ -37,6 +38,7 @@ cdp() {
       else
          mkdir -p $CDP_ALIASES && echo "created '$CDP_ALIASES'"
       fi
+
       return
    fi
 
@@ -61,18 +63,24 @@ cdp() {
          ln -s "$addpath" "$aliasname"
       )
 
+      return
+   fi
+
    # remove option
    # - remove the alias
 
-   elif [[ $1 == '--remove' || $1 == '-r' ]]; then
+   if [[ $1 == '--remove' || $1 == '-r' ]]; then
       [[ $2 ]] \
          && rm $CDP_ALIASES/$2 \
          || echo 'missing arugment for remove'
 
+      return
+   fi
+
    # list option
    # - list all aliases
 
-   elif [[ $1 == '--list' || $1 == '-l' ]]; then
+   if [[ $1 == '--list' || $1 == '-l' ]]; then
       for file in $CDP_ALIASES/*; do
          if [[ -h $file ]]; then
             aliasname=$(basename $file)
@@ -84,6 +92,8 @@ cdp() {
             fi
          fi
       done | column -t -s ':'
+
+      return
    fi
 
    # change to alias (when first agument isn't a valid flag)
@@ -91,5 +101,8 @@ cdp() {
    # - uses cd -P to follow symlinks
 
    # shellcheck disable=SC2164
-   CDPATH=$CDP_ALIASES cd -P $1 > /dev/null
+   if find "$CDP_ALIASES" -name "$1" &> /dev/null; then
+      echo here
+      CDPATH=$CDP_ALIASES cd -P $1 > /dev/null
+   fi
 }
