@@ -6,6 +6,7 @@
 
 cdp() {
    local use_color
+   local alias_match
 
    CDP_ALIASES=${CDP_ALIASES:-~/.cdp_aliases}
 
@@ -83,6 +84,10 @@ cdp() {
    if [[ $1 == '--list' || $1 == '-l' ]]; then
       for file in $CDP_ALIASES/*; do
          if [[ -h $file ]]; then
+            if [[ $2 ]] && [[ ! $file =~ $2 ]]; then
+               continue
+            fi
+
             aliasname=$(basename $file)
             symlink=$(readlink $file)
             if [[ $use_color ]]; then
@@ -96,13 +101,24 @@ cdp() {
       return
    fi
 
-   # change to alias (when first agument isn't a valid flag)
-   # - sets CDPATH variable for a single command
-   # - uses cd -P to follow symlinks
+   # prune option
+   if [[ $1 == '--remove' || $1 == '-r' ]]; then
+   [[ $2 ]] \
+      && rm $CDP_ALIASES/$2 \
+      || echo 'missing arugment for remove'
 
-   # shellcheck disable=SC2164
-   if find "$CDP_ALIASES" -name "$1" &> /dev/null; then
-      echo here
-      CDPATH=$CDP_ALIASES cd -P $1 > /dev/null
+      return
+   fi
+
+   # change to alias (when first agument isn't a valid flag)
+   alias_match=$(find "$CDP_ALIASES" -name "$1")
+
+   # get globby
+   [[ $alias_match ]] || alias_match=$(find "$CDP_ALIASES" -name "*$1*")
+
+   if [[ $alias_match ]]; then
+      cd "$(readlink "$alias_match")"
+   else
+      echo "could not match '$1' to an alias"
    fi
 }
