@@ -1,9 +1,12 @@
 
-regexp=[├──│]
+# pipes
+regexp=[├──│└]
 colours=dark
 
 -
 
-regexp=^[^├]+
+# root-path
+regexp=^[^├──│└]+
 colours=cyan
+
 
