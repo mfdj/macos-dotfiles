@@ -10,7 +10,10 @@ echo 'Ensuring ComputerName, HostName, LocalHostName are set'
    machine_name=$(scutil --get ComputerName)
    promptfor machine_name
    echo "$machine_name" > $DOTFILES_DIR/local/machine-name
-   sudo -s -- "scutil --set ComputerName $machine_name; scutil --set HostName $machine_name; scutil --set LocalHostName $machine_name"
+   sudo -i bash -c "
+      scutil --set ComputerName $machine_name;
+      scutil --set HostName $machine_name;
+      scutil --set LocalHostName $machine_name;"
 }
 
 
