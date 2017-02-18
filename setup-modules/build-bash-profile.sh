@@ -41,8 +41,7 @@ append_source  "$DOTFILES_DIR/functions"    ~/.bash_profile
    source "$DOTFILES_DIR/local/bash-profile.sh"
 }
 
-# current startup-cost (with n) : 0m0.193s
-# startup-cost with nvm         : 0m0.671s
+# startup-cost: 0m0.193s
 append_source "$DOTFILES_DIR/bash-profile/dynamic" ~/.bash_profile --exectue
 
 # ----------- LOCAL-STATIC --------------
