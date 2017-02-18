@@ -70,8 +70,8 @@ export -f rundot
 
 rundot setup-modules/packages-and-tools
 rundot setup-modules/application-configuration
-rundot setup-modules/osx-core
-[[ $DO_OPTIONAL ]] && rundot setup-modules/osx-optional
+rundot setup-modules/macos-core
+[[ $DO_OPTIONAL ]] && rundot setup-modules/macos-optional
 rundot setup-modules/build-bash-profile
 
 [[ $DO_QUIETLY ]] || {
