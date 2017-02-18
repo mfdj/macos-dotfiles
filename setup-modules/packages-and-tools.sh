@@ -56,8 +56,8 @@ brewfile core
 echo Ensuring Composer
 if [[ ! -f /usr/local/bin/composer ]]; then
    php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php
-   # sha updated 2016-04-02
-   composerSHA384=7228c001f88bee97506740ef0888240bd8a760b046ee16db8f4095c0d8d525f2367663f22a46b48d072c816e7fe19959
+   # sha updated 2017-02-18 (previously 2016-04-02)
+   composerSHA384=55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30
    php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) === '${composerSHA384}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
    if [[ -f composer-setup.php ]]; then
       php composer-setup.php --install-dir=/usr/local/bin/ --filename=composer
