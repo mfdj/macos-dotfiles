@@ -102,11 +102,9 @@ cdp() {
    fi
 
    # prune option
-   if [[ $1 == '--remove' || $1 == '-r' ]]; then
-   [[ $2 ]] \
-      && rm $CDP_ALIASES/$2 \
-      || echo 'missing arugment for remove'
-
+   # TODO: check for dead aliases, list 'em, and rm'em
+   if [[ $1 == '--prune' ]]; then
+      :
       return
    fi
 
