@@ -17,7 +17,6 @@ brew_ensure  imagemagick
 brew_ensure  libsodium # crypto
 brew_ensure  mongodb # Webscale
 brew_ensure  multitail # Tail multiple files in one terminal simultaneously
-brew_ensure  n98-magerun2
 brew_ensure  pdfgrep
 brew_ensure  phantomjs
 brew_ensure  pv # monitor data's progress through a pipe
@@ -25,19 +24,14 @@ brew_ensure  pyenv
 brew_ensure  qt5 # For webkit things like capybara
 brew_ensure  rabbitmq-c
 brew_ensure  redis
-#brew_ensure  screen # http://dominik.honnef.co/posts/2010/10/why_you_should_try_tmux_instead_of_screen/
 brew_ensure  tmux
 brew_ensure  valgrind # Dynamic analysis tools (memory, debug, profiling)
 brew_ensure  watchman # file-watcher
 
-## ripgrep seems to obviate these…
-#brew_ensure  the_silver_searcher # 'ag' like ack but faster
-#brew_ensure  ack # like grep but better
-
 # macOS up-to-date versions of:
 #
 # curl (curl --version)
-# • sierra --> system: 7.49.1 - homebrew: 7.51.0 (dec 2016)
+# • sierra --> system: 7.49.1 - homebrew: 7.52.1 (feb 2017)
 # • el-cap --> system: 7.43.0 - homebrew: 7.49.0
 #
 # homebrew/dupes/expect (expect -v)
