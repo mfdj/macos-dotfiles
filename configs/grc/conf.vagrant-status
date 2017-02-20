@@ -4,7 +4,7 @@ colours=green
 
 -
 
-regexp=(saved|poweroff|pasued)
+regexp=(saved|paused)
 colours=yellow
 
 -
@@ -12,3 +12,7 @@ colours=yellow
 regexp=(aborted)
 colours=red
 
+-
+
+regexp=(poweroff)
+colours=dark
