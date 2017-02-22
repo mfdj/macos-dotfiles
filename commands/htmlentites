@@ -1,0 +1,6 @@
+#!/usr/bin/env php
+<?php
+
+while (false !== ($line = fgets(STDIN))) {
+  echo htmlentities($line);
+}
