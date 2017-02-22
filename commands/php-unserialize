@@ -5,7 +5,7 @@ while (false !== ($line = fgets(STDIN))) {
   $line = unserialize($line);
 
   if (is_string($line) or is_numeric($line))
-    echo $line;
+      echo $line;
   else
-    print_r($line);
+      print_r($line);
 }
