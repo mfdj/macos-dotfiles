@@ -19,7 +19,7 @@ curlgrep() {
    result=/tmp/curl-grep-result
 
    if [[ $3 == last ]]; then
-      echo "reusing $result-$1"
+      (1>&2 echo "reusing $result-$1")
    else
       curl "$1" > "$result-$1"
       echo # clear last-line of curl's stderr
