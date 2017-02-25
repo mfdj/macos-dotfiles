@@ -13,25 +13,39 @@ curlpjson() {
       --data "$2" | grep '}' | python -mjson.tool
 }
 
-# preference precedence: ripgrep, egrep, grep
+# prefers ripgrep, falls back to egrep, then grep
 curlgrep() {
+   local url
+   local pattern
    local result
-   result=/tmp/curl-grep-result
 
-   if [[ $3 == last ]]; then
-      (1>&2 echo "reusing $result-$1")
+   url=$1
+   pattern=$2
+   shift 2
+
+   result=/tmp/curlgrep-result
+
+   if [[ $1 == last ]]; then
+      (1>&2 echo "reusing ${result}-${url}")
+      shift
+
    else
-      curl "$1" > "$result-$1"
+      curl "$url" > "${result}-${url}"
       echo # clear last-line of curl's stderr
    fi
 
+   # At this point remaining arguments are flags for grep/ripgrep
+   # flags are not validated so the user must understand which
+   # matching-engine is in use
+
+   # matching-engine precedence: ripgrep, egrep, grep
    if command -v rg &> /dev/null; then
-      rg "$2" "$result-$1"
+      rg "$pattern" "${result}-${url}" $*
 
    elif command -v egrep &> /dev/null; then
-      egrep "$2" "$result-$1"
+      egrep "$pattern" "${result}-${url}" $*
 
    else
-      grep "$2" "$result-$1"
+      grep "$pattern" "${result}-${url}" $*
    fi
 }
