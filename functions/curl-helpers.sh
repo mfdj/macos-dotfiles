@@ -17,20 +17,22 @@ curlpjson() {
 curlgrep() {
    local url
    local pattern
-   local result
+   local resultPath
+   local md5hash
 
    url=$1
    pattern=$2
    shift 2
 
-   result=/tmp/curlgrep-result
+   md5hash=$(md5 <<< "$url")
+   resultPath=/tmp/curlgrep-result-${md5hash:0:12}
 
    if [[ $1 == last ]]; then
-      (1>&2 echo "reusing ${result}-${url}")
+      (1>&2 echo "reusing $url (${resultPath})")
       shift
 
    else
-      curl "$url" > "${result}-${url}"
+      curl "$url" > "$resultPath"
       echo # clear last-line of curl's stderr
    fi
 
@@ -40,12 +42,12 @@ curlgrep() {
 
    # matching-engine precedence: ripgrep, egrep, grep
    if command -v rg &> /dev/null; then
-      rg "$pattern" "${result}-${url}" $*
+      rg "$pattern" "$resultPath" $*
 
    elif command -v egrep &> /dev/null; then
-      egrep "$pattern" "${result}-${url}" $*
+      egrep "$pattern" "$resultPath" $*
 
    else
-      grep "$pattern" "${result}-${url}" $*
+      grep "$pattern" "$resultPath" $*
    fi
 }
