@@ -80,6 +80,7 @@ cdp() {
 
    # list option
    # - list all aliases
+   # (optionally the second argument may be a pattern for filtering aliases)
 
    if [[ $1 == '--list' || $1 == '-l' ]]; then
       for file in $CDP_ALIASES/*; do
