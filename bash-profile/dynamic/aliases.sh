@@ -18,6 +18,10 @@ command -v grc > /dev/null && {
    echo alias tree=\'grc tree\'
 }
 
+command -v ccat > /dev/null && {
+   echo alias cat=\'ccat\'
+}
+
 if ls --color &> /dev/null; then
    # GNU http://www.gnu.org/software/coreutils/manual/html_node/General-output-formatting.html#General-output-formatting
    colorflag='--color'
