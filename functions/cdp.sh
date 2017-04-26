@@ -10,7 +10,7 @@ cdp() {
 
    CDP_ALIASES=${CDP_ALIASES:-~/.cdp_aliases}
 
-   if [ -t 0 -a -t 1 ]; then
+   if [ -t 1 ]; then
       # not in-a-pipe or file-redireciton
       use_color=true
    fi
