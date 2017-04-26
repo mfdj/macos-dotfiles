@@ -10,10 +10,10 @@ vagrant() {
    local vagrant_option_found
    local active_hosts
    local selected_host
-   local is_tty
+   local use_color
    local vg_cmd
 
-   _color_to_stderr() {
+   _fancy_errecho() {
       local color
       color=$1
       shift
@@ -55,14 +55,15 @@ vagrant() {
       [[ $level == warn    ]] && color=yellow
       [[ $level == error   ]] && color=red
 
-      if [[ $is_tty ]]; then
-         _color_to_stderr plain "vagrant-shim [$level]: $*"
+      if [[ $use_color ]]; then
+         # indicate log-level as text and skip fancy ansi-colors
+         _fancy_errecho plain "vagrant-shim [$level]: $*"
 
       elif [[ $DEBUG ]]; then
-         _color_to_stderr "$color" "vagrant-shim: $*"
+         _fancy_errecho "$color" "vagrant-shim: $*"
 
       elif [[ $level != debug ]]; then
-         _color_to_stderr "$color" "$*"
+         _fancy_errecho "$color" "$*"
       fi
 
       return 0
@@ -70,17 +71,26 @@ vagrant() {
 
    # ~=~=~=~~=~=~=~ basic-setup ~=~=~=~~=~=~=~
 
+   # use color unless "no stdout" (which implies pipe/redireciton)
+
+   use_color=true
+   if [ -t 1 ]; then
+      use_color=''
+   fi
+
+   _log debug "use_color: '$use_color'"
+
    # use grc if available
-   if type -f grc > /dev/null; then
+
+   if type -f grc > /dev/null && [[ ! $use_color ]]; then
       vg_cmd='grc vagrant'
    else
       vg_cmd='vagrant'
    fi
 
-   # not in a pipe or file-redirection
-   if [ ! -t 1 ] && [ ! -t 0 ]; then
-      is_tty=true
-   fi
+   _log debug "vg_cmd: '$vg_cmd'"
+
+   # generate configuration paths
 
    if [[ -f Vagrantfile ]]; then
       has_vagrantfile=true
