@@ -16,7 +16,7 @@ brew_ensure  gawk # GNU awk
 brew_ensure  goaccess # Log analyzer and interactive viewer for the Apache Webserver
 brew_ensure  imagemagick
 brew_ensure  libsodium # crypto
-brew_ensure  mongodb # Webscale
+brew_ensure  mongodb
 brew_ensure  multitail # Tail multiple files in one terminal simultaneously
 brew_ensure  pdfgrep
 brew_ensure  phantomjs

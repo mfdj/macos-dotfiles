@@ -2,10 +2,10 @@
 <?php
 
 while (false !== ($line = fgets(STDIN))) {
-  $line = unserialize($line);
+   $line = unserialize($line);
 
-  if (is_string($line) or is_numeric($line))
+   if (is_string($line) or is_numeric($line))
       echo $line;
-  else
+   else
       print_r($line);
 }

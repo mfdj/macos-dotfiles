@@ -10,6 +10,7 @@ alias crone='EDITOR=nano crontab -e'
 alias egrep='command egrep --color'
 alias grep='command grep --color'
 alias sshp='ssh -o PubkeyAuthentication=no'
+alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 
 # ls
 alias ll='ls -lF'
@@ -24,7 +25,6 @@ alias blueon='blueutil power 1'
 
 # php
 alias c='composer'
-alias cr='composer require'
 alias cul='composer update --lock'
 alias sf='[[ -f app/console ]] && app/console || bin/console'
 alias phpext="ls -l1 $(php -i | grep ^extension_dir | sed 's/.* => //')"
