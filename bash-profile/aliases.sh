@@ -10,7 +10,6 @@ alias crone='EDITOR=nano crontab -e'
 alias egrep='command egrep --color'
 alias grep='command grep --color'
 alias sshp='ssh -o PubkeyAuthentication=no'
-alias lock='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
 
 # ls
 alias ll='ls -lF'
