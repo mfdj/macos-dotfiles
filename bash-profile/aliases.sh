@@ -32,7 +32,7 @@ alias mage='magento'
 # magerun see: functions/almost-aliases
 
 # vagrant + virtualbox
-# vagrant see: functions/vagrant-shim
+# vagrant see: commands/vagrant-shim
 alias vagrant='vagrant-shim'
 alias vg='vagrant'
 alias vbox='VBoxManage'

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-_fancy_errecho() {
+# ~=~=~=~~=~=~=~ output-helpers ~=~=~=~~=~=~=~
+
+errecho() {
    local color
    color=$1
    shift
@@ -21,11 +23,6 @@ _fancy_errecho() {
 }
 
 log() {
-   _log error "use _log not log"
-   _log "$@"
-}
-
-_log() {
    local level
    local color
 
@@ -44,13 +41,13 @@ _log() {
 
    if [[ $DEBUG ]]; then
       if  [[ $use_color ]]
-      then _fancy_errecho "$color" "vagrant-shim: $*"
-      else _fancy_errecho plain "vagrant-shim [$level]: $*"
+      then errecho "$color" "vagrant-shim: $*"
+      else errecho plain "vagrant-shim [$level]: $*"
       fi
    elif [[ $level != debug ]]; then
       if  [[ $use_color ]]
-      then _fancy_errecho "$color" "$*"
-      else _fancy_errecho plain "vagrant-shim [$level]: $*"
+      then errecho "$color" "$*"
+      else errecho plain "vagrant-shim [$level]: $*"
       fi
    fi
 
@@ -62,7 +59,7 @@ _log() {
 # use color if "stdout" exists (which implies *not* in a pipe/redireciton)
 [ -t 1 ] && use_color=true || use_color=''
 
-_log debug "use_color: '$use_color'"
+log debug "use_color: '$use_color'"
 
 # use grc if available
 if type -p grc > /dev/null && [[ $use_color ]]; then
@@ -71,7 +68,7 @@ else
    vg_cmd='vagrant'
 fi
 
-_log debug "vg_cmd: '$vg_cmd'"
+log debug "vg_cmd: '$vg_cmd'"
 
 # generate configuration paths
 
@@ -81,19 +78,19 @@ if [[ -f Vagrantfile ]]; then
    project_hash=$(md5 <<< "$(pwd)")
    ssh_config_path=/tmp/vagrant-${project_hash}-ssh-config
 
-   _log debug "has_vagrantfile '$has_vagrantfile'"
-   _log debug "project_path    '$project_path'"
-   _log debug "project_hash    '$project_hash'"
-   _log debug "ssh_config_path '$ssh_config_path'"
+   log debug "has_vagrantfile '$has_vagrantfile'"
+   log debug "project_path    '$project_path'"
+   log debug "project_hash    '$project_hash'"
+   log debug "ssh_config_path '$ssh_config_path'"
 fi
 
 # ~=~=~=~~=~=~=~ @extension: status ~=~=~=~~=~=~=~
 
 if [[ $1 == status ]]; then
-   _log debug 'extending vagrant status'
+   log debug 'extending vagrant status'
 
    if [[ -z $has_vagrantfile ]]; then
-      _log warn 'Vagrantfile missing, showing global-status'
+      log warn 'Vagrantfile missing, showing global-status'
       command $vg_cmd global-status
 
       # preserves behavior for scripts that use exit code of `vagrant status`
@@ -101,41 +98,41 @@ if [[ $1 == status ]]; then
       exit 1
    fi
 
-   command $vg_cmd status
+   command $vg_cmd $*
    exit $?
 fi
 
 # ~=~=~=~~=~=~=~ @extension: ssh ~=~=~=~~=~=~=~
 
-_check_sssh_config() {
+check_ssh_config() {
    if command grep -q 'User vagrant' "$1"; then
-      _log debug "'$1' looks like valid ssh-config"
+      log debug "'$1' looks like valid ssh-config"
       return 0
    else
-      _log warn "'$1' does not look like valid ssh-config"
+      log warn "'$1' does not look like valid ssh-config"
       return 1
    fi
 }
 
-_update_ssh_config() {
+update_ssh_config() {
    if [[ -z $1 ]]; then
-      _log warn 'update_ssh_config missing cache-path'
+      log warn 'update_ssh_config missing cache-path'
       return 1
    fi
 
-   _log 'updating cached ssh-config'
+   log 'updating cached ssh-config'
    command $vg_cmd ssh-config > "$1" 2> "$ssh_config_path-err"
 
-   _log debug "vagrant ssh-config exited with: $?"
+   log debug "vagrant ssh-config exited with: $?"
 
    while read line; do
-      _log debug "ssh-config err: $line"
+      log debug "ssh-config err: $line"
    done < "$ssh_config_path-err"
 
-   _check_sssh_config "$1"
+   check_ssh_config "$1"
 }
 
-_ssh_shim() {
+ssh_shim() {
    local ssh_exit
    local retry_with_updated_config
    local ssh_err
@@ -143,94 +140,94 @@ _ssh_shim() {
 
    ssh_err=/tmp/vagrant-${project_hash}-ssh-stderr
 
-   _log debug "ssh-shim options
+   log debug "ssh-shim options
 config   : '$1'
 host     : '$2'
 command  : '$3'
 err-file : '$ssh_err'"
 
-   [[ $3 ]] && _log "running '$3' on '$2'" || _log "ssh'ing into '$2'"
+   [[ $3 ]] && log "running '$3' on '$2'" || log "ssh'ing into '$2'"
 
    ssh -F "$1" "$2" "$3" 2> >(tee "$ssh_err" >&2)
 
    ssh_exit=$?
-   (( $ssh_exit == 0 )) && _log debug "ssh first exit-code: $ssh_exit"
-   (( $ssh_exit > 0  )) && _log warn  "ssh exited with non-zero status: $ssh_exit"
+   (( $ssh_exit == 0 )) && log debug "ssh first exit-code: $ssh_exit"
+   (( $ssh_exit > 0  )) && log warn  "ssh exited with non-zero status: $ssh_exit"
 
    (( $ssh_exit == 255 )) && [[ ! -s $ssh_err ]] && {
-      _log debug 'ssh logged nothing to stderr, retrying verbosely'
+      log debug 'ssh logged nothing to stderr, retrying verbosely'
 
       ssh -v -F "$1" "$2" "$3" 2> "$ssh_err"
 
       ssh_exit=$?
-      _log debug "ssh-verbose exit-code: $ssh_exit"
+      log debug "ssh-verbose exit-code: $ssh_exit"
    }
 
    retry_with_updated_config=''
 
    (( $ssh_exit == 255 )) && {
       inspect_line=$(tail -n1 "$ssh_err")
-      _log debug "last line of stderr: $inspect_line"
+      log debug "last line of stderr: $inspect_line"
 
       [[ $inspect_line =~ ssh.+Connection\ refused ]] && {
-         _log debug 'matched "… Connection refused" marking retrying with new ssh-config'
+         log debug 'matched "… Connection refused" marking retrying with new ssh-config'
          retry_with_updated_config=true
       }
    }
 
    [[ $retry_with_updated_config ]] && {
-      _log debug 'ssh retrying with updated config'
+      log debug 'ssh retrying with updated config'
 
-      _update_ssh_config "$1" && ssh -F "$1" "$2" "$3"
+      update_ssh_config "$1" && ssh -F "$1" "$2" "$3"
    }
 }
 
 if [[ $1 == ssh && $has_vagrantfile ]]; then
-   _log debug 'extending vagrant ssh'
+   log debug 'extending vagrant ssh'
 
    vagrant_flag_found=''
 
    for word in "${@:2}"; do
-      _log debug "checking parameter '$word'"
+      log debug "checking parameter '$word'"
 
       [[ $word =~ ^- ]] && {
-         _log debug "found flag argument '$word'"
+         log debug "found flag argument '$word'"
          vagrant_flag_found=true
       }
    done
 
    if [[ $vagrant_flag_found ]]; then
-      _log debug 'skipping shim becuase flags were passed'
+      log debug 'skipping shim becuase flags were passed'
    else
-      _log debug 'no vagrant-flags found, proceeding with shim'
+      log debug 'no vagrant-flags found, proceeding with shim'
 
-      [[ -s $ssh_config_path ]] || _update_ssh_config "$ssh_config_path"
+      [[ -s $ssh_config_path ]] || update_ssh_config "$ssh_config_path"
 
-      if _check_sssh_config "$ssh_config_path"; then
-         _log debug "trying ssh with '$ssh_config_path'"
+      if check_ssh_config "$ssh_config_path"; then
+         log debug "trying ssh with '$ssh_config_path'"
 
          # check host against active-hosts
          active_hosts=$(grep -E '^Host .+' "$ssh_config_path" | awk '{print $2}')
-         _log debug "active-hosts [$(tr '\n' ',' <<< "$active_hosts" | sed 's/,$//')]"
+         log debug "active-hosts [$(tr '\n' ',' <<< "$active_hosts" | sed 's/,$//')]"
 
          # check if param-2 is active-host
          selected_host=$(grep -E "^${2}\$" <<< "$active_hosts")
 
          if [[ $selected_host ]]; then
-            _log debug "using param-2 '$selected_host' as host"
+            log debug "using param-2 '$selected_host' as host"
             shift
          else
-            _log debug "param-2: '$2' is not an active host"
+            log debug "param-2: '$2' is not an active host"
 
             # select default (vagrant seems to default to the last box defined?)
             selected_host=$(tail -n1 <<< "$active_hosts")
-            _log debug "using first active host '$selected_host'"
+            log debug "using first active host '$selected_host'"
          fi
 
-         _ssh_shim "$ssh_config_path" "$selected_host" "$2"
+         ssh_shim "$ssh_config_path" "$selected_host" "$2"
          exit $?
       else
-         _log error 'stopping ssh-shim because ssh-config is invalid'
+         log error 'stopping ssh-shim because ssh-config is invalid'
          exit 1
       fi
    fi
@@ -239,9 +236,9 @@ fi
 # ~=~=~=~~=~=~=~ @extension: ssh-config ~=~=~=~~=~=~=~
 
 if [[ $1 == ssh-config && $has_vagrantfile ]]; then
-   _log debug 'extending vagrant ssh-config'
+   log debug 'extending vagrant ssh-config'
 
-   if _update_ssh_config "$ssh_config_path"; then
+   if update_ssh_config "$ssh_config_path"; then
       cat "$ssh_config_path"
       exit 0
    fi
@@ -252,13 +249,13 @@ fi
 # ~=~=~=~~=~=~=~ @new-command: ssh-config-file ~=~=~=~~=~=~=~
 
 if [[ $1 == ssh-config-file && $has_vagrantfile ]]; then
-   _log debug "ssh-config-file echoing $ssh_config_path"
+   log debug "ssh-config-file echoing $ssh_config_path"
    echo "$ssh_config_path"
    exit 0
 fi
 
 # ~=~=~=~~=~=~=~ vagrant fall through ~=~=~=~~=~=~=~
 
-_log debug "no commands to extend: passing '$*' to vagrant"
+log debug "no extensions or new-commands found: passing '$*' to vagrant"
 
 command $vg_cmd "$@"
