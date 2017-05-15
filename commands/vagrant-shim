@@ -102,6 +102,25 @@ if [[ $1 == status ]]; then
    exit $?
 fi
 
+# ~=~=~=~~=~=~=~ @extension: up ~=~=~=~~=~=~=~
+# ~=~=~=~~=~=~=~ @extension: reload ~=~=~=~~=~=~=~
+
+if [[ $1 == up ]] || [[ $1 == reload ]]; then
+   log debug "extending vagrant $1"
+
+   if [[ -z $has_vagrantfile ]]; then
+      log warn 'Vagrantfile missing, showing global-status'
+      command $vg_cmd global-status
+      exit 1
+   fi
+
+   command $vg_cmd $*
+   vagrantexit=$?
+   (( $vagrantexit == 0 )) && update_ssh_config
+
+   exit $vagrantexit
+fi
+
 # ~=~=~=~~=~=~=~ @extension: ssh ~=~=~=~~=~=~=~
 
 check_ssh_config() {
