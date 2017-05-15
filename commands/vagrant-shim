@@ -62,6 +62,13 @@ ensure_vagrantfile() {
    fi
 }
 
+# most generic extension: show nicer error (i.e. global-status) when no Vagrantfile present
+run_if_vagrantfile() {
+   log debug "extending vagrant $1"
+   ensure_vagrantfile
+   command $vg_cmd "$@"
+}
+
 # ~=~=~=~~=~=~=~ basic-setup ~=~=~=~~=~=~=~
 
 # use color if "stdout" exists (which implies *not* in a pipe/redireciton)
@@ -98,22 +105,27 @@ extension_status() {
    log debug 'extending vagrant status'
    ensure_vagrantfile
 
-   command $vg_cmd $*
+   command $vg_cmd "$@"
 }
 
 # ~=~=~=~~=~=~=~ @extension: up ~=~=~=~~=~=~=~
 # ~=~=~=~~=~=~=~ @extension: reload ~=~=~=~~=~=~=~
 
-extension_up_reload() {
-   log debug "extending vagrant $1"
-   ensure_vagrantfile
+run_then_update_ssh_config() {
+   run_if_vagrantfile "$@"
 
-   command $vg_cmd $*
+   lastexit=$?
+   (( $lastexit == 0 )) && update_ssh_config "$ssh_config_path"
 
-   vagrantexit=$?
-   (( $vagrantexit == 0 )) && update_ssh_config "$ssh_config_path"
+   return $lastexit
+}
 
-   return $vagrantexit
+extension_up() {
+   run_then_update_ssh_config "$@"
+}
+
+extension_reload() {
+   run_then_update_ssh_config "$@"
 }
 
 # ~=~=~=~~=~=~=~ @extension: ssh ~=~=~=~~=~=~=~
@@ -196,8 +208,6 @@ err-file : '$ssh_err'"
 }
 
 extension_ssh() {
-   shift # shift `ssh` off $1
-
    log debug 'extending vagrant ssh'
 
    ensure_vagrantfile
@@ -213,14 +223,14 @@ extension_ssh() {
       active_hosts=$(grep -E '^Host .+' "$ssh_config_path" | awk '{print $2}')
       log debug "active-hosts [$(tr '\n' ',' <<< "$active_hosts" | sed 's/,$//')]"
 
-      # check if param-1 is active-host
-      selected_host=$(grep -E "^${1}\$" <<< "$active_hosts")
+      # check if param-2 is active-host
+      selected_host=$(grep -E "^${2}\$" <<< "$active_hosts")
 
       if [[ $selected_host ]]; then
-         log debug "using param-1 '$selected_host' as host"
+         log debug "using param-2 '$selected_host' as host"
          shift
       else
-         log debug "param-1: '$1' is not an active host"
+         log debug "param-2: '$2' is not an active host"
 
          # select default (vagrant seems to default to the last box defined?)
          selected_host=$(tail -n1 <<< "$active_hosts")
@@ -248,9 +258,10 @@ extension_ssh_config() {
    return 1
 }
 
-# ~=~=~=~~=~=~=~ @new-command: ssh-config-file ~=~=~=~~=~=~=~
+# ~=~=~=~~=~=~=~ @new-command @extension: ssh-config-file ~=~=~=~~=~=~=~
 
-ssh_config_file() {
+extension_ssh_config_file() {
+   log debug 'extending vagrant with new command ssh-config-file'
    ensure_vagrantfile
 
    log debug "ssh-config-file echoing $ssh_config_path"
@@ -258,11 +269,11 @@ ssh_config_file() {
    return 0
 }
 
-# ~=~=~=~~=~=~=~ vagrant fall through ~=~=~=~~=~=~=~
+# ~=~=~=~~=~=~=~ handle ~=~=~=~~=~=~=~
 
 case $1 in
-   up|reload)
-      extension_up_reload $*
+   ssh-config|ssh-config-file|status|up|reload)
+      extension_${1/-/_/} "$@"
    ;;
 
    ssh)
@@ -281,20 +292,8 @@ case $1 in
          log debug 'skipping shim becuase flags were passed'
          exec $vg_cmd "$@"
       else
-         extension_ssh $*
+         extension_ssh "$@"
       fi
-   ;;
-
-   ssh-config)
-      extension_ssh_config $*
-   ;;
-
-   ssh-config-file)
-      ssh_config_file $*
-   ;;
-
-   status)
-      extension_status $*
    ;;
 
    *)
