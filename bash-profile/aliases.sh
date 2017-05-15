@@ -33,6 +33,7 @@ alias mage='magento'
 
 # vagrant + virtualbox
 # vagrant see: functions/vagrant-shim
+alias vagrant='vagrant-shim'
 alias vg='vagrant'
 alias vag='echo "deprecated: use vg"; vagrant'
 alias vags='echo "deprecated: use vg status"; vagrant status'
