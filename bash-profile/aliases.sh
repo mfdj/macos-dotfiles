@@ -35,8 +35,6 @@ alias mage='magento'
 # vagrant see: functions/vagrant-shim
 alias vagrant='vagrant-shim'
 alias vg='vagrant'
-alias vag='echo "deprecated: use vg"; vagrant'
-alias vags='echo "deprecated: use vg status"; vagrant status'
 alias vbox='VBoxManage'
 alias vboxvms='VBoxManage list vms'
 alias vboxrm='VBoxManage unregistervm'
