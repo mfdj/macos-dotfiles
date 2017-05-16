@@ -272,9 +272,18 @@ extension_ssh_config_file() {
 # ~=~=~=~~=~=~=~ handle ~=~=~=~~=~=~=~
 
 case $1 in
-   ssh-config|ssh-config-file|status|up|reload)
+   ssh-config|ssh-config-file|up|reload)
       extension_${1/-/_/} "$@"
    ;;
+
+   stat*)
+      extension_status "$@"
+   ;;
+
+   prov*)
+      run_if_vagrantfile provision "$@"
+   ;;
+
 
    ssh)
       vagrant_flag_found=''
