@@ -64,9 +64,19 @@ ensure_vagrantfile() {
 
 # most generic extension: show nicer error (i.e. global-status) when no Vagrantfile present
 run_if_vagrantfile() {
-   log debug "extending vagrant $1"
+   log debug "extending '$1' ($*)"
    ensure_vagrantfile
    command $vg_cmd "$@"
+}
+
+# specific to commands that effect ssh-config
+run_then_cache_ssh_config() {
+   run_if_vagrantfile "$@"
+
+   lastexit=$?
+   (( $lastexit == 0 )) && cache_ssh_config "$ssh_config_path"
+
+   return $lastexit
 }
 
 # ~=~=~=~~=~=~=~ basic-setup ~=~=~=~~=~=~=~
@@ -99,35 +109,6 @@ if [[ -f Vagrantfile ]]; then
    log debug "ssh_config_path '$ssh_config_path'"
 fi
 
-# ~=~=~=~~=~=~=~ @extension: status ~=~=~=~~=~=~=~
-
-extension_status() {
-   log debug 'extending vagrant status'
-   ensure_vagrantfile
-
-   command $vg_cmd "$@"
-}
-
-# ~=~=~=~~=~=~=~ @extension: up ~=~=~=~~=~=~=~
-# ~=~=~=~~=~=~=~ @extension: reload ~=~=~=~~=~=~=~
-
-run_then_update_ssh_config() {
-   run_if_vagrantfile "$@"
-
-   lastexit=$?
-   (( $lastexit == 0 )) && update_ssh_config "$ssh_config_path"
-
-   return $lastexit
-}
-
-extension_up() {
-   run_then_update_ssh_config "$@"
-}
-
-extension_reload() {
-   run_then_update_ssh_config "$@"
-}
-
 # ~=~=~=~~=~=~=~ @extension: ssh ~=~=~=~~=~=~=~
 
 check_ssh_config() {
@@ -140,14 +121,14 @@ check_ssh_config() {
    return 1
 }
 
-update_ssh_config() {
+cache_ssh_config() {
    if [[ -z $1 ]]; then
-      log warn 'update_ssh_config missing cache-path'
+      log warn 'cache_ssh_config missing cache-path'
       return 1
    fi
 
    log 'updating cached ssh-config'
-   command $vg_cmd ssh-config > "$1" 2> "$ssh_config_path-err"
+   command vagrant ssh-config > "$1" 2> "$ssh_config_path-err"
    log debug "vagrant ssh-config exited with: $?"
 
    while read line; do
@@ -203,18 +184,18 @@ err-file : '$ssh_err'"
    [[ $retry_with_updated_config ]] && {
       log debug 'ssh retrying with updated config'
 
-      update_ssh_config "$1" && ssh -F "$1" "$2" "$3"
+      cache_ssh_config "$1" && ssh -F "$1" "$2" "$3"
    }
 }
 
 extension_ssh() {
-   log debug 'extending vagrant ssh'
+   log debug "extending '$1' ($*)"
 
    ensure_vagrantfile
 
    log debug 'no vagrant-flags found, proceeding with shim'
 
-   [[ -s $ssh_config_path ]] || update_ssh_config "$ssh_config_path"
+   [[ -s $ssh_config_path ]] || cache_ssh_config "$ssh_config_path"
 
    if check_ssh_config "$ssh_config_path"; then
       log debug "trying ssh with '$ssh_config_path'"
@@ -248,9 +229,9 @@ extension_ssh() {
 # ~=~=~=~~=~=~=~ @extension: ssh-config ~=~=~=~~=~=~=~
 
 extension_ssh_config() {
-   log debug 'extending vagrant ssh-config'
+   log debug "extending '$1' ($*)"
 
-   if update_ssh_config "$ssh_config_path"; then
+   if cache_ssh_config "$ssh_config_path"; then
       cat "$ssh_config_path"
       return 0
    fi
@@ -261,48 +242,49 @@ extension_ssh_config() {
 # ~=~=~=~~=~=~=~ @new-command @extension: ssh-config-file ~=~=~=~~=~=~=~
 
 extension_ssh_config_file() {
-   log debug 'extending vagrant with new command ssh-config-file'
+   log debug "extending new-command '$1' ($*)"
    ensure_vagrantfile
 
-   log debug "ssh-config-file echoing $ssh_config_path"
+   log debug "ssh-config-file echoing '$ssh_config_path'"
    echo "$ssh_config_path"
    return 0
 }
 
 # ~=~=~=~~=~=~=~ handle ~=~=~=~~=~=~=~
 
+flag_arg_found=''
+for word in "${@:2}"; do
+   log debug "checking parameter '$word'"
+
+   [[ $word =~ ^- ]] && {
+      log debug "found flag argument '$word'"
+      flag_arg_found=true
+   }
+done
+
+if [[ $flag_arg_found ]]; then
+   log debug 'skipping shims becuase flag(s) were passed'
+
+   exec $vg_cmd "$@"
+fi
+
 case $1 in
-   ssh-config|ssh-config-file|up|reload)
+   ssh|ssh-config|ssh-config-file)
       extension_${1/-/_/} "$@"
    ;;
 
+   up|reload)
+      run_then_cache_ssh_config "$@"
+   ;;
+
    stat*)
-      extension_status "$@"
+      shift
+      run_if_vagrantfile status "$@"
    ;;
 
    prov*)
+      shift
       run_if_vagrantfile provision "$@"
-   ;;
-
-
-   ssh)
-      vagrant_flag_found=''
-
-      for word in "${@:2}"; do
-         log debug "checking parameter '$word'"
-
-         [[ $word =~ ^- ]] && {
-            log debug "found flag argument '$word'"
-            vagrant_flag_found=true
-         }
-      done
-
-      if [[ $vagrant_flag_found ]]; then
-         log debug 'skipping shim becuase flags were passed'
-         exec $vg_cmd "$@"
-      else
-         extension_ssh "$@"
-      fi
    ;;
 
    *)
