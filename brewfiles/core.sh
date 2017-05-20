@@ -15,6 +15,7 @@ brew_ensure  grep homebrew/dupes/grep # `ggrep` gnu-grep
 # not on macos
 brew_ensure  colordiff
 brew_ensure  diff-so-fancy
+brew_ensure  hub
 brew_ensure  jq
 brew_ensure  md5sha1sum
 brew_ensure  pidof

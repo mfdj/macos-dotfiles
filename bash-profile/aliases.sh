@@ -26,7 +26,8 @@ alias blueon='blueutil power 1'
 alias c='composer'
 alias cul='composer update --lock'
 alias sf='[[ -f app/console ]] && app/console || bin/console'
-alias phpext="ls -l1 $(php -i | grep ^extension_dir | sed 's/.* => //')"
+# NOTE: conventional pecl-installed extension path (homebrew-php does not use this path)
+alias phpext="ls -l1 \$(php -i | grep ^extension_dir | sed 's/.* => //')"
 alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"
 alias mage='magento'
 # magerun see: functions/almost-aliases

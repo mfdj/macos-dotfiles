@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-### shell-completions, see: /usr/local/etc/bash_completion.d
-if brew --prefix git &> /dev/null; then
-   find /usr/local/etc/bash_completion.d -name '*git*' -exec echo source '{}' \;
-fi
+### bash-completions installed by homebrew; see: /usr/local/etc/bash_completion.d
+find /usr/local/etc/bash_completion.d -type l -exec echo source '{}' \;
 
 ### n, node.js version manager
 # startup-cost: 0
