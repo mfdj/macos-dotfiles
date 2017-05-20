@@ -1,6 +1,16 @@
 #!/usr/bin/env php
 <?php
 
+if ($argc > 1) {
+   array_shift($argv);
+
+   foreach ($argv as $argument) {
+      echo htmlentities($argument) . PHP_EOL;
+   }
+
+   exit;
+}
+
 while (false !== ($line = fgets(STDIN))) {
   echo htmlentities($line);
 }
