@@ -112,30 +112,48 @@ fi
 # ~=~=~=~~=~=~=~ @extension: ssh ~=~=~=~~=~=~=~
 
 check_ssh_config() {
-   if command grep -q 'User vagrant' "$1"; then
-      log debug "'$1' looks like valid ssh-config"
+   local config
+   local config_err
+
+   config=$1
+   config_err=$2
+
+   if command grep -q 'User vagrant' "$config"; then
+      log debug "'$config' looks like valid ssh-config"
       return 0
    fi
 
-   log warn "'$1' does not look like valid ssh-config"
+   if command grep -q 'The provider for this Vagrant-managed machine is reporting that it' "$config_err"; then
+      log warn "It's likely there are no upped VMs"
+      vagrant status
+   else
+      log warn "'$config' does not look like valid ssh-config"
+   fi
+
    return 1
 }
 
 cache_ssh_config() {
-   if [[ -z $1 ]]; then
+   local out
+   local err
+
+   out=$1
+   err="${out}-err"
+
+   if [[ -z $out ]]; then
       log warn 'cache_ssh_config missing cache-path'
       return 1
    fi
 
    log 'updating cached ssh-config'
-   command vagrant ssh-config > "$1" 2> "$ssh_config_path-err"
+   command vagrant ssh-config > "$out" 2> "$err"
    log debug "vagrant ssh-config exited with: $?"
 
    while read line; do
       log debug "ssh-config err: $line"
-   done < "$ssh_config_path-err"
+   done < "$err"
 
-   check_ssh_config "$1"
+   check_ssh_config "$out" "$err"
 }
 
 ssh_shim() {
@@ -270,7 +288,8 @@ fi
 
 case $1 in
    ssh|ssh-config|ssh-config-file)
-      extension_${1/-/_} "$@"
+      ensure_vagrantfile
+      extension_${1//-/_} "$@"
    ;;
 
    up|reload)
