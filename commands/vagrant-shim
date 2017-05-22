@@ -270,7 +270,7 @@ fi
 
 case $1 in
    ssh|ssh-config|ssh-config-file)
-      extension_${1/-/_/} "$@"
+      extension_${1/-/_} "$@"
    ;;
 
    up|reload)
