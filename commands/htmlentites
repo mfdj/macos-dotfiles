@@ -1,16 +1,28 @@
 #!/usr/bin/env php
 <?php
 
-if ($argc > 1) {
-   array_shift($argv);
+// position 0 is the script-path
+array_shift($argv);
 
+// decode is a special positional modifier
+$decode = false;
+if ($argv[0] === 'decode') {
+   $decode = true;
+   array_shift($argv);
+}
+
+if (count($argv) > 0) {
    foreach ($argv as $argument) {
-      echo htmlentities($argument) . PHP_EOL;
+      if ($decode) echo html_entity_decode($argument);
+      else echo htmlentities($argument);
+      echo PHP_EOL;
    }
 
    exit;
 }
 
 while (false !== ($line = fgets(STDIN))) {
-  echo htmlentities($line);
+   if ($decode) echo html_entity_decode($line);
+   else echo htmlentities($line);
+   echo PHP_EOL;
 }
