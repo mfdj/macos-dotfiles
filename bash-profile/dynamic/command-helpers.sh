@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ### bash-completions installed by homebrew; see: /usr/local/etc/bash_completion.d
-find /usr/local/etc/bash_completion.d -type l -exec echo source '{}' \;
+find /usr/local/etc/bash_completion.d -type l -exec echo "[[ -f '{}' ]] && source '{}'" \;
 
 ### n, node.js version manager
 # startup-cost: 0
