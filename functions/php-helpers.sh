@@ -2,7 +2,7 @@
 
 xdebugenable() {
    local phpfpm=$(brew services list | grep started | grep php | awk '{print $1}')
-   local ini=$(php -i | grep xdebug.ini)
+   local ini=$(php -i | grep xdebug.ini | awk -F',' '{print $1}')
    local pattern='s~^;zend_extension~zend_extension~'
    [[ $1 == false ]] && pattern='s~^zend_extension~;zend_extension~'
 
