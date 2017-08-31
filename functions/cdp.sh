@@ -72,7 +72,7 @@ cdp() {
 
    if [[ $1 == '--remove' || $1 == '-r' ]]; then
       [[ $2 ]] \
-         && rm $CDP_ALIASES/$2 \
+         && rm "$CDP_ALIASES/$2" \
          || echo 'missing arugment for remove'
 
       return
@@ -110,10 +110,10 @@ cdp() {
    fi
 
    # change to alias (when first agument isn't a valid flag)
-   alias_match=$(find "$CDP_ALIASES" -name "$1")
+   alias_match=$(find "$CDP_ALIASES" -iname "$1")
 
    # get globby
-   [[ $alias_match ]] || alias_match=$(find "$CDP_ALIASES" -name "*$1*")
+   [[ $alias_match ]] || alias_match=$(find "$CDP_ALIASES" -iname "*$1*")
 
    if [[ $alias_match ]]; then
       cd "$(readlink "$alias_match")"
