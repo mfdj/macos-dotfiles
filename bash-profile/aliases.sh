@@ -43,7 +43,6 @@ alias vnight='VBoxManage list runningvms | cut -d" " -f1 | xargs -I X VBoxManage
 
 # GUI shortcuts
 alias st='open -a SourceTree .'
-alias mou='open -a Mou'
 alias md='open -a Macdown'
 alias pstorm='open -a PhpStorm'
 

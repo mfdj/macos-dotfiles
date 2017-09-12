@@ -52,15 +52,6 @@ git config --global core.editor nano
       ~/Library/Application\ Support/MacDown/Styles
 }
 
-# hey, Mou too
-
-[[ -d ~/Library/Application\ Support/Mou ]] && {
-   echo 'Ensuring Mou styles'
-   ensure_symlink \
-      $DOTFILES_DIR/configs/markdown-css \
-      ~/Library/Application\ Support/Mou/CSS
-}
-
 # + + + + + + + + + +
 # +  Atom Packages  +
 # +      apm        +

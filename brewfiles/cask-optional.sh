@@ -7,7 +7,6 @@ cask_ensure  chefdk
 cask_ensure  firefox
 cask_ensure  licecap
 cask_ensure  lighttable
-cask_ensure  mou
 cask_ensure  murus
 cask_ensure  openoffice
 cask_ensure  phpstorm
