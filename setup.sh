@@ -12,7 +12,7 @@ while [[ $index -le $# ]]; do
    case $word in
     optional) DO_OPTIONAL=true;;
         cask) DO_CASK=true;;
-      update) DO_UPDATES=true;;
+      update|upgrade) DO_UPDATES=true;;
        clean) DO_CLEAN=true;;
      q|quiet) DO_QUIETLY=true;;
         time) DO_TIME=true;;
