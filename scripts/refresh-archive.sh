@@ -4,6 +4,7 @@
    echo "DOTFILES_DIR not set"; exit 1;
 }
 
+# shellcheck disable=SC1091
 # shellcheck source=../functions/input-helpers.sh
 source "$DOTFILES_DIR/functions/input-helpers.sh"
 
@@ -30,7 +31,7 @@ if [[ -d $backup_target ]]; then
       echo -e "Updating backup-base: \033[1;32m${backup_base}\033[0m"
       [[ -d $backup_base ]] || {
          echo 'Making backup path'
-         mkdir -p $backup_base
+         mkdir -p "$backup_base"
       }
    else
       echo -e "Using backup-base: \033[1;07m $backup_base \033[0m"
@@ -47,7 +48,7 @@ else
       echo "Setting path to $backup_base"
       [[ -d $backup_base ]] || {
          echo 'Making backup path'
-         mkdir -p $backup_base
+         mkdir -p "$backup_base"
       }
    else
       echo 'No matches'
@@ -81,7 +82,7 @@ do_sync() {
    for source in "$@"; do
       if [[ -d $source || -f $source ]]; then
 
-         [[ -d $rsync_destination || $dry_run ]] || mkdir -p $rsync_destination
+         [[ -d $rsync_destination || $dry_run ]] || mkdir -p "$rsync_destination"
 
          echo
          echo -e "\033[1;34msyncing\033[0m \033[1;35m${source}\033[0m"
@@ -111,7 +112,7 @@ do_sync     ~/{Desktop,Documents,Downloads,Music,Pictures}
 
 ## personal
 destination "$backup_base"
-do_sync     ~/{.ssh,clients,FontExplorerX,projects}
+do_sync     ~/{.ssh,clients,FontExplorerX,projects,optical-archive}
 
 ## dotfiles-local
 destination "$backup_base"/dotfiles-local
@@ -129,7 +130,7 @@ do_sync     ~/Library/Application\ Support/MobileSync/Backup/
 onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backups.*')
 [[ $onepass_backups ]] && {
    destination "$backup_base"/1PasswordBackups
-   do_sync $onepass_backups
+   do_sync "$onepass_backups"
 }
 
 ## Knox
