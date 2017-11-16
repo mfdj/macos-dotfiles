@@ -9,7 +9,6 @@ require 'functions/plist-helpers'
 #   Advanced > When performing a search > Search the Current Folder
 
 echo 'Ensuring dark-mode enabled (toggle: control + option + command + t)'
-# TODO: update for Sierra - option is now in system-prefs https://support.apple.com/kb/PH25158?locale=en_US&viewlocale=en_US
 dark_mode=$(defaults read /Library/Preferences/.GlobalPreferences.plist _HIEnableThemeSwitchHotKey 2> /dev/null)
 [[ $dark_mode != 1 ]] \
    && sudo defaults write /Library/Preferences/.GlobalPreferences.plist _HIEnableThemeSwitchHotKey -bool true

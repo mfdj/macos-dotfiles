@@ -7,8 +7,7 @@ require 'functions/path-helpers'
 # +  Git  +
 # + + + + +
 
-# TODO: git-config
-
+# TODO: safe git-config like `git config --global core.excludesfile ~/.gitignore_global`
 echo 'Ensuring global gitignore symlinked'
 ensure_symlink \
    "$DOTFILES_DIR/configs/global-gitignore" \
