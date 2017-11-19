@@ -9,7 +9,7 @@ cask_ensure  licecap
 cask_ensure  lighttable
 cask_ensure  murus
 cask_ensure  openoffice
-cask_ensure  phpstorm
+cask_ensure  rubymine
 cask_ensure  processing
 cask_ensure  screenflow
 cask_ensure  sketch

@@ -24,7 +24,7 @@ else
       echo "Setting path to $backup_path"
       [[ -d $backup_path ]] || {
          echo 'Making backup path'
-         mkdir -p $backup_path
+         mkdir -p "$backup_path"
       }
    else
       echo 'No matches'

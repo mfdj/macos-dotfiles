@@ -106,7 +106,7 @@ do_sync() {
    echo
 }
 
-## standard OSX
+## standard macOS
 destination "$backup_base"
 do_sync     ~/{Desktop,Documents,Downloads,Music,Pictures}
 
