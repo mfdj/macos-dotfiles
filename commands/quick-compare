@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+PATH_A="$1"
+PATH_B="$2"
+
+foldersum ()  {
+   find "$1" -type f -print0 | xargs -0 sha1sum | awk '{print $1}' | sha1sum
+}
+
+listdiff ()  {
+  find "$1" -type f -print0 | xargs -0 sha1sum
+}
+
+export -f listdiff
+
+foldersum_a=$(foldersum "$PATH_A")
+foldersum_b=$(foldersum "$PATH_B")
+
+echo "$foldersum_a"
+echo "$foldersum_b"
+
+if [[ "$foldersum_a" == "$foldersum_b" ]]; then
+   echo same
+else
+   echo different
+   ## not very useful
+   # colordiff <(cd "$PATH_A"; listdiff .) <(cd "$PATH_B"; listdiff .)
+   # ksdiff "$PATH_A" "$PATH_B"
+fi
