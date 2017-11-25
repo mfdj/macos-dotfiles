@@ -45,3 +45,6 @@ fi
 if [[ -f /usr/local/etc/grc.bashrc ]]; then
    source /usr/local/etc/grc.bashrc
 fi
+
+# for custom bats-build of shellcheck
+[[ -d ~/.cabal/bin ]] && export PATH=${HOME}/.cabal/bin:${PATH}

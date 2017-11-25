@@ -23,7 +23,7 @@ brew_ensure  ripgrep # `rg`
 brew_ensure  rbenv
 brew_ensure  rbenv-vars
 brew_ensure  ruby-build
-brew_ensure  shellcheck
+#brew_ensure  shellcheck - see custom-build in setup.sh
 brew_ensure  tree
 brew_ensure  vcprompt
 brew_ensure  wget

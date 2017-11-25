@@ -43,8 +43,40 @@ brewfile core
 
 # homebrew maintenance
 # cask upgrade conversation: https://github.com/caskroom/homebrew-cask/issues/16033
-[[ $DO_UPDATES ]] && brew upgrade --all
+[[ $DO_UPDATES ]] && brew upgrade
 [[ $DO_CLEAN   ]] && { brew cleanup; brew cask cleanup; }
+
+# + + + + + + + + + + + + + + + + + + + +
+# + custom shellcheck with bats support +
+# + + + + + + + + + + + + + + + + + + + +
+
+_install_shellcheck_from_source() {
+   cd ~/from-source/shellcheck && {
+      git checkout bats &> /dev/null && {
+         git pull &> /dev/null
+         cabal update
+         cabal install
+      }
+   }
+
+   [[ -x ~/.cabal/bin/shellcheck ]] || {
+      echo "Warning: failed to install shellcheck from source"
+      require 'functions/brew-helpers'
+      brew_ensure shellcheck
+   }
+}
+
+if [[ ! -x ~/.cabal/bin/shellcheck ]]; then
+   require 'functions/brew-helpers'
+   brew_ensure cabal-install
+   mkdir -p ~/from-source
+   [[ -d ~/from-source/shellcheck ]] || git clone git@github.com:koalaman/shellcheck.git ~/from-source/shellcheck
+   _install_shellcheck_from_source
+elif [[ $DO_UPDATES ]]; then
+   # Why are cabal reinstalls “always dangerous”?
+   # https://stackoverflow.com/questions/19692644/why-are-cabal-reinstalls-always-dangerous
+   _install_shellcheck_from_source
+fi
 
 # + + + + + + + + + + + + + + + +
 # +         Composer            +
@@ -56,8 +88,7 @@ brewfile core
 echo Ensuring Composer
 if [[ ! -f /usr/local/bin/composer ]]; then
    php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php
-   # sha updated 2017-02-18 (previously 2016-04-02)
-   composerSHA384=55d6ead61b29c7bdee5cccfb50076874187bd9f21f65d8991d46ec5cc90518f447387fb9f76ebae1fbbacf329e583e30
+   composerSHA384=$(curl https://getcomposer.org/download/ --silent | grep -i 'composer-setup.*\=\=\=' | sed 's/\(.*===\)//' | awk -F"'" '{print $2}')
    php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) === '${composerSHA384}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
    if [[ -f composer-setup.php ]]; then
       php composer-setup.php --install-dir=/usr/local/bin/ --filename=composer
