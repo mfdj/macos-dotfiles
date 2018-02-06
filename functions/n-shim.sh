@@ -31,6 +31,12 @@ n() {
       return
    }
 
+   [[ -f .nvmrc ]] && {
+      echo using .nvmrc
+      command n "$(cat .nvmrc)" && node --version
+      return
+   }
+
    [[ -f package.json ]] && {
       echo checking package.json
       if command -v jq > /dev/null; then
