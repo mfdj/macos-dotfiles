@@ -7,7 +7,7 @@ find /usr/local/etc/bash_completion.d -type l -exec echo "[[ -f '{}' ]] && sourc
 # startup-cost: 0
 [[ -d ~/.n ]] && {
    echo "export N_PREFIX=${HOME}/.n"
-   echo "PATH+=:${N_PREFIX}/bin"  # Added by n-install (see http://git.io/n-install-repo).
+   echo "PATH=${N_PREFIX}/bin:\${PATH}"  # Added by n-install (see http://git.io/n-install-repo).
 }
 
 # nvm startup-cost: 0m0.590s — ~80% of the time of this module
