@@ -5,14 +5,14 @@
 # + + + + + + + + + + + + + + + + + + + +
 
 # dotfiles-commands
-export PATH=$PATH:${DOTFILES_DIR}/commands
+PATH=$PATH:${DOTFILES_DIR}/commands
 
 # contextual bin folders
-export PATH=$PATH:./node_modules/.bin # npm
-export PATH=$PATH:./vendor/bin        # composer
+PATH=$PATH:./node_modules/.bin # npm
+PATH=$PATH:./vendor/bin        # composer
 
 # composer global packages
-export PATH=$PATH:~/.composer/vendor/bin
+PATH=$PATH:~/.composer/vendor/bin
 
 # NOTE: had tried adding `…$PATH:./bin` for rails projects but rbenv shims every
 # gem across every version of ruby installed so this simple approach is not
@@ -20,10 +20,10 @@ export PATH=$PATH:~/.composer/vendor/bin
 # which feels stupid/risky
 
 # brew doctor recommends
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 # cdp function config
-export CDP_ALIASES=~/.cdp_aliases
+CDP_ALIASES=~/.cdp_aliases
 
 # sets the title of the terminal-tab to $PWD with tilde-style home directory
 PROMPT_COMMAND='printf "\e]1;%s\a" "$HOSTNAME: $PWD" | sed s#$HOME#~#'
@@ -36,7 +36,7 @@ else
 fi
 
 # if editor is empty use nano; otherwise git, et al. default to vim
-[[ $EDITOR ]] || export EDITOR=nano
+[[ $EDITOR ]] || EDITOR=nano
 
 # phpbrew
 #source /Users/markfox/.phpbrew/bashrc
@@ -47,4 +47,4 @@ if [[ -f /usr/local/etc/grc.bashrc ]]; then
 fi
 
 # for custom bats-build of shellcheck
-[[ -d ~/.cabal/bin ]] && export PATH=${HOME}/.cabal/bin:${PATH}
+[[ -d ~/.cabal/bin ]] && PATH=${HOME}/.cabal/bin:${PATH}
