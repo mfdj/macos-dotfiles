@@ -17,6 +17,12 @@ echo '[[ -n $PS1 ]] && source ~/.bash_profile' > ~/.bashrc
 echo 'Building .bash_profile'
 echo "# bash_profile built: $(date '+%Y-%m-%d %T')" > ~/.bash_profile
 
+# - reset PATH variable so re-sourcing doesn't gunk up the profile
+
+# wanted to generate DEFAULT_PATH dynamically, first attempt did not work: DEFAULT_PATH=$(bash --noprofile --norc -c 'echo $PATH')
+DEFAULT_PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+echo "PATH=$DEFAULT_PATH" >> ~/.bash_profile
+
 # - append sources to bash_profile
 
 # bind DOTFILES_DIR to this pacakge
@@ -38,7 +44,7 @@ append_source  "$DOTFILES_DIR/functions"    ~/.bash_profile
 # shellcheck disable=SC1090
 {
    source ~/.bash_profile
-   source "$DOTFILES_DIR/local/bash-profile.sh"
+   [ -f "$DOTFILES_DIR/local/bash_profile.sh" ] && source "$DOTFILES_DIR/local/bash_profile.sh"
 }
 
 # startup-cost: 0m0.193s
@@ -48,4 +54,4 @@ append_source "$DOTFILES_DIR/bash-profile/dynamic" ~/.bash_profile --exectue
 #     (append last for full control)
 
 # startup-cost: 0m0.001s
-append_source "$DOTFILES_DIR/local/bash-profile.sh" ~/.bash_profile > /dev/null
+[ -f "$DOTFILES_DIR/local/bash_profile.sh" ] && append_source "$DOTFILES_DIR/local/bash_profile.sh" ~/.bash_profile
