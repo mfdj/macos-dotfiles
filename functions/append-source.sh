@@ -21,11 +21,13 @@ append_source() {
       if [[ $execute ]]; then
          if [[ -f $file && -x $file ]]; then
             # shellcheck disable=SC1090
+            echo "# execute '$file'" >> "$append_to"
             source $file >> "$append_to"
          else
             echo "append-source - '$file' is not executable?"
          fi
       elif [[ -f $file ]]; then
+         echo "# append '$file'" >> "$append_to"
          echo "source $file" >> "$append_to"
       elif [[ -d $file ]]; then
          # ignore folders
