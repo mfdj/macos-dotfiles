@@ -17,12 +17,9 @@ find /usr/local/etc/bash_completion.d -type l -exec echo "[[ -f '{}' ]] && sourc
 # nvm-total startup-cost: 0m0.640s
 
 ### pyenv
-### disable until I figure out how I want to setup python2/python3 side-by-side;
-### it's doable https://github.com/yyuu/pyenv/blob/master/COMMANDS.md#pyenv-global-advanced
-### but at low priority to my current setup (homebrew handles it fine for my current needs)
 # static startup-cost: 0m.077s
 # startup-cost: 0m.121s (+0.05s)
-#command -v pyenv > /dev/null && echo 'eval "$(pyenv init -)"'
+command -v pyenv > /dev/null && echo 'eval "$(pyenv init -)"'
 
 ### rbenv
 # static startup-cost: 0m0.068s
