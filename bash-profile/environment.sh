@@ -23,6 +23,7 @@ PATH=$PATH:~/.composer/vendor/bin
 PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 # cdp function config
+# shellcheck disable=SC2034
 CDP_ALIASES=~/.cdp_aliases
 
 # sets the title of the terminal-tab to $PWD with tilde-style home directory
@@ -48,3 +49,8 @@ fi
 
 # for custom bats-build of shellcheck
 [[ -d ~/.cabal/bin ]] && PATH=${HOME}/.cabal/bin:${PATH}
+
+# use bash-completion package if installed
+if [ -f /usr/local/share/bash-completion/bash_completion ]; then
+  . /usr/local/share/bash-completion/bash_completion
+fi
