@@ -16,12 +16,26 @@ find /usr/local/etc/bash_completion.d -type l -exec echo "[[ -f '{}' ]] && sourc
 # [[ -r ~/.nvm/bash_completion ]] && echo source ~/.nvm/bash_completion
 # nvm-total startup-cost: 0m0.640s
 
+# NOTE: switching both rbenv/pyenv to static-init gets about 0.15s gain (from 0.5s to 0.35s total bash_profile - so ~1.4x increase)
+# NOTE: 99% of rbenv/pyenv init cost comes from the `rehash` - can this be backgrounded?
+
+# test if var is set: https://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash
+[[ ${ENV_HELPER_STATIC+x} ]] || ENV_HELPER_STATIC=1
+
 ### pyenv
-# static startup-cost: 0m.077s
-# startup-cost: 0m.121s (+0.05s)
-command -v pyenv > /dev/null && echo 'eval "$(pyenv init -)"'
+command -v pyenv > /dev/null && {
+   if [[ $ENV_HELPER_STATIC ]]; then
+      echo "$(pyenv init -)"
+   else
+      echo 'eval "$(pyenv init -)"'
+   fi
+}
 
 ### rbenv
-# static startup-cost: 0m0.068s
-# startup-cost: 0m0.097s (+0.03s)
-command -v rbenv > /dev/null && echo 'eval "$(rbenv init -)"'
+command -v rbenv > /dev/null && {
+   if [[ $ENV_HELPER_STATIC ]]; then
+      echo "$(rbenv init -)"
+   else
+      echo 'eval "$(rbenv init -)"'
+   fi
+}
