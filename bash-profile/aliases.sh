@@ -19,8 +19,8 @@ alias lsg='ls -lF | grep -i --color'
 # macos
 alias showdot='defaults write com.apple.finder AppleShowAllFiles TRUE && killall Finder'
 alias hidedot='defaults write com.apple.finder AppleShowAllFiles FALSE && killall Finder'
-alias blueoff='blueutil power 0'
-alias blueon='blueutil power 1'
+alias blueoff='blueutil --power 0'
+alias blueon='blueutil --power 1'
 
 # php
 alias c='composer'
