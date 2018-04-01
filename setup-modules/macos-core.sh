@@ -14,7 +14,7 @@ echo 'Ensuring ComputerName, HostName, LocalHostName are set'
       scutil --set ComputerName $machine_name &&
       scutil --set HostName $machine_name &&
       scutil --set LocalHostName $machine_name" \
-   && echo "$machine_name" > $DOTFILES_DIR/local/machine-name
+   && echo "$machine_name" > "$DOTFILES_DIR/local/machine-name"
 }
 
 
@@ -54,13 +54,12 @@ preferred_shell=/usr/local/bin/bash
    if ! grep "$preferred_shell" /etc/shells -q; then
       echo "• adding '$preferred_shell' to /etc/shells"
       echo "• changing shell to '$preferred_shell'"
-      echo '# dotfiles-setup added:' >  ~/new-etc-shells
-      echo "$preferred_shell"        >> ~/new-etc-shells
-      echo                           >> ~/new-etc-shells
-      cat /etc/shells >> ~/new-etc-shells
+      echo '# dotfiles-setup added:' > ~/new-etc-shells
+      { echo "$preferred_shell"; echo; cat /etc/shells; } >> ~/new-etc-shells
+
       user=$(whoami)
       sudo -s -- mv ~/new-etc-shells /etc/shells && {
-         chsh -s "$preferred_shell" $user && {
+         chsh -s "$preferred_shell" "$user" && {
             echo 'start new session to use changed shell'
          }
       }
