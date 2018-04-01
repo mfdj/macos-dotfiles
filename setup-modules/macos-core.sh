@@ -3,6 +3,7 @@
 require 'functions/input-helpers'
 require 'functions/plist-helpers'
 
+
 # Set ComputerName, HostName, LocalHostName
 # http://ilostmynotes.blogspot.com/2012/03/computername-vs-localhostname-vs.html
 echo 'Ensuring ComputerName, HostName, LocalHostName are set'
@@ -24,6 +25,11 @@ autohide_dock=$(defaults read com.apple.dock autohide 2> /dev/null)
    && killall Dock
 
 
+echo 'Ensuring iTunes Half Star'
+itunes_half_star=$(defaults read com.apple.iTunes allow-half-stars 2> /dev/null)
+[[ $itunes_half_star != 1 ]] && defaults write com.apple.iTunes allow-half-stars -bool TRUE
+
+
 echo 'Ensuring mission-control symbolichotkeys are disabled (requires restart)'
 for n in {32..37} {60..63}; do
    plist_disable ~/Library/Preferences/com.apple.symbolichotkeys.plist \
@@ -34,10 +40,11 @@ defaults read com.apple.symbolichotkeys > /dev/null # http://stackoverflow.com/a
 
 echo 'Ensuring Terminal secure-keyboard-entry and option-as-meta'
 # NOTE: security.stackexchange.com/questions/47749/how-secure-is-secure-keyboard-entry-in-mac-os-xs-terminal
-defaults write com.apple.Terminal SecureKeyboardEntry -bool true
-defaults write com.apple.Terminal useOptionAsMetaKey -bool true
-defaults read com.apple.Terminal > /dev/null
-
+[ "$(defaults read com.apple.Terminal SecureKeyboardEntry)" != 1 ] && {
+   defaults write com.apple.Terminal SecureKeyboardEntry -bool true
+   defaults write com.apple.Terminal useOptionAsMetaKey -bool true
+   defaults read com.apple.Terminal > /dev/null
+}
 
 # use Homebrew installed bash (maybe zsh/fish someday)
 preferred_shell=/usr/local/bin/bash

@@ -19,7 +19,6 @@ brew_ensure  libsodium # crypto
 brew_ensure  mongodb
 brew_ensure  multitail # Tail multiple files in one terminal simultaneously
 brew_ensure  pdfgrep
-brew_ensure  phantomjs
 brew_ensure  pv # monitor data's progress through a pipe
 brew_ensure  pyenv
 brew_ensure  qt5 # For webkit things like capybara
