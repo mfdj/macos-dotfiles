@@ -20,6 +20,7 @@ brew_ensure  hub
 brew_ensure  jq
 brew_ensure  md5sha1sum
 brew_ensure  pidof
+brew_ensure  pstree
 brew_ensure  ripgrep # `rg`
 brew_ensure  rbenv
 brew_ensure  rbenv-vars
