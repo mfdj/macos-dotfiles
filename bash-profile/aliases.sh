@@ -45,6 +45,7 @@ alias vnight='VBoxManage list runningvms | cut -d" " -f1 | xargs -I X VBoxManage
 alias st='open -a SourceTree .'
 alias md='open -a Macdown'
 alias pstorm='open -a PhpStorm'
+alias mine='open -a RubyMine'
 
 # misc
 alias cofp='coffee --print'
