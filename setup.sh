@@ -54,7 +54,7 @@ rundot() {
    if [[ $DO_QUIETLY ]]; then
       "$DOTFILES_DIR/$1.sh" > /dev/null
    elif [[ $1 =~ setup-modules ]]; then
-     echo -e "\n============ ${1##*setup-modules/} ============"
+      echo -e "\n============ ${1##*setup-modules/} ============"
 
       if [[ $DO_TIME ]]; then
          time "$DOTFILES_DIR/$1.sh"

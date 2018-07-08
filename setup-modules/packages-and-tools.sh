@@ -66,7 +66,9 @@ _install_shellcheck_from_source() {
    }
 }
 
-if [[ ! -x ~/.cabal/bin/shellcheck ]]; then
+if true; then # short-circuit custom shellcheck build for now as it's out of date
+  brew_ensure shellcheck
+elif [[ ! -x ~/.cabal/bin/shellcheck ]]; then
    require 'functions/brew-helpers'
    brew_ensure cabal-install
    mkdir -p ~/from-source
