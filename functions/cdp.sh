@@ -25,9 +25,10 @@ cdp() {
          echo "CDP_ALIASES set '$CDP_ALIASES' and valid"
       else
          echo "CDP_ALIASES set '$CDP_ALIASES' which is not a directory. Run: cdp --init"
+         return 1
       fi
 
-      return
+      return 0
    fi
 
    # init option
@@ -46,7 +47,7 @@ cdp() {
    # if CDP_ALIASES is not a directory then bail
    [[ -d $CDP_ALIASES ]] || {
       echo "'$CDP_ALIASES' not pointing at a directory."
-      return
+      return 1
    }
 
    # add option
@@ -59,7 +60,7 @@ cdp() {
       [[ $addpath == "$CDP_ALIASES" ]] && return
       [[ $2 ]] && aliasname=$2 || aliasname=${addpath##*/}
       (
-         cd "$CDP_ALIASES" || return
+         cd "$CDP_ALIASES" || return 1
          rm "$aliasname" 2> /dev/null
          ln -s "$addpath" "$aliasname"
       )
@@ -116,8 +117,9 @@ cdp() {
    [[ $alias_match ]] || alias_match=$(find "$CDP_ALIASES" -iname "*$1*")
 
    if [[ $alias_match ]]; then
-      cd "$(readlink "$alias_match")"
+      cd "$(readlink "$alias_match")" || return 1
    else
       echo "could not match '$1' to an alias"
+      return 1
    fi
 }
