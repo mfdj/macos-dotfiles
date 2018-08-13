@@ -37,7 +37,7 @@ else
 fi
 
 # if editor is empty use nano; otherwise git, et al. default to vim
-[[ $EDITOR ]] || EDITOR=nano
+[[ $EDITOR ]] || export EDITOR=nano
 
 # phpbrew
 #source /Users/markfox/.phpbrew/bashrc
