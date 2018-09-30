@@ -60,8 +60,12 @@ rsync --recursive --times --perms --links --safe-links \
    $dry_run --stats $progress \
    /Volumes/Music/iTunesLibrary/* "$backup_path/"
 
+rsync_exit_code=$?
+
 [[ $dry_run ]] && {
    echo
    echo -e "\033[1;33mDry-run finsihed. To get wet run '$0 $original_args go'\033[0m"
    echo
 }
+
+exit $rsync_exit_code

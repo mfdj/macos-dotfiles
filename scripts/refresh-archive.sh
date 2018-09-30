@@ -106,13 +106,32 @@ do_sync() {
    echo
 }
 
-## standard macOS
+## music
 destination "$backup_base"
-do_sync     ~/{Desktop,Documents,Downloads,Music,Pictures}
+do_sync ~/Music
+dotfiles run backup-music "$1" "$2" || {
+   echo && echo -e "\033[1;33mWas not able to backup-music\033[0m"
+   #echo -e "\033[1;07m  \033[0m\033[1;35m ${source} \033[0m"
+}
 
 ## personal
 destination "$backup_base"
 do_sync     ~/{.ssh,clients,FontExplorerX,projects,optical-archive}
+
+## 1Password
+onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backups.*')
+[[ $onepass_backups ]] && {
+   destination "$backup_base"/1PasswordBackups
+   do_sync "$onepass_backups"
+}
+
+## Knox
+destination "$backup_base"
+do_sync     ~/Knox
+
+## standard macOS
+destination "$backup_base"
+do_sync     ~/{Desktop,Documents,Downloads,Pictures}
 
 ## dotfiles-local
 destination "$backup_base"/dotfiles-local
@@ -125,17 +144,6 @@ do_sync     ~/Library/Containers/com.apple.BKAgentService/Data/Documents/iBooks/
 ## iTunes device backups
 destination "$backup_base"/LibraryAppSuport_DeviceBackups
 do_sync     ~/Library/Application\ Support/MobileSync/Backup/
-
-## 1Password
-onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backups.*')
-[[ $onepass_backups ]] && {
-   destination "$backup_base"/1PasswordBackups
-   do_sync "$onepass_backups"
-}
-
-## Knox
-destination "$backup_base"
-do_sync     ~/Knox
 
 ## beaTunes
 destination "$backup_base"/LibraryApplicationSupport_beaTunes

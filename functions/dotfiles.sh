@@ -55,12 +55,22 @@ commands:
    # -=-=-=- run -=-=-=-
 
    if [[ $cmd == run ]]; then
-      local script_name=${1%.sh}
+      local script_name
+      local script_path
+
+      script_name="${1%.sh}"
       shift
-      local script_path=$DOTFILES_DIR/scripts/${script_name}.sh
+      script_path="$DOTFILES_DIR/scripts/${script_name}.sh"
+
+      [[ -z $script_name ]] && {
+         echo 'missing script-name argument - valid script-names:'
+         dotfiles scripts
+         return
+      }
 
       [[ -f $script_path ]] || {
-         echo "could not find ${script_name}.sh in ${DOTFILES_DIR}/scripts"
+         echo "could not find ${script_name}.sh in ${DOTFILES_DIR}/scripts - valid script-names:"
+         dotfiles scripts
          return
       }
 
@@ -69,6 +79,7 @@ commands:
          return
       }
 
+      export -f dotfiles
       $script_path "$@"
 
       return
