@@ -10,6 +10,8 @@ require 'functions/append-source'
 # - bashrc should point at bash_profile
 
 echo 'Pointing .bashrc at .bash_profile'
+# this shellcheck is a false positive - we're echoing a dollar sign, not evaluting here
+# shellcheck disable=SC2016
 echo '[[ -n $PS1 ]] && source ~/.bash_profile' > ~/.bashrc
 
 # - clobber bash_profile so we can append to it

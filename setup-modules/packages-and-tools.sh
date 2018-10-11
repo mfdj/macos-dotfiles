@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 require 'functions/ensure-symlink'
+require 'functions/brew-helpers'
 
 # + + + + + + + + + + + + + + + +
 # +  XCode Command Line Tools   +
