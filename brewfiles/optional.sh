@@ -2,14 +2,9 @@
 
 require 'functions/brew-helpers'
 
-brew_ensure  blueutil # control bluetooth
-brew_ensure  ccat # cat with syntax highlighting for popular programming languages
-brew_ensure  casperjs casperjs --devel
 brew_ensure  direnv # Load/unload environment variables based on $PWD
 brew_ensure  figlet
-brew_ensure  grc # Generic Colouriser `grc ps aux`
 brew_ensure  gnupg2 # http://superuser.com/questions/z55246/are-gnupg-1-and-gnupg-2-compatible-with-each-other
-brew_ensure  htop-osx
 brew_ensure  hhvm hhvm/hhvm/hhvm
 brew_ensure  icu4c # for intl
 brew_ensure  gawk # GNU awk
@@ -17,7 +12,7 @@ brew_ensure  goaccess # Log analyzer and interactive viewer for the Apache Webse
 brew_ensure  imagemagick
 brew_ensure  libsodium # crypto
 brew_ensure  mongodb
-brew_ensure  multitail # Tail multiple files in one terminal simultaneously
+brew_ensure  mysql
 brew_ensure  pdfgrep
 brew_ensure  pv # monitor data's progress through a pipe
 brew_ensure  pyenv

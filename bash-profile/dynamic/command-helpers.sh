@@ -32,6 +32,10 @@ command -v pyenv > /dev/null && {
 }
 
 ### rbenv
+[[ -d ~/.rbenv.d ]] && {
+   echo "PATH=${HOME}/.rbenv.d/bin:\${PATH}"
+}
+
 command -v rbenv > /dev/null && {
    if [[ $ENV_HELPER_STATIC ]]; then
       echo "$(rbenv init -)"
