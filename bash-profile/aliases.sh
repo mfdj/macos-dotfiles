@@ -48,8 +48,6 @@ alias pstorm='open -a PhpStorm'
 alias mine='open -a RubyMine'
 
 # misc
-alias cofp='coffee --print'
-# cofpr see: dynamic/aliases
 alias speed='wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip'
 alias wanip="curl -qs http://ifconfig.co"
 alias dot='dotfiles'
