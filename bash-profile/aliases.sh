@@ -11,6 +11,9 @@ alias egrep='command egrep --color'
 alias grep='command grep --color'
 alias sshp='ssh -o PubkeyAuthentication=no'
 
+# NOTE: can't alias cd like this because avn chokes
+#alias cd='cd -P' # follow symlinks https://unix.stackexchange.com/a/55715/29364
+
 # ls
 alias ll='ls -lF'
 alias la='ls -laF'
