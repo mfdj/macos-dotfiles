@@ -47,6 +47,10 @@ commands:
       # run setup-script with arguments
       $DOTFILES_DIR/setup.sh "$@"
 
+      # TODO: add comparison between runs (to highlight differences)
+      # shellcheck disable=SC1090
+      time source ~/.bash_profile
+
       [[ $do_reload ]] && dotfiles reload
 
       return
@@ -88,12 +92,9 @@ commands:
    # -=-=-=- reload -=-=-=-
 
    if [[ $cmd == reload ]]; then
-      echo "============ reloading bash_profile ============"
-
+      echo "============ reloading shell ============"
       # shellcheck disable=SC1090
-      time source ~/.bash_profile
-
-      return
+      exec /usr/bin/env bash -l
    fi
 
    # -=-=-=- edit -=-=-=-
