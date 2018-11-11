@@ -19,6 +19,7 @@ brew_ensure  blueutil # control bluetooth
 brew_ensure  colordiff
 brew_ensure  ccat # cat with syntax highlighting for popular programming languages
 brew_ensure  diff-so-fancy
+brew_ensure  fpp # Facebook Path Picker
 brew_ensure  grc # Generic Colouriser `grc ps aux`
 brew_ensure  hub
 brew_ensure  htop-osx
