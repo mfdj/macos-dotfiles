@@ -105,15 +105,3 @@ elif [[ $DO_UPDATES ]]; then
 else
    composer --version
 fi
-
-# + + + + + + + + + + + + + + + + + + +
-# +  n (simple node version manager)  +
-# +  github.com/tj/n                  +
-# + + + + + + + + + + + + + + + + + + +
-
-echo Ensuring N
-if [[ ! -d ~/.n ]]; then
-   git clone https://github.com/tj/n ~/.n
-elif [[ $DO_UPDATES ]]; then
-   { cd ~/.n && git pull; }
-fi

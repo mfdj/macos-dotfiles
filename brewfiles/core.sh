@@ -26,6 +26,7 @@ brew_ensure  htop-osx
 brew_ensure  jq
 brew_ensure  md5sha1sum
 brew_ensure  multitail # Tail multiple files in one terminal simultaneously
+brew_ensure  nodenv
 brew_ensure  php
 brew_ensure  pidof
 brew_ensure  pstree
