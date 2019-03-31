@@ -9,9 +9,10 @@ append_source() {
    [[ $3 == --exectue ]] && execute=true
 
    # wrap paths in an array
-   [[ -f $source_path ]] && paths=($source_path)
-   [[ -d $source_path ]] && paths=($source_path/*)
+   [[ -f $source_path ]] && paths=("$source_path")
+   [[ -d $source_path ]] && paths=("$source_path"/*)
 
+   # shellcheck disable=SC2128
    [[ $paths ]] || {
       echo "did not find anything at '$source_path'?"
       return 1
@@ -20,8 +21,8 @@ append_source() {
    for file in "${paths[@]}"; do
       if [[ $execute ]]; then
          if [[ -f $file && -x $file ]]; then
-            # shellcheck disable=SC1090
             echo "# execute '$file'" >> "$append_to"
+            # shellcheck disable=SC1090
             source $file >> "$append_to"
          else
             echo "append-source - '$file' is not executable?"
