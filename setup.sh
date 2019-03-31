@@ -72,12 +72,12 @@ rundot setup-modules/packages-and-tools
 rundot setup-modules/application-configuration
 rundot setup-modules/macos-core
 [[ $DO_OPTIONAL ]] && rundot setup-modules/macos-optional
-rundot setup-modules/build-bash-profile
+rundot setup-modules/build-bash-configuration
 
 [[ $DO_QUIETLY ]] || {
    echo
    echo '============ Finished ============'
    echo
-   echo Rebuilt ~/.bash_profile
+   echo Rebuilt ~/.bashrc
    echo
 }

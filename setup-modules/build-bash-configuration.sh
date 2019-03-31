@@ -9,35 +9,35 @@ require 'functions/append-source'
 
 # - bashrc should point at bash_profile
 
-echo 'Pointing .bashrc at .bash_profile'
+echo 'Pointing .bash_profile at .bashrc'
 # this shellcheck is a false positive - we're echoing a dollar sign, not evaluting here
 # shellcheck disable=SC2016
-echo '[[ -n $PS1 ]] && source ~/.bash_profile' > ~/.bashrc
+echo '[[ -n $PS1 ]] && source ~/.bashrc' > ~/.bash_profile
 
 # - clobber bash_profile so we can append to it
 
-echo 'Building .bash_profile'
-echo "# bash_profile built: $(date '+%Y-%m-%d %T')" > ~/.bash_profile
+echo 'Building .bashrc'
+echo "# $USER bashrc build started $(date '+%Y-%m-%d %T')" > ~/.bashrc
 
 # - reset PATH variable so re-sourcing doesn't gunk up the profile
 
 # wanted to generate DEFAULT_PATH dynamically, first attempt did not work: DEFAULT_PATH=$(bash --noprofile --norc -c 'echo $PATH')
 DEFAULT_PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-echo "PATH=$DEFAULT_PATH" >> ~/.bash_profile
+echo "PATH=$DEFAULT_PATH" >> ~/.bashrc
 
-# - append sources to bash_profile
+# - append sources to bashrc
 
 # bind DOTFILES_DIR to this pacakge
-echo "export DOTFILES_DIR=$DOTFILES_DIR" >> ~/.bash_profile
+echo "export DOTFILES_DIR=$DOTFILES_DIR" >> ~/.bashrc
 
 # ----------- STATIC --------------
 #     (simply appends files)
 
 # startup-cost: 0m0.025s
-append_source  "$DOTFILES_DIR/bash-profile" ~/.bash_profile
+append_source  "$DOTFILES_DIR/bash-configuration" ~/.bashrc
 
 # startup-cost: 0m0.004s
-append_source  "$DOTFILES_DIR/functions"    ~/.bash_profile
+append_source  "$DOTFILES_DIR/functions" ~/.bashrc
 
 # ----------- DYNAMIC --------------
 # (exectue's each file as a script)
@@ -45,15 +45,22 @@ append_source  "$DOTFILES_DIR/functions"    ~/.bash_profile
 # NOTE: static elements sourced in this context so dynamic elements are aware of the current environment
 # shellcheck disable=SC1090
 {
-   source ~/.bash_profile
-   [ -f "$DOTFILES_DIR/local/bash_profile.sh" ] && source "$DOTFILES_DIR/local/bash_profile.sh"
+   source ~/.bashrc
+   [ -f "$DOTFILES_DIR/local/bashrc.sh" ] && source "$DOTFILES_DIR/local/bashrc.sh"
 }
 
 # startup-cost: 0m0.193s
-append_source "$DOTFILES_DIR/bash-profile/dynamic" ~/.bash_profile --exectue
+append_source "$DOTFILES_DIR/bash-configuration/dynamic" ~/.bashrc --exectue
 
 # ----------- LOCAL-STATIC --------------
 #     (append last for full control)
 
 # startup-cost: 0m0.001s
-[ -f "$DOTFILES_DIR/local/bash_profile.sh" ] && append_source "$DOTFILES_DIR/local/bash_profile.sh" ~/.bash_profile
+[ -f "$DOTFILES_DIR/local/bashrc.sh" ] && append_source "$DOTFILES_DIR/local/bashrc.sh" ~/.baschrc
+
+hash_value=$(shasum ~/.bashrc | awk '{print $1}')
+echo "# $USER bashrc built $(date '+%Y-%m-%d %T')" >> ~/.bashrc
+echo "# with shasum: ${hash_value}" >> ~/.bashrc
+echo "# ~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~" >> ~/.bashrc
+echo "# 3rd party appends below 👇" >> ~/.bashrc
+echo "" >> ~/.bashrc
