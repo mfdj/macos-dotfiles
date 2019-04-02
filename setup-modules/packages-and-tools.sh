@@ -53,7 +53,7 @@ brewfile core
 
 _install_shellcheck_from_source() {
    cd ~/from-source/shellcheck && {
-      git checkout bats &> /dev/null && {
+      git checkout master &> /dev/null && {
          git pull &> /dev/null
          cabal update
          cabal install
@@ -62,15 +62,11 @@ _install_shellcheck_from_source() {
 
    [[ -x ~/.cabal/bin/shellcheck ]] || {
       echo "Warning: failed to install shellcheck from source"
-      require 'functions/brew-helpers'
       brew_ensure shellcheck
    }
 }
 
-if true; then # short-circuit custom shellcheck build for now as it's out of date
-  brew_ensure shellcheck
-elif [[ ! -x ~/.cabal/bin/shellcheck ]]; then
-   require 'functions/brew-helpers'
+if [[ ! -x ~/.cabal/bin/shellcheck ]]; then
    brew_ensure cabal-install
    mkdir -p ~/from-source
    [[ -d ~/from-source/shellcheck ]] || git clone git@github.com:koalaman/shellcheck.git ~/from-source/shellcheck
