@@ -3,6 +3,18 @@
 require 'functions/ensure-symlink'
 require 'functions/path-helpers'
 
+# + + + + + + + +
+# +  readline   +
+# + + + + + + + +
+
+# NOTE: better to use .inputrc than use `bind "set …"` in bash-configuration/environment
+# because it avoid issues when sourcing the intermediate build of .bashrc before
+# running the dynamic bits
+echo 'Ensuring readline .inputrc symlinked'
+ensure_symlink \
+   "$DOTFILES_DIR/configs/inputrc" \
+   ~/.inputrc
+
 # + + + + +
 # +  Git  +
 # + + + + +

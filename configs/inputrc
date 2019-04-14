@@ -1,0 +1,21 @@
+# + + + + + + + + + + + + + + + +
+# +   readline configuration    +
+# + + + + + + + + + + + + + + + +
+
+# `set bell-style visible` doesn't do much in Terminal, seems to disable
+# audible and visual bell? Better option is to configure Terminal directly:
+#  Terminal > Preferences > Profiles > Advanced
+#    • disable "Audible bell"
+#    • enable "Visual bell" (probably is enabled by default)
+#    • disable "Only when sound is muted"
+
+# Perform filename <Tab> completion in a case-insensitive fashion
+set completion-ignore-case on
+
+# Display all possible matches for an ambiguous pattern at the first <Tab> press
+# instead of at the second
+set show-all-if-ambiguous on
+
+# When symlink points to a directory treat like a directory during <Tab> completion
+# (rather than require second <Tab> to add trailing slash and "enter" the directory)
+set mark-symlinked-directories on
