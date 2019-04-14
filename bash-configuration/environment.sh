@@ -51,3 +51,15 @@ fi
 if [ -f /usr/local/share/bash-completion/bash_completion ]; then
   . /usr/local/share/bash-completion/bash_completion
 fi
+
+# + + + + +
+# +  cd   +
+# + + + + +
+
+# change into directories without needing cd (NOTE: what are the implications for subshells)
+shopt -s autocd
+
+# fix basic typos when cd'ing
+shopt -s cdspell
+
+# `shopt -s dirspell` doesn't seem to do anything
