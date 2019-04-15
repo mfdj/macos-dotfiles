@@ -19,3 +19,9 @@ set show-all-if-ambiguous on
 # When symlink points to a directory treat like a directory during <Tab> completion
 # (rather than require second <Tab> to add trailing slash and "enter" the directory)
 set mark-symlinked-directories on
+
+# when using ⬆️ ⬇️ to search through history use the current text to do an anchored
+# search; e.g. type "cd" and hit ⬆️ ⬇️ and only items which begin with "cd" will
+# be shown
+"\e[A": history-search-backward
+"\e[B": history-search-forward
