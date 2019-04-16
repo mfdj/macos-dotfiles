@@ -20,7 +20,7 @@ PATH=$PATH:~/.composer/vendor/bin
 # which feels stupid/risky
 
 # brew doctor recommends
-PATH=/usr/local/bin:/usr/local/sbin:$PATH
+PATH=/usr/local/sbin:$PATH
 
 # cdp function config
 # shellcheck disable=SC2034
