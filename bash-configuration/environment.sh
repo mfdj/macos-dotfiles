@@ -63,3 +63,37 @@ shopt -s autocd
 shopt -s cdspell
 
 # `shopt -s dirspell` doesn't seem to do anything
+
+# + + + + + + +
+# +  history  +
+# + + + + + + +
+
+# https://mrzool.cc/writing/sensible-bash/
+# see also:
+# • https://unix.stackexchange.com/questions/145250/where-is-bashs-history-stored
+# • https://unix.stackexchange.com/questions/18212/bash-history-ignoredups-and-erasedups-setting-conflict-with-common-history
+
+# When closing a session append to the history file, don't overwrite it
+shopt -s histappend
+
+# Save multi-line commands as one command
+shopt -s cmdhist
+
+# Appened each line to history file after it's issued: new sessions will read the history file but concurrent sessions won't see each others commands
+PROMPT_COMMAND="$PROMPT_COMMAND; history -a"
+
+# Huge history. Doesn't appear to slow things down, so why not?
+HISTSIZE=500000
+HISTFILESIZE=100000
+
+# • ignoredups - ignore duplicate commands; when used w/o erasedups will just ignore duplicates which immediately precede each other
+# • erasedups - remove the last duplicate entry; only works if ignoredups is present; won't retroactively de-deupe the entire history, just the most recent duplicate
+# • ignorespace - ignore commands which start with a space
+# NOTE: "ignoreboth" is equivalent to "ignoredups:ignorespace" but I dislike the semantic ambiguity
+HISTCONTROL="ignoredups:erasedups:ignorespace"
+
+# Don't record some commands (colon seperated list)
+export HISTIGNORE="history"
+
+# Add a timestamp to each history item
+HISTTIMEFORMAT='%F %T '
