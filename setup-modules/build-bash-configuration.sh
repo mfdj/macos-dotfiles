@@ -22,10 +22,7 @@ echo 'Building .bashrc'
 echo "# $USER bashrc build started $(date '+%Y-%m-%d %T')" > "$CONFIG_TARGET"
 
 # - reset PATH variable so re-sourcing doesn't gunk up the profile
-
-# wanted to generate DEFAULT_PATH dynamically, first attempt did not work: DEFAULT_PATH=$(bash --noprofile --norc -c 'echo $PATH')
-DEFAULT_PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-echo "PATH=$DEFAULT_PATH" >> "$CONFIG_TARGET"
+PATH='' /usr/libexec/path_helper -s >> "$CONFIG_TARGET"
 
 # - append sources to bashrc
 
