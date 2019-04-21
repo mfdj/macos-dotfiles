@@ -10,7 +10,7 @@ dotfiles <command> <options>
 commands:
   help                  this screen
   setup <options>       rebuild dotfiles (using setup script)
-  reload                aka 'time source ~/.bash_profile'
+  reload                restart the shell session (aka reload ~/.bash_profile)
   edit                  change to dotfiles and open them in '$EDITOR'
   scripts               list scripts to run
   run <name> <options>  run a script
