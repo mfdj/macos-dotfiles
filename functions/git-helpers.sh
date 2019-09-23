@@ -99,6 +99,7 @@ gbg() {
 gsrb() {
    local branch=$1
    local selection
+   local stashed
 
    git rev-parse --verify $branch &> /dev/null || {
       echo -e "\nbranches '$1':\n"
@@ -110,7 +111,12 @@ gsrb() {
       branch=$(echo "$list" | sed "${selection}q;d") || echo return
    }
 
-   git stash
+   # git status uses "??" at the start of the line to indicate an untracked file
+   if [[ $(git status --porcelain | grep -v '^??') != '' ]]; then
+      stashed=1
+      git stash
+   fi
+
    git checkout "$branch" && {
       git pull
       git checkout -
@@ -120,7 +126,8 @@ gsrb() {
       read -r noop
       git rebase "$branch"
    }
-   git stash pop
+
+   [[ $stashed ]] && git stash pop
 }
 
 # aka: git-diff-fancy
