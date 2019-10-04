@@ -68,7 +68,7 @@ _install_shellcheck_from_source() {
    }
 }
 
-if [[ ! -x ~/.cabal/bin/shellcheck ]]; then
+if [[ $(command -v shellcheck) != /usr/local/bin/shellcheck ]] && [[ ! -x ~/.cabal/bin/shellcheck ]]; then
    brew_ensure cabal-install
    mkdir -p ~/from-source
    [[ -d ~/from-source/shellcheck ]] || git clone git@github.com:koalaman/shellcheck.git ~/from-source/shellcheck
