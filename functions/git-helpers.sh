@@ -142,3 +142,18 @@ gdf() {
 git_current_branch() {
    git symbolic-ref HEAD 2> /dev/null | cut -c 12-
 }
+
+git_files_deleted_by() {
+   local ref=$1 yeahokgood
+   yeahokgood=$(git show "$ref" 2>&1)
+
+   if (($? == 0)); then
+      git show --no-color "$ref" | \
+         grep 'deleted file' -A2 | \
+         grep '\-\-\- a' | \
+         awk '{print $2}' | \
+         cut -c 3-
+   else
+      echo "$yeahokgood"
+   fi
+}
