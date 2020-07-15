@@ -80,12 +80,12 @@ gpu() {
    # shellcheck disable=SC2063
    local_name=$(git branch | grep '*' | tr -d '* ')
 
-   git push "$remote" --set-upstream $local_name
+   git push "$remote" --set-upstream "$local_name"
    remote_url=$(git remote -v | grep "$remote" | grep push | awk '{print $2}')
    [[ $remote_url =~ git@github.com ]] && {
       github_repo=${remote_url#git@github.com:}
       github_repo=${github_repo%.git}
-      open https://github.com/${github_repo}/compare/${local_name}?expand=1
+      open "https://github.com/${github_repo}/compare/${local_name}?expand=1"
    }
 }
 
@@ -102,7 +102,7 @@ gsrb() {
    local selection
    local stashed
 
-   git rev-parse --verify $branch &> /dev/null || {
+   git rev-parse --verify "$branch" &> /dev/null || {
       echo -e "\nbranches '$1':\n"
       [[ -z $branch ]] && branch='.*'
       list=$(git branch -r | cut -f 2- -d / | grep -i "$branch")
@@ -127,7 +127,7 @@ gsrb() {
          git pull
       fi
       git checkout -
-      git --no-pager diff $branch --stat
+      git --no-pager diff "$branch" --stat
       echo -en "\n [enter to continue]"
       # shellcheck disable=SC2034
       read -r noop
@@ -151,16 +151,16 @@ git_current_branch() {
 }
 
 git_files_deleted_by() {
-   local ref=$1 yeahokgood
-   yeahokgood=$(git show "$ref" 2>&1)
+   local ref=$1
+   local ref_show
 
-   if (($? == 0)); then
+   if ref_show=$(git show "$ref" 2>&1); then
       git show --no-color "$ref" | \
          grep 'deleted file' -A2 | \
          grep '\-\-\- a' | \
          awk '{print $2}' | \
          cut -c 3-
    else
-      echo "$yeahokgood"
+      echo "$ref_show"
    fi
 }
