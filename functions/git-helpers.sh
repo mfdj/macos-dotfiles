@@ -98,6 +98,7 @@ gbg() {
 # aka: git-stash-rebase-from-branch
 gsrb() {
    local branch=$1
+   local origin_branch
    local selection
    local stashed
 
@@ -117,8 +118,14 @@ gsrb() {
       git stash
    fi
 
+   git fetch
    git checkout "$branch" && {
-      git pull
+      origin_branch="origin/$(git_current_branch)"
+      if git branch -r | grep "^  ${origin_branch}\$"; then
+         git reset --hard "$origin_branch"
+      else
+         git pull
+      fi
       git checkout -
       git --no-pager diff $branch --stat
       echo -en "\n [enter to continue]"
