@@ -8,6 +8,10 @@ alias git='hub'
 alias gitun='git reset HEAD~1'
 alias ga='git add -A'
 alias gb='git branch'
+# fetch + prune
+alias gf='git fetch --prune'
+# fetch + prune and hard-reset to upstream
+alias gfr='git fetch --prune && git reset --hard origin/$(git_current_branch)'
 # gbg see: functions/git-helpers.sh
 alias gcamend='git commit --amend --no-edit'
 alias gcm='git commit -m'
