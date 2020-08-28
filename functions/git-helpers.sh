@@ -122,7 +122,7 @@ gsrb() {
       git stash
    fi
 
-   git fetch
+   [[ $2 == fetch ]] && git fetch --prune
    git checkout "$rebase_from" && {
       origin_branch="origin/$(git_current_branch)"
       if git branch -r | grep "^  ${origin_branch}\$"; then
