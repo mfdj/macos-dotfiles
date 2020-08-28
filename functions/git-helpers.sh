@@ -95,6 +95,10 @@ gbg() {
    { git branch; git branch -r; } | grep -i "$pattern"
 }
 
+gchr() {
+   git checkout -b "rebased/$(git_current_branch)" && gsrb "$@"
+}
+
 # aka: git-stash-rebase-from-branch
 gsrb() {
    local branch=$1
