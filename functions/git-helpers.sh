@@ -101,15 +101,15 @@ gchr() {
 
 # aka: git-stash-rebase-from-branch
 gsrb() {
-   local branch=$1
+   local rebase_from=$1
    local origin_branch
    local selection
    local stashed
 
-   git rev-parse --verify "$branch" &> /dev/null || {
-      echo -e "\nbranches '$1':\n"
+   git rev-parse --verify "$rebase_from" &> /dev/null || {
+      echo -e "\nbranches '$rebase_from':\n"
       [[ -z $branch ]] && branch='.*'
-      list=$(git branch -r | cut -f 2- -d / | grep -i "$branch")
+      list=$(git branch -r | cut -f 2- -d / | grep -i "$rebase_from")
       echo "$list" | nl -ba -s '. ' -w 4
       echo -en "\n select: "
       read -r selection
@@ -123,7 +123,7 @@ gsrb() {
    fi
 
    git fetch
-   git checkout "$branch" && {
+   git checkout "$rebase_from" && {
       origin_branch="origin/$(git_current_branch)"
       if git branch -r | grep "^  ${origin_branch}\$"; then
          git reset --hard "$origin_branch"
@@ -131,11 +131,11 @@ gsrb() {
          git pull
       fi
       git checkout -
-      git --no-pager diff "$branch" --stat
+      git --no-pager diff "$rebase_from" --stat
       echo -en "\n [enter to continue]"
       # shellcheck disable=SC2034
       read -r noop
-      git rebase "$branch"
+      git rebase "$rebase_from"
    }
 
    [[ $stashed ]] && git stash pop
