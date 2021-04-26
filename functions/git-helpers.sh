@@ -89,6 +89,11 @@ gpu() {
    }
 }
 
+# git branch with colorz
+gb() {
+   git branch
+}
+
 # aka: git-branch-grep
 gbg() {
    local pattern=${1:-'.*'}
