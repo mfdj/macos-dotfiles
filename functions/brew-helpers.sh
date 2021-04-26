@@ -24,10 +24,27 @@ brew_ensure_command() {
    fi
 }
 
-# TODO: try and make smarter?
+# install cask package if not found
 cask_ensure() {
-   brew cask install $1 2> /dev/null
-   echo -n " ✔ $1"
+   local package=$1
+
+   if ! ls -l1 "$(brew --prefix)/Caskroom/$package" &> /dev/null; then
+      brew install --cask "$package" && echo -n " ✔ $package"
+   else
+      echo -n " ✔ $package"
+   fi
+}
+
+# install package if directory not found
+cask_ensure_unless_directory() {
+   local package=$1
+   local dir=$2
+
+   if [[ -d $dir ]]; then
+      echo -n " ✔ $dir"
+   else
+      cask_ensure "$package"
+   fi
 }
 
 # brew cask cleanup removes installers but not *installed* versions
