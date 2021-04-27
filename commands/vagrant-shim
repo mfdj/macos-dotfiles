@@ -54,10 +54,16 @@ log() {
    return 0
 }
 
+warn_if_vagrant_server_url() {
+   # skip vagrant warning us about custom servers
+   [[ $VAGRANT_SERVER_URL ]] && log warn "VAGRANT_SERVER_URL detected - unsetting for $1 command"
+}
+
 ensure_vagrantfile() {
    if [[ -z $has_vagrantfile ]]; then
       log warn 'Vagrantfile missing, showing global-status'
-      command $vg_cmd global-status
+      warn_if_vagrant_server_url 'global-status'
+      VAGRANT_SERVER_URL='' command $vg_cmd global-status
       exit 1
    fi
 }
@@ -66,7 +72,12 @@ ensure_vagrantfile() {
 run_if_vagrantfile() {
    log debug "extending '$1' ($*)"
    ensure_vagrantfile
-   command $vg_cmd "$@"
+   if [[ $1 == up ]]; then
+      command $vg_cmd "$@"
+   else
+      warn_if_vagrant_server_url "$1"
+      VAGRANT_SERVER_URL='' command $vg_cmd "$@"
+   fi
 }
 
 # specific to commands that effect ssh-config
@@ -135,9 +146,12 @@ check_ssh_config() {
 
 cache_ssh_config() {
    local out
+   local pre_out
    local err
+   local found_host
 
    out=$1
+   pre_out="${out}-pre"
    err="${out}-err"
 
    if [[ -z $out ]]; then
@@ -146,12 +160,32 @@ cache_ssh_config() {
    fi
 
    log 'updating cached ssh-config'
-   command vagrant ssh-config > "$out" 2> "$err"
+   command vagrant ssh-config > "$pre_out" 2> "$err"
    log debug "vagrant ssh-config exited with: $?"
 
    while read -r line; do
       log debug "ssh-config err: $line"
    done < "$err"
+
+   # reset out
+   echo "" > "$out"
+   found_host=false
+   # filter chatty vagrant messages
+   while read -r line; do
+      if [[ $found_host == false ]]; then
+         if [[ "$line" =~ 'Host ' ]]; then
+            found_host=true
+            log debug "ssh-config found Host pattern on line: $line"
+         fi
+      fi
+
+      if [[ $found_host == true ]]; then
+         log debug "ssh-config adding line: $line"
+         printf "%s\n" "$line" >> "$out"
+      else
+         log debug "ssh-config skipping line: $line"
+      fi
+   done < "$pre_out"
 
    check_ssh_config "$out" "$err"
 }
@@ -300,18 +334,21 @@ case $1 in
       run_then_cache_ssh_config "$@"
    ;;
 
-   stat*)
-      shift
-      run_if_vagrantfile status "$@"
+   stat*|prov*)
+      run_if_vagrantfile "$@"
    ;;
 
-   prov*)
-      shift
-      run_if_vagrantfile provision "$@"
+   box)
+      # skip unsetting VAGRANT_SERVER_URL
+      exec $vg_cmd "$@"
    ;;
 
    *)
       log debug "no extensions or new-commands found: passing '$*' to vagrant"
-      exec $vg_cmd "$@"
+      warn_if_vagrant_server_url "$1"
+      (
+         export VAGRANT_SERVER_URL=''
+         exec $vg_cmd "$@"
+      )
    ;;
 esac

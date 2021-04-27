@@ -16,3 +16,8 @@ ipinfo() {
 der2pem() {
    openssl x509 -inform der -outform pem -in $1 -out $1.pem
 }
+
+vagrant() {
+   vagrant-shim "$@"
+}
+export -f vagrant
