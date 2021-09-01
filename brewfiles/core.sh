@@ -15,6 +15,7 @@ brew_ensure  grep      # `ggrep` gnu-grep
 # not on macos
 brew_ensure  apache-httpd
 brew_ensure  bash-completion@2 # for bash 4.1+
+brew_ensure  bat
 brew_ensure  blueutil # control bluetooth
 brew_ensure  colordiff
 brew_ensure  ccat # cat with syntax highlighting for popular programming languages
