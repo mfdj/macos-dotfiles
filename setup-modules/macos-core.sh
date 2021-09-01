@@ -72,3 +72,13 @@ preferred_shell=/usr/local/bin/bash
 
    echo -n "$SHELL — " && $SHELL --version | head -n 1
 }
+
+# Ensure startup sounds is off:
+#  * should work for 2016-2020 laptops (before Big Sur) https://www.howtogeek.com/658569/how-to-turn-on-the-startup-chime-on-your-new-mac/
+#  * untested on Big Sur
+#  * Big Sur and later exposes this in Sys Prefs > Sounds https://support.apple.com/en-us/HT211996
+echo "Ensuring statup sounds is muted"
+startup_mute=$(nvram StartupMute | awk '{print $2}')
+if [[ ! $startup_mute == '%00' ]]; then
+   sudo nvram StartupMute=%00
+fi
