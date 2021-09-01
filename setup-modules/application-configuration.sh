@@ -50,19 +50,6 @@ git config --global core.editor nano
    fi
 }
 
-# + + + + + + + + + + + + + + + + +
-# +          MacDown              +
-# +    a nice markdown editor     +
-# +  github.com/uranusjr/macdown  +
-# + + + + + + + + + + + + + + + + +
-
-[[ -d ~/Library/Application\ Support/MacDown ]] && {
-   echo 'Ensuring MacDown styles'
-   ensure_symlink \
-      $DOTFILES_DIR/configs/markdown-css \
-      ~/Library/Application\ Support/MacDown/Styles
-}
-
 # + + + + + + + + + +
 # +  Atom Packages  +
 # +      apm        +
