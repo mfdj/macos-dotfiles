@@ -19,7 +19,7 @@ brew_ensure  bat
 brew_ensure  blueutil # control bluetooth
 brew_ensure  colordiff
 brew_ensure  diff-so-fancy
-brew_ensure  fpp # Facebook Path Picker
+brew_ensure  fpp
 brew_ensure  git-delta
 brew_ensure  grc # Generic Colouriser `grc ps aux`
 brew_ensure  hub
