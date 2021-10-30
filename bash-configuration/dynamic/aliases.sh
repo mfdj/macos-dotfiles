@@ -12,8 +12,8 @@ command -v grc > /dev/null && {
    echo alias tree=\'grc tree\'
 }
 
-command -v ccat > /dev/null && {
-   echo alias cat=\'ccat\'
+command -v bat > /dev/null && {
+   echo alias cat=\'bat\'
 }
 
 if ls --color &> /dev/null; then
