@@ -13,7 +13,7 @@ command -v grc > /dev/null && {
 }
 
 command -v bat > /dev/null && {
-   echo alias cat=\'bat\'
+   echo alias cat=\'bat --paging=never\'
 }
 
 if ls --color &> /dev/null; then
