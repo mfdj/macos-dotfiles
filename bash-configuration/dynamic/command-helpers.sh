@@ -39,4 +39,14 @@ command -v nodenv > /dev/null && {
    else
       echo 'eval "$(nodenv init -)"'
    fi
+
+   # enable prefix-retry hook for nodenv so it can install versions prefixed with `v` (as .nvmrc does)
+   echo export NODENV_PREFIX_RETRY=1
+
+   # attempt to locate homebrew installed, then from-source
+   if [[ -d $(brew --prefix node-build)/etc ]]; then
+      echo export NODENV_HOOK_PATH="$(brew --prefix node-build)/etc/:$NODENV_HOOK_PATH"
+   elif [[ -d $HOME/from-source/node-build/etc ]]; then
+      echo export NODENV_HOOK_PATH="$HOME/from-source/node-build/etc/:$NODENV_HOOK_PATH"
+   fi
 }
