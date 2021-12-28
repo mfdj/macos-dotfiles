@@ -44,9 +44,9 @@ command -v nodenv > /dev/null && {
    echo export NODENV_PREFIX_RETRY=1
 
    # attempt to locate homebrew installed, then from-source
-   if [[ -d $(brew --prefix node-build)/etc ]]; then
-      echo export NODENV_HOOK_PATH="$(brew --prefix node-build)/etc/:$NODENV_HOOK_PATH"
-   elif [[ -d $HOME/from-source/node-build/etc ]]; then
-      echo export NODENV_HOOK_PATH="$HOME/from-source/node-build/etc/:$NODENV_HOOK_PATH"
-   fi
+   [[ -d $(brew --prefix node-build)/etc ]] &&
+      echo export NODENV_HOOK_PATH="$(brew --prefix node-build)/etc/:\${NODENV_HOOK_PATH}"
+
+   [[ -d $HOME/from-source/node-build/etc ]] &&
+      echo export NODENV_HOOK_PATH="$HOME/from-source/node-build/etc/:\${NODENV_HOOK_PATH}"
 }
