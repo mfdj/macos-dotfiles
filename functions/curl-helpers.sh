@@ -13,7 +13,7 @@ curlpjson() {
       --data "$2" | grep '}' | python -mjson.tool
 }
 
-# prefers ripgrep, falls back to egrep, then grep
+# prefers ripgrep, falls back to then grep
 curlgrep() {
    local url
    local pattern
@@ -40,14 +40,10 @@ curlgrep() {
    # flags are not validated so the user must understand which
    # matching-engine is in use
 
-   # matching-engine precedence: ripgrep, egrep, grep
+   # matching-engine precedence: ripgrep, grep
    if command -v rg &> /dev/null; then
       rg "$pattern" "$resultPath" $*
-
-   elif command -v egrep &> /dev/null; then
-      egrep "$pattern" "$resultPath" $*
-
    else
-      grep "$pattern" "$resultPath" $*
+      grep -E "$pattern" "$resultPath" $*
    fi
 }
