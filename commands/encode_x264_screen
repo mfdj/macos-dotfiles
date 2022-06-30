@@ -1,0 +1,18 @@
+#!/bin/bash
+# Riffing on https://gist.github.com/TJC/57f9a21a8100814527a897b748791163#file-encode_x264_screen
+
+source "$DOTFILES_DIR/functions/brew-helpers.sh"
+brew_ensure ffmpeg
+
+if [[ -z "$1" ]]; then
+  echo "Usage: $0 Screen\\ Recording\\ at\\ 2021-01-21.mov"
+  exit 1
+fi
+basefilename=$(basename "$1" .mov)
+outputname="$basefilename.mp4"
+
+ffmpeg \
+  -i "$1" \
+  -tune animation \
+  -codec:v libx264 -preset medium -profile:v high -pix_fmt yuv420p -level 4.2 -crf 24 \
+  "$outputname"
