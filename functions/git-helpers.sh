@@ -80,7 +80,9 @@ gpu() {
    # shellcheck disable=SC2063
    local_name=$(git branch | grep '*' | tr -d '* ')
 
-   git push "$remote" --set-upstream "$local_name"
+   # --no-verify will skip githooks, because the main point of this helper is to simply get the remote upstream set,
+   # and to maybe start a draft PR: at this point I don't care about cleanliness checks
+   git push --no-verify "$remote" --set-upstream "$local_name"
    remote_url=$(git remote -v | grep "$remote" | grep push | awk '{print $2}')
    [[ $remote_url =~ git@github.com ]] && {
       github_repo=${remote_url#git@github.com:}
