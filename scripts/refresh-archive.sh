@@ -116,7 +116,7 @@ dotfiles run backup-music "$1" "$2" || {
 
 ## personal
 destination "$backup_base"
-do_sync     ~/{.ssh,clients,FontExplorerX,projects,optical-archive}
+do_sync     ~/{.ssh,clients,Code,FontExplorerX,projects,optical-archive}
 
 ## 1Password
 onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backups.*')
