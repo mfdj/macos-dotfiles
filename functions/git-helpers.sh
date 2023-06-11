@@ -1,5 +1,25 @@
 # shellcheck disable=SC2148
 
+# aka: git log
+gl() {
+   # git --no-pager log --date=iso --pretty=format:"%h   %an   %aD   %s"
+   # git --no-pager log --date=iso --pretty=format:"%h%x09%an%x09%ad%x09%s"
+   if [[ -z "$1" ]]; then
+      git --no-pager log --date=format:'%Y-%m-%d' --pretty=format:'%C(cyan)%h%Creset %C(bold)%ad%Creset%C(auto)%d %s'
+   else
+      git --no-pager log --date=format:'%Y-%m-%d' --pretty=format:'%C(cyan)%h%Creset %C(bold)%ad%Creset%C(auto)%d %s' -n "$1"
+   fi
+}
+
+# aka: git log summary (for pull request)
+gls() {
+   if [[ -z "$1" ]]; then
+      git --no-pager log --reverse --pretty=format:'%h %s'
+   else
+      git --no-pager log --reverse --pretty=format:'%h %s' -n "$1"
+   fi
+}
+
 # aka: git-checkout-branch-plus-fuzzy-matching
 gchb() {
    local branch selection branches remote
