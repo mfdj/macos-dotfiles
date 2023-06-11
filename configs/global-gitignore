@@ -1,6 +1,8 @@
 ~
-.vagrant
 .DS_Store
+.gem
 .idea
-dump.rdb
+.irbrc
 .Ulysses-Settings.plist
+.vagrant
+dump.rdb
