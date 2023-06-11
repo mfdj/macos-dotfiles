@@ -119,7 +119,7 @@ destination "$backup_base"
 do_sync     ~/{.ssh,clients,Code,FontExplorerX,projects,optical-archive}
 
 ## 1Password
-onepass_backups=$(find -E ~/Library -type d -iregex '.*(1|one)password.*/.*backups.*')
+onepass_backups=$(find -E ~/Library/Group\ Containers -type d -iregex '.*1password.*/.*backups.*' | head -n1)
 [[ $onepass_backups ]] && {
    destination "$backup_base"/1PasswordBackups
    do_sync "$onepass_backups"
