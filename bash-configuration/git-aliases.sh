@@ -4,7 +4,6 @@
 # +   git aliases   +
 # + + + + + + + + + +
 
-alias git='hub'
 alias gitun='git reset HEAD~1'
 alias ga='git add -A'
 # fetch + prune

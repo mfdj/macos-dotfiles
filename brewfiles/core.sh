@@ -22,7 +22,6 @@ brew_ensure  diff-so-fancy
 brew_ensure  fpp
 brew_ensure  git-delta
 brew_ensure  grc # Generic Colouriser `grc ps aux`
-brew_ensure  hub
 brew_ensure  htop-osx
 brew_ensure  jq
 brew_ensure  multitail # Tail multiple files in one terminal simultaneously
