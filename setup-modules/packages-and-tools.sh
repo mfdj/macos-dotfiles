@@ -49,38 +49,6 @@ brewfile core
 [[ $DO_UPDATES ]] && brew upgrade
 [[ $DO_CLEAN   ]] && { brew cleanup; brew cask cleanup; }
 
-# + + + + + + + + + + + + + + + + + + + +
-# + custom shellcheck with bats support +
-# + + + + + + + + + + + + + + + + + + + +
-
-_install_shellcheck_from_source() {
-   brew_ensure cabal-install
-   mkdir -p ~/from-source
-   [[ -d ~/from-source/shellcheck ]] || git clone git@github.com:koalaman/shellcheck.git ~/from-source/shellcheck
-
-   cd ~/from-source/shellcheck && {
-      git checkout master &> /dev/null && {
-         git pull &> /dev/null
-         cabal update
-         cabal install
-      }
-   }
-
-   [[ -x ~/.cabal/bin/shellcheck ]] || {
-      echo "Warning: failed to install shellcheck from source"
-      brew_ensure shellcheck
-   }
-}
-
-if [[ $(command -v shellcheck) != /usr/local/bin/shellcheck ]]; then
-   if [[ ! -x ~/.cabal/bin/shellcheck ]]; then
-      _install_shellcheck_from_source
-   elif [[ $DO_UPDATES ]]; then
-      # Why are cabal reinstalls “always dangerous”?
-      # https://stackoverflow.com/questions/19692644/why-are-cabal-reinstalls-always-dangerous
-      _install_shellcheck_from_source
-   fi
-fi
 
 # + + + + + + + + + + + + + + + +
 # +         Composer            +

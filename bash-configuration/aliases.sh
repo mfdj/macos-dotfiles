@@ -31,8 +31,6 @@ alias sf='[[ -f app/console ]] && app/console || bin/console'
 # NOTE: conventional pecl-installed extension path (homebrew-php does not use this path)
 alias phpext="ls -l1 \$(php -i | grep ^extension_dir | sed 's/.* => //')"
 alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"
-alias mage='magento'
-# magerun see: functions/almost-aliases
 
 # vagrant + virtualbox
 # vagrant see: commands/vagrant-shim + almost-aliases.sh

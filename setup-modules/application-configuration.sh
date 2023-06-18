@@ -50,19 +50,6 @@ git config --global core.editor nano
    fi
 }
 
-# + + + + + + + + + +
-# +  Atom Packages  +
-# +      apm        +
-# + + + + + + + + + +
-
-# TODO: figure out how to share common atom configs, cat ~/.atom/config.cson
-
-command -v apm >/dev/null && {
-   echo 'Ensuring Atom packages'
-   rundot 'configs/atom-packages'
-   [[ $DO_UPDATES ]] && apm update --confirm false # skips interactive confirmation
-}
-
 # + + + + + + + + + + +
 # +  Sublime Text 3   +
 # +    subl helper    +
