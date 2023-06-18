@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-require 'functions/input-helpers'
-require 'functions/plist-helpers'
-
+require functions/input-helpers
+require functions/plist-helpers
 
 # Set ComputerName, HostName, LocalHostName
 # http://ilostmynotes.blogspot.com/2012/03/computername-vs-localhostname-vs.html

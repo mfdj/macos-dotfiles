@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-require 'functions/brew-helpers'
+require functions/brew-helpers
 
 brew_ensure  direnv # Load/unload environment variables based on $PWD
 brew_ensure  figlet

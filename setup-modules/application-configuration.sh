@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-require 'functions/ensure-symlink'
-require 'functions/path-helpers'
+require functions/ensure-symlink
+require functions/path-helpers
 
 # + + + + + + + +
 # +  readline   +
@@ -10,7 +10,7 @@ require 'functions/path-helpers'
 # NOTE: better to use .inputrc than use `bind "set …"` in bash-configuration/environment
 # because it avoid issues when sourcing the intermediate build of .bashrc before
 # running the dynamic bits
-echo 'Ensuring readline .inputrc symlinked'
+echo Ensuring readline .inputrc symlinked
 ensure_symlink \
    "$DOTFILES_DIR/configs/inputrc" \
    ~/.inputrc
@@ -20,11 +20,12 @@ ensure_symlink \
 # + + + + +
 
 # TODO: safe git-config like `git config --global core.excludesfile ~/.gitignore_global`
-echo 'Ensuring global gitignore symlinked'
+echo Ensuring global gitignore symlinked
 ensure_symlink \
    "$DOTFILES_DIR/configs/global-gitignore" \
    ~/.gitignore_global
 
+echo Ensuring nano is git core.editor
 git config --global core.editor nano
 
 # + + + + + + + + + + + +

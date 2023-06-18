@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-require 'functions/plist-helpers'
+require functions/plist-helpers
 
 # TODO:
 # Finder > Preferences >

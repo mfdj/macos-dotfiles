@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-require 'functions/append-source'
+require functions/append-source
 
 # + + + + + + + + + + + + + + + +
 # +  dotfiles bootstrap files   +
@@ -9,9 +9,7 @@ require 'functions/append-source'
 
 CONFIG_TARGET=~/.bashrc
 
-# - bash_profile should point at bashrc
-
-echo 'Pointing .bash_profile at .bashrc'
+echo Pointing .bash_profile at .bashrc
 # this shellcheck is a false positive - we're echoing a dollar sign, not evaluting here
 # shellcheck disable=SC2016
 echo '[[ -n $PS1 ]] && source ~/.bashrc' > ~/.bash_profile

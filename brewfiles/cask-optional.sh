@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-require 'functions/brew-helpers'
+require functions/brew-helpers
 
 cask_ensure  charles
 cask_ensure  firefox

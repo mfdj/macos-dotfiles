@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-require 'functions/brew-helpers'
+require functions/brew-helpers
 
 # newer versions than macos (as of march'19)
 brew_ensure  bash       # macOS: 3.2.57   < brew: 5.0.3
