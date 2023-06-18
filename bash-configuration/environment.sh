@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 # + + + + + + + + + + + + + + + + + + + +
 # +  common across multiple machines    +
@@ -19,9 +19,6 @@ PATH=$PATH:~/.composer/vendor/bin
 # possible without moving rbenv's PATH decleration lower in precdence than ./bin
 # which feels stupid/risky
 
-# brew doctor recommends
-PATH=/usr/local/sbin:$PATH
-
 # cdp function config
 # shellcheck disable=SC2034
 CDP_ALIASES=~/.cdp_aliases
@@ -37,27 +34,24 @@ else
 fi
 
 # if editor is empty use nano; otherwise git, et al. default to vim
-[[ $EDITOR ]] || export EDITOR=nano
+[[ ${EDITOR:-} ]] || export EDITOR=nano
 
 # add grc aliases to path
-if [[ -f /usr/local/etc/grc.bashrc ]]; then
-   source /usr/local/etc/grc.bashrc
-fi
 
-# for custom bats-build of shellcheck
-[[ -d ~/.cabal/bin ]] && PATH=${HOME}/.cabal/bin:${PATH}
-
-# use bash-completion package if installed
-if [ -f /usr/local/share/bash-completion/bash_completion ]; then
-  . /usr/local/share/bash-completion/bash_completion
-fi
+# if [[ -f "$(brew --prefix)/etc/grc.sh" ]]; then
+#    source "$(brew --prefix)/etc/grc.sh"
+# fi
 
 # + + + + +
 # +  cd   +
 # + + + + +
 
 # change into directories without needing cd (NOTE: what are the implications for subshells)
-shopt -s autocd
+if ((BASH_VERSINFO[0] >= 4)); then
+   shopt -s autocd
+else
+   echo bash "${BASH_VERSINFO[0]}" does not support autocd
+fi
 
 # fix basic typos when cd'ing
 shopt -s cdspell

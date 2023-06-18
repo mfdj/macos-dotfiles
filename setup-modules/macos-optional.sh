@@ -11,10 +11,11 @@ require functions/plist-helpers
 echo 'Ensuring dark-mode enabled (toggle: control + option + command + t)'
 # TODO: update for Sierra - option is now in system-prefs https://support.apple.com/kb/PH25158?locale=en_US&viewlocale=en_US
 dark_mode=$(defaults read /Library/Preferences/.GlobalPreferences.plist _HIEnableThemeSwitchHotKey 2> /dev/null)
-[[ $dark_mode != 1 ]] \
-   && sudo defaults write /Library/Preferences/.GlobalPreferences.plist _HIEnableThemeSwitchHotKey -bool true
+if [[ $dark_mode != 1 ]]; then
+   sudo defaults write /Library/Preferences/.GlobalPreferences.plist _HIEnableThemeSwitchHotKey -bool true
+fi
 
-
-echo 'Ensuring gamed is unloaded'
-[[ -f /System/Library/LaunchAgents/com.apple.gamed.plist ]] \
-   && launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist 2> /dev/null
+echo Ensuring gamed is unloaded
+if [[ -f /System/Library/LaunchAgents/com.apple.gamed.plist ]]; then
+   launchctl unload /System/Library/LaunchAgents/com.apple.gamed.plist 2> /dev/null
+fi

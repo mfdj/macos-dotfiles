@@ -2,6 +2,8 @@
 
 require functions/brew-helpers
 
+echo -n Ensuring cask-optional packages
+
 cask_ensure  charles
 cask_ensure  firefox
 cask_ensure  kap
@@ -17,3 +19,5 @@ cask_ensure  sublime-text
 # cask_ensure  vagrant
 # cask_ensure  virtualbox
 cask_ensure  vlc
+
+echo # visual line break

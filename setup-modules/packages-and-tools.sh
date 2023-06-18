@@ -1,76 +1,23 @@
 #!/usr/bin/env bash
 
-require 'functions/ensure-symlink'
-require 'functions/brew-helpers'
-
-# + + + + + + + + + + + + + + + +
-# +  XCode Command Line Tools   +
-# + + + + + + + + + + + + + + + +
-
-echo Ensuring XCode Command Line Tools
-# if xcode has already installed it will evaluate to false
-if xcode-select --install 2> /dev/null; then
-   # is there is a way to check this w/o sudo?
-   sudo xcodebuild -license 2> /dev/null
-else
-   [[ $DO_UPDATES ]] && softwareupdate --install -a 'Command Line Tools'
-fi
-
-# + + + + + + + + + + + + + + +
-# +         Homebrew          +
-# +  see configs/brew-files   +
-# + + + + + + + + + + + + + + +
+require functions/brew-helpers
+require functions/xcode-helpers
 
 echo Ensuring Homebrew
-[[ ! -f /usr/local/bin/brew ]] &&
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+ensure_brew_ready
 
-# ! command -v brew > /dev/null && {
-#    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-# }
+echo Ensuring XCode Command Line Tools
+ensure_xcode_cli
 
-brewfile() {
-   rundot "brewfiles/$1"
-   echo
-}
-
-[[ $DO_UPDATES ]] && brew update
-
-# homebrew minimum
-brewfile core
-
-# homebrew optional
-[[ $DO_OPTIONAL             ]] && brewfile optional
-[[ $DO_CASK                 ]] && brewfile cask-core
-[[ $DO_CASK && $DO_OPTIONAL ]] && brewfile cask-optional
-
-# homebrew maintenance
-# cask upgrade conversation: https://github.com/caskroom/homebrew-cask/issues/16033
-[[ $DO_UPDATES ]] && brew upgrade
-[[ $DO_CLEAN   ]] && { brew cleanup; brew cask cleanup; }
-
-
-# + + + + + + + + + + + + + + + +
-# +         Composer            +
-# +  getcomposer.org/download   +
-# + + + + + + + + + + + + + + + +
-
-# NOTE: Composer should install after Homebrew because /usr/local/ is created by Homebrew
-
-echo Ensuring Composer
-if [[ ! -f /usr/local/bin/composer ]]; then
-   php -r "readfile('https://getcomposer.org/installer');" > composer-setup.php
-   composerSHA384=$(curl https://getcomposer.org/download/ --silent | grep -i 'composer-setup.*\=\=\=' | sed 's/\(.*===\)//' | awk -F"'" '{print $2}')
-   php -r "if (hash('SHA384', file_get_contents('composer-setup.php')) === '${composerSHA384}') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-   if [[ -f composer-setup.php ]]; then
-      php composer-setup.php --install-dir=/usr/local/bin/ --filename=composer
-      php -r "unlink('composer-setup.php');"
-   else
-      echo "composer-setup verification issue (sha384: ${composerSHA384}"
-      echo 'check https://composer.github.io/pubkeys.html'
-   fi
-elif [[ $DO_UPDATES ]]; then
-   composer selfupdate
-else
-   composer --version
+if [[ $DO_UPDATES ]]; then
+   brew update
 fi
+
+rundot brewfiles/core
+
+if [[ $DO_OPTIONAL             ]]; then rundot brewfiles/optional      ; fi
+if [[ $DO_CASK                 ]]; then rundot brewfiles/cask-core     ; fi
+if [[ $DO_CASK && $DO_OPTIONAL ]]; then rundot brewfiles/cask-optional ; fi
+
+if [[ $DO_UPDATES ]]; then brew upgrade ; fi
+if [[ $DO_CLEAN   ]]; then brew cleanup ; fi

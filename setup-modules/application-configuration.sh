@@ -35,8 +35,8 @@ git config --global core.editor nano
 # • not available via brew cask :-| (needs App Store)
 # • I forget the package but once-upon-a-time a build script looked for …(clang? bison?) in this particlar path
 
-[[ -d /Applications/Xcode.app ]] && {
-   echo 'Ensuring Xcode Toolchains linked by version'
+if [[ -d /Applications/Xcode.app ]]; then
+   echo Ensuring Xcode Toolchains linked by version
    toolchains=/Applications/Xcode.app/Contents/Developer/Toolchains
 
    if [[ -d ${toolchains}/XcodeDefault.xctoolchain ]]; then
@@ -49,58 +49,60 @@ git config --global core.editor nano
    else
       echo "WARNING: expected to find ${toolchains}/XcodeDefault.xctoolchain"
    fi
-}
+fi
 
 # + + + + + + + + + + +
 # +  Sublime Text 3   +
 # +    subl helper    +
 # + + + + + + + + + + +
 
-[[ -d /Applications/Sublime\ Text.app ]] && {
-   echo 'Ensuring SublimeText subl command'
+if [[ -d /Applications/Sublime\ Text.app ]]; then
+   echo Ensuring SublimeText subl command
    ensure_symlink \
       /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl \
-      /usr/local/bin/subl
-}
+      "$DOTFILES_DIR"/local/bin/subl
+fi
 
 # + + + + + + + + + + +
 # +  PhpStorm Themes  +
 # + + + + + + + + + + +
 
-phpstorm_prefs=$(find ~/Library/Preferences | grep 'PhpStorm[0-9]*\.[0-9]*$')
-[[ -d $phpstorm_prefs ]] && {
-   echo 'Ensuring PhpStorm Templates'
-   ensure_symlink $DOTFILES_DIR/configs/phpstorm-themes $phpstorm_prefs/colors
-}
+phpstorm_prefs=$(find ~/Library/Preferences | grep 'PhpStorm[0-9]*\.[0-9]*$' || true)
+if [[ -d $phpstorm_prefs ]]; then
+   echo Ensuring PhpStorm Templates
+   ensure_symlink \
+     "$DOTFILES_DIR"/configs/phpstorm-themes \
+     "$phpstorm_prefs"/colors
+fi
 
 # + + + + + + + + + + +
 # +   Kaleidoscope    +
 # +  ksdiff helper    +
 # + + + + + + + + + + +
 
-[[ -d ~/Applications/Kaleidoscope.app && ! -f /usr/local/bin/ksdiff ]] && {
-   echo 'Ensuring Kaleidoscope ksdiff command'
+if [[ -d ~/Applications/Kaleidoscope.app ]] && ! command ksdiff &> /dev/null; then
+   echo Ensuring Kaleidoscope ksdiff command
    ~/Applications/Kaleidoscope.app/Contents/MacOS/install_ksdiff
-}
+fi
 
 # + + + + + + + + + + +
 # +  iTunes Scripts   +
 # + + + + + + + + + + +
 
-[[ -d $DOTFILES_DIR/local/iTunesScripts ]] && {
-   echo 'Ensuring iTunesScripts are linked'
+if [[ -d $DOTFILES_DIR/local/iTunesScripts ]]; then
+   echo Ensuring iTunesScripts are linked
    ensure_symlink \
-      $DOTFILES_DIR/local/iTunesScripts \
+      "$DOTFILES_DIR"/local/iTunesScripts \
       ~/Library/iTunes/Scripts
-}
+fi
 
 # + + + + + + + + + + + +
 # +   load grc aliases  +
 # + + + + + + + + + + + +
 
-command -v grc > /dev/null && {
-   echo 'Ensuring grc configs are linked'
+if command -v grc > /dev/null; then
+   echo Ensuring grc configs are linked
    ensure_symlink \
-      $DOTFILES_DIR/configs/grc \
+      "$DOTFILES_DIR"/configs/grc \
       ~/.grc
-}
+fi

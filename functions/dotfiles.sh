@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 dotfiles() {
    DOTFILES_DIR=${DOTFILES_DIR:-~/dotfiles}
@@ -45,7 +45,7 @@ commands:
       done
 
       # run setup-script with arguments
-      $DOTFILES_DIR/setup.sh "$@"
+      "$DOTFILES_DIR"/setup.sh "$@"
 
       # TODO: add comparison between runs (to highlight differences)
       # shellcheck disable=SC1090
@@ -101,7 +101,11 @@ commands:
 
    if [[ $cmd == edit ]]; then
       cd "$DOTFILES_DIR" && {
-         [[ $1 == local ]] && $EDITOR ./local || $EDITOR ./
+         if [[ $1 == local ]]; then
+            $EDITOR ./local
+         else
+            $EDITOR ./
+         fi
       }
 
       return
@@ -109,7 +113,7 @@ commands:
 
    # edit, scripts
    case $cmd in
-      scripts) { cd $DOTFILES_DIR/scripts && find . -name '*.sh' | cut -c 3- | cut -d '.' -f 1; };;
+      scripts) ( cd "$DOTFILES_DIR"/scripts && find -- * -name '*.sh' | rev | cut -c4- | rev );;
             *) echo "don't understand '$cmd'";;
    esac
 }

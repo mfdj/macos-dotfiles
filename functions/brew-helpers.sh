@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 # install package if not found
 brew_ensure() {
@@ -47,33 +47,22 @@ cask_ensure_unless_directory() {
    fi
 }
 
-# brew cask cleanup removes installers but not *installed* versions
-# inspiration: https://github.com/troyxmccall/dotfiles/blob/8ab354f96f1184cbdd3574b3285a7afe89f2d9f3/.functions#L399-L422
-# NOTE: use this only if you know for sure:
-# - you don't need more than installed version of a cask!
-# - a less recent cask-version has a more recent modification timestamp!
-# - …?
-cask_deep_clean() {
-   local base='/opt/homebrew-cask/Caskroom' # NOTE: is this configurable? discoverable?
-   local cask_versions
-   local stale_versions
-   local DO_CLEAN
 
-   [[ $1 == go ]] && DO_CLEAN=true
+# install brew and bootstrap it for shell
+# supports both default prefixes (Intel and Apple Silicon)
+ensure_brew_ready() {
+   if ! command -v brew > /dev/null; then
+      if [[ ! -f /opt/homebrew/bin/brew ]] && [[ ! -f /usr/local/bin/brew ]]; then
+         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+      fi
 
-   for cask in $(brew cask list); do
-      cask_versions="$base/$cask"
-      stale_versions="$(ls -r $cask_versions | sed 1,1d)"
-
-      [[ $stale_versions ]] && {
-         for stale in $stale_versions; do
-            if [[ $DO_CLEAN ]]; then
-               echo "Removing $cask $stale..."
-               rm -rf "${cask_versions:?}/$stale"
-            else
-               echo "Found stale: $cask $stale..."
-            fi
-         done
-      }
-   done
+      if [[ -f /opt/homebrew/bin/brew ]]; then # Apple Silicon
+         eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [[ -f /usr/local/bin/brew ]]; then # Intel
+         eval "$(/usr/local/bin/brew shellenv)"
+      else
+         >&2 echo "Error: Failed to locate brew command"
+         return 1
+      fi
+   fi
 }

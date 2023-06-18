@@ -6,7 +6,7 @@ ensure_symlink() {
    local with_sudo
    local current_src
 
-   [[ $3 == '--with-sudo' ]] && with_sudo=true
+   [[ ${3:-} == '--with-sudo' ]] && with_sudo=true
 
    # - if $dest is a symlink with incorrect source remove it
    # - if $dest is a file/folder back it up
