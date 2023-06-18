@@ -103,21 +103,3 @@ command -v grc > /dev/null && {
       $DOTFILES_DIR/configs/grc \
       ~/.grc
 }
-
-# + + + + + + + + + + + +
-# +   vagrant plugins   +
-# + + + + + + + + + + + +
-
-command -v vagrant > /dev/null && {
-   [[ $DO_OPTIONAL ]] && {
-      echo 'Ensuring vagrant plugins are present'
-      vagrant plugin install \
-         vagrant-berkshelf \
-         vagrant-cachier \
-         vagrant-hostmanager \
-         vagrant-omnibus \
-         vagrant-share \
-         vagrant-vbguest \
-      > /dev/null
-   }
-}

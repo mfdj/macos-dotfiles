@@ -27,8 +27,3 @@ bundle() {
       command bundle install --local || bundle install
    fi
 }
-
-vagrant() {
-   vagrant-shim "$@"
-}
-export -f vagrant

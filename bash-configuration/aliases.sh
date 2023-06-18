@@ -32,14 +32,6 @@ alias sf='[[ -f app/console ]] && app/console || bin/console'
 alias phpext="ls -l1 \$(php -i | grep ^extension_dir | sed 's/.* => //')"
 alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"
 
-# vagrant + virtualbox
-# vagrant see: commands/vagrant-shim + almost-aliases.sh
-alias vg='vagrant'
-alias vbox='VBoxManage'
-alias vboxvms='VBoxManage list vms'
-alias vboxrm='VBoxManage unregistervm'
-alias vnight='VBoxManage list runningvms | cut -d" " -f1 | xargs -I X VBoxManage controlvm X poweroff'
-
 # GUI shortcuts
 alias st='open -a SourceTree .'
 alias md='open -a Macdown'
