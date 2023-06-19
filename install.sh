@@ -15,7 +15,7 @@ require functions/ssh-helpers
 require functions/brew-helpers
 
 ensure_brew_command
-rundot brewfiles/essential
+sourcedot brewfiles/essential
 
 ensure_ssh_key
 

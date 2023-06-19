@@ -33,13 +33,13 @@ done
 
 mkdir -p "$DOTFILES_DIR"/local/bin
 
-rundot setup-modules/packages-and-tools
-rundot setup-modules/application-configuration
-rundot setup-modules/macos-core
+sourcedot setup-modules/packages-and-tools
+sourcedot setup-modules/application-configuration
+sourcedot setup-modules/macos-core
 if [[ ${DO_OPTIONAL:-} ]]; then
-   rundot setup-modules/macos-optional
+   sourcedot setup-modules/macos-optional
 fi
-rundot setup-modules/build-bash-configuration
+sourcedot setup-modules/build-bash-configuration
 
 [[ ${DO_QUIETLY:-} ]] || {
    echo

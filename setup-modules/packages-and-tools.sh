@@ -13,11 +13,11 @@ if [[ $DO_UPDATES ]]; then
    brew update
 fi
 
-rundot brewfiles/core
+sourcedot brewfiles/core
 
-if [[ $DO_OPTIONAL             ]]; then rundot brewfiles/optional      ; fi
-if [[ $DO_CASK                 ]]; then rundot brewfiles/cask-core     ; fi
-if [[ $DO_CASK && $DO_OPTIONAL ]]; then rundot brewfiles/cask-optional ; fi
+if [[ $DO_OPTIONAL             ]]; then sourcedot brewfiles/optional      ; fi
+if [[ $DO_CASK                 ]]; then sourcedot brewfiles/cask-core     ; fi
+if [[ $DO_CASK && $DO_OPTIONAL ]]; then sourcedot brewfiles/cask-optional ; fi
 
 if [[ $DO_UPDATES ]]; then brew upgrade ; fi
 if [[ $DO_CLEAN   ]]; then brew cleanup ; fi
