@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-command -v subl > /dev/null || {
-   if command -v atom > /dev/null; then
-      echo alias subl=\'echo SublimeText is not installed, here is atom\; sleep 0.2\; atom\'
-   else
-      echo alias subl=\'echo SublimeText is not installed\'
-   fi
-}
-
 command -v grc > /dev/null && {
    echo alias tree=\'grc tree\'
 }

@@ -6,7 +6,6 @@
 
 # general shell
 alias crone='EDITOR=nano crontab -e'
-alias egrep='command egrep --color'
 alias grep='command grep --color'
 alias sshp='ssh -o PubkeyAuthentication=no'
 

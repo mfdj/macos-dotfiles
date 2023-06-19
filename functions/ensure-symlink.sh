@@ -3,7 +3,7 @@
 ensure_symlink() {
    local src=${1%/}
    local dest=${2%/}
-   local with_sudo
+   local with_sudo=
    local current_src
 
    [[ ${3:-} == '--with-sudo' ]] && with_sudo=true
