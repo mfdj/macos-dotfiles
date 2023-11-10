@@ -177,6 +177,86 @@ gdf() {
    fi
 }
 
+# aka git push stacked
+gps() {
+   local complete
+   local current_branch
+   local delay
+   local depth
+   local start_at
+   local stack_size
+
+   # Parse depth (start_at and stack_size)
+   depth=${1:?'missing depth param'}
+   shift
+
+   if ! [[ $depth =~ ^[0-9]{1,2}-?[0-9]{0,2}$ ]]; then
+      ( 1>&2 echo "Error: invalid depth, should be X-Y numeric but got '$depth'" )
+      return 1
+   fi
+
+   start_at=${depth%-*}
+   stack_size=${depth#*-}
+
+   if (( start_at < 2 )) || (( start_at > 99 )); then
+      ( 1>&2 echo "Error: invalid start_at, should be 2–99 but got '$start_at'" )
+      return 1
+   fi
+
+   if (( stack_size < 1 )) || (( stack_size > 99 )); then
+      ( 1>&2 echo "Error: invalid stack_size, should be 2–99 but got '$stack_size'" )
+      return 1
+   fi
+
+   if (( stack_size > start_at )); then
+      ( 1>&2 echo "(setting maximum stack_size to '$start_at')" )
+      stack_size=$start_at
+   fi
+
+   # Parse delay
+   if [[ $1 =~ [0-9]+ ]]; then
+      delay=$1
+      shift
+   fi
+
+   if (( delay < 60 )); then
+      ( 1>&2 echo '(setting minimum delay: 60 seconds)' )
+      delay=60
+   fi
+
+   # Display stack
+   prettyp break 7:green "Pushing following stack at $delay second interval:"
+   git log --abbrev-commit --max-count="$depth" --format=oneline | tail -r -n "$stack_size"
+
+   # Wait for confirmation
+   echo
+   prettyp 7:1 'Press any key to continue'
+   # shellcheck disable=SC2034
+   read -r noop
+
+   # Work through the stack
+   current_branch=$(git_current_branch)
+   head_backdex=$(( start_at - 1 ))
+   while [[ -z $complete ]]; do
+      echo # empty line for visual organization
+
+      git show "HEAD~$head_backdex" --oneline --no-patch
+      echo git push origin "HEAD~$head_backdex:$current_branch" --force-with-lease "$@"
+      git push origin "HEAD~$head_backdex:$current_branch" --force-with-lease "$@"
+
+      stack_size=$(( stack_size - 1 ))
+      if (( stack_size > 0 )); then
+         head_backdex=$(( head_backdex - 1 ))
+         echo "Sleeping for $delay seconds"
+         sleep "$delay"
+      else
+         complete=1
+         echo
+         echo "✨ Stack pushed ✨"
+      fi
+   done
+}
+
 git_current_branch() {
    git symbolic-ref HEAD 2> /dev/null | cut -c 12-
 }
