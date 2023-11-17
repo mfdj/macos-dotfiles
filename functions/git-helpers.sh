@@ -213,19 +213,29 @@ gps() {
       stack_size=$start_at
    fi
 
-   # Parse delay
    if [[ $1 =~ [0-9]+ ]]; then
       delay=$1
       shift
    fi
 
-   if (( delay < 60 )); then
-      ( 1>&2 echo '(setting minimum delay: 60 seconds)' )
+   # Visualize parsed arguments
+   1>&2 echo -n "Parsed start-at: $start_at stack-size: $stack_size"
+   [[ $delay ]] && 1>&2 echo -n " delay: $delay"
+   if (( delay < 60 )) && (( stack_size > 1 )); then
+      ( 1>&2 echo -n ' (setting minimum delay: 60 seconds)' )
       delay=60
    fi
+   echo # line break
 
    # Display stack
-   prettyp break 7:green "Pushing following stack at $delay second interval:"
+   prettyp 7:green "Pushing following stack"
+   (( stack_size > 1 )) && prettyp 7:green " at $delay second interval"
+   if (( $# > 0 )); then
+      prettyp 7:green " with these git push flags: $*"
+   else
+      prettyp 7:green ':'
+   fi
+   echo
    git log --abbrev-commit --max-count="$depth" --format=oneline | tail -r -n "$stack_size"
 
    # Wait for confirmation
