@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 # Not sure about the implemenation value of these.
 # Maybe they need a verbose mode and an exit code?

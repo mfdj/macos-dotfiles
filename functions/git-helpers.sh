@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 # aka: git log
 gl() {

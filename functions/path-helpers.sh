@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 clean_path() {
   [[ -d $1 ]] && rm -rf "$1"

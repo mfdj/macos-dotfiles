@@ -1,8 +1,8 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 randint() {
    local min max range bytes randRange randDecimal rangedInt
-   
+
    min=$1
    max=$2
 

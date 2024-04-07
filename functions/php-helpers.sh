@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 xdebugenable() {
    local phpfpm=$(brew services list | grep started | grep php | awk '{print $1}')

@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 plist_set_array() {
    plistbuddy=${plistbuddy:-/usr/libexec/PlistBuddy}

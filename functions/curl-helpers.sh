@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 curlh() {
    curl -s -D - $1 -o /dev/null

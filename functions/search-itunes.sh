@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148
+#!/usr/bin/env bash
 
 search_itunes() {
    rg -i "$*" ~/Music/iTunes/iTunes\ Music\ Library.xml -A2
