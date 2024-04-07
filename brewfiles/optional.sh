@@ -10,7 +10,6 @@ brew_ensure  composer
 brew_ensure  direnv # Load/unload environment variables based on $PWD
 brew_ensure  figlet
 brew_ensure  gnupg2 # http://superuser.com/questions/z55246/are-gnupg-1-and-gnupg-2-compatible-with-each-other
-brew_ensure  hhvm hhvm/hhvm/hhvm
 brew_ensure  icu4c # for intl
 brew_ensure  gawk # GNU awk
 brew_ensure  goaccess # Log analyzer and interactive viewer for the Apache Webserver
@@ -26,7 +25,7 @@ brew_ensure  qt5 # For webkit things like capybara
 brew_ensure  rabbitmq-c
 brew_ensure  redis
 brew_ensure  tmux
-brew_ensure  valgrind # Dynamic analysis tools (memory, debug, profiling)
+# valgrind is no longer tractable on macos https://stackoverflow.com/questions/40650338/valgrind-on-macos-sierra
 brew_ensure  watchman # file-watcher
 
 echo # visual line break
