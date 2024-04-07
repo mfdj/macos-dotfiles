@@ -17,14 +17,14 @@ if [[ ! -f $DOTFILES_DIR/local/machine-name ]]; then
 fi
 
 echo 'Ensuring Dock auto-hide'
-autohide_dock=$(defaults read com.apple.dock autohide 2> /dev/null)
+autohide_dock=$(defaults read com.apple.dock autohide 2> /dev/null || true)
 if [[ $autohide_dock != 1 ]]; then
    defaults write com.apple.dock autohide -bool true \
    && killall Dock
 fi
 
 echo 'Ensuring iTunes Half Star'
-itunes_half_star=$(defaults read com.apple.iTunes allow-half-stars 2> /dev/null)
+itunes_half_star=$(defaults read com.apple.iTunes allow-half-stars 2> /dev/null || true)
 if [[ $itunes_half_star != 1 ]]; then
    defaults write com.apple.iTunes allow-half-stars -bool TRUE
 fi
@@ -79,7 +79,7 @@ fi
 #  * untested on Big Sur
 #  * Big Sur and later exposes this in Sys Prefs > Sounds https://support.apple.com/en-us/HT211996
 echo "Ensuring statup sounds is muted"
-startup_mute=$(nvram StartupMute | awk '{print $2}')
+startup_mute=$(nvram StartupMute | awk '{print $2}' || true)
 if [[ ! $startup_mute == '%00' ]]; then
    sudo nvram StartupMute=%00
 fi
