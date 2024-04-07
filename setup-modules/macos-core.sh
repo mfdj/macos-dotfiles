@@ -8,7 +8,7 @@ require functions/plist-helpers
 echo 'Ensuring ComputerName, HostName, LocalHostName are set'
 if [[ ! -f $DOTFILES_DIR/local/machine-name ]]; then
    machine_name=$(scutil --get ComputerName)
-   promptfor machine_name
+   promptfor machine_name "Choose a machine name"
    sudo -i bash -c "
       scutil --set ComputerName $machine_name &&
       scutil --set HostName $machine_name &&
