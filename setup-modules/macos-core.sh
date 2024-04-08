@@ -34,7 +34,8 @@ for n in {32..37} {60..63}; do
    plist_disable ~/Library/Preferences/com.apple.symbolichotkeys.plist \
       :AppleSymbolicHotKeys:$n
 done
-defaults read com.apple.symbolichotkeys > /dev/null # http://stackoverflow.com/a/26564334/934195
+# Reload symbolichotkeys (cache bust) http://stackoverflow.com/a/26564334/934195
+defaults read com.apple.symbolichotkeys > /dev/null
 
 echo 'Ensuring Terminal secure-keyboard-entry and option-as-meta'
 # NOTE: security.stackexchange.com/questions/47749/how-secure-is-secure-keyboard-entry-in-mac-os-xs-terminal
