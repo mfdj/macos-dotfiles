@@ -13,6 +13,7 @@ if [[ $DO_UPDATES ]]; then
    brew update
 fi
 
+sourcedot brewfiles/essential
 sourcedot brewfiles/core
 
 if [[ $DO_OPTIONAL             ]]; then sourcedot brewfiles/optional      ; fi

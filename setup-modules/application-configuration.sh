@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 require functions/ensure-symlink
-require functions/path-helpers
 
 # + + + + + + + +
 # +  readline   +
