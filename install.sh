@@ -14,7 +14,7 @@ fi
 require functions/ssh-helpers
 require functions/brew-helpers
 
-ensure_brew_command
+ensure_brew_ready
 sourcedot brewfiles/essential
 
 ensure_ssh_key
