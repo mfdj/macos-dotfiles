@@ -20,7 +20,7 @@ backup_target=$1
 default_bin=$(/usr/sbin/scutil --get ComputerName)-$(whoami)-backup
 
 if [[ -d $backup_target ]]; then
-   [[ $backup_target =~ /$ ]] && backup_target=${backup_target%?} # trim trailing slash
+   if [[ $backup_target =~ /$ ]]; then backup_target=${backup_target%?}; fi # trim trailing slash
    backup_base=$backup_target
    echo -e "Current backup-base: \033[1;32m${backup_base}\033[0m"
 
@@ -64,20 +64,20 @@ fi
 rsync_version=$(rsync --version | grep version | awk '{print $3}')
 
 progress='--progress'
-[[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )) && {
+if [[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )); then
    progress='--info=progress2'
-}
+fi
 
 destination() {
    rsync_destination=$1
 }
 
 do_sync() {
-   [[ ! $rsync_destination || $rsync_destination == '/' ]] && {
+   if [[ ! $rsync_destination || $rsync_destination == '/' ]]; then
       echo
       echo -e "\033[7;91m rsync_destination is set to '$rsync_destination' which is invalid \033[0m \033[1;07m skipping \033[0m\033[1;35m $* \033[0m"
       return
-   }
+   fi
 
    for source in "$@"; do
       if [[ -d $source || -f $source ]]; then
@@ -100,11 +100,11 @@ do_sync() {
    done
 }
 
-[[ $dry_run ]] && {
+if [[ $dry_run ]]; then
    echo
    echo -e "\033[1;33mStarting dry-run\033[0m"
    echo
-}
+fi
 
 ## music
 destination "$backup_base"
@@ -120,10 +120,10 @@ do_sync     ~/{.ssh,clients,Code,FontExplorerX,projects,optical-archive}
 
 ## 1Password
 onepass_backups=$(find -E ~/Library/Group\ Containers -type d -iregex '.*1password.*/.*backups.*' | head -n1)
-[[ $onepass_backups ]] && {
+if [[ $onepass_backups ]]; then
    destination "$backup_base"/1PasswordBackups
    do_sync "$onepass_backups"
-}
+fi
 
 ## Knox
 destination "$backup_base"
@@ -149,8 +149,8 @@ do_sync     ~/Library/Application\ Support/MobileSync/Backup/
 destination "$backup_base"/LibraryApplicationSupport_beaTunes
 do_sync     ~/Library/Application\ Support/beaTunes/
 
-[[ $dry_run ]] && {
+if [[ $dry_run ]]; then
    echo
    echo -e "\033[1;33mDry-run finsihed. To get wet run '$0 $original_args go'\033[0m"
    echo
-}
+fi

@@ -42,18 +42,18 @@ fi
    exit
 }
 
-[[ $dry_run ]] && {
+if [[ $dry_run ]]; then
    echo
    echo -e "\033[1;33mStarting dry-run\033[0m"
    echo
-}
+fi
 
 rsync_version=$(rsync --version | grep version | awk '{print $3}')
 
 progress='--progress'
-[[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )) && {
+if [[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )); then
    progress='--info=progress2'
-}
+fi
 
 rsync --recursive --times --perms --links --safe-links \
    --human-readable --delete --exclude '.DS_Store' \
@@ -62,10 +62,10 @@ rsync --recursive --times --perms --links --safe-links \
 
 rsync_exit_code=$?
 
-[[ $dry_run ]] && {
+if [[ $dry_run ]]; then
    echo
    echo -e "\033[1;33mDry-run finsihed. To get wet run '$0 $original_args go'\033[0m"
    echo
-}
+fi
 
 exit $rsync_exit_code

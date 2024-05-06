@@ -6,29 +6,40 @@ ensure_symlink() {
    local with_sudo=
    local current_src
 
-   [[ ${3:-} == '--with-sudo' ]] && with_sudo=true
+   if [[ ${3:-} == '--with-sudo' ]]; then
+      with_sudo=true
+   fi
 
    # - if $dest is a symlink with incorrect source remove it
    # - if $dest is a file/folder back it up
    if [[ -h $dest ]]; then
-      current_src=$(readlink $dest)
-      [[ $src != "$current_src" ]] && {
-         [[ ! $with_sudo ]] && rm "$dest"
-         [[   $with_sudo ]] && sudo rm "$dest"
-      }
+      current_src=$(readlink "$dest")
+      if [[ $src != "$current_src" ]]; then
+         if   [[ $with_sudo ]]
+         then sudo rm "$dest"
+         else rm "$dest"
+         fi
+      fi
    elif [[ -d $dest || -f $dest ]]; then
-      [[ -e $dest-backup ]] && {
-         [[ ! $with_sudo ]] && rm -rf "$dest-backup"
-         [[   $with_sudo ]] && sudo rm -rf "$dest-backup"
-      }
+      if [[ -e $dest-backup ]]; then
+         if   [[ $with_sudo ]]
+         then sudo rm -rf "$dest-backup"
+         else rm -rf "$dest-backup"
+         fi
+      fi
+
       echo "NOTICE: ensure_symlink backing-up '$dest' to '$dest-backup'"
-      [[ ! $with_sudo ]] && mv "$dest" "$dest-backup"
-      [[   $with_sudo ]] && sudo mv "$dest" "$dest-backup"
+      if   [[ $with_sudo ]]
+      then sudo mv "$dest" "$dest-backup"
+      else mv "$dest" "$dest-backup"
+      fi
    fi
 
    # make that symlink!
    if [[ ! -h $dest ]]; then
-      [[ ! $with_sudo ]] && ln -s "$src" "$dest"
-      [[   $with_sudo ]] && sudo ln -s "$src" "$dest"
+      if   [[ $with_sudo ]]
+      then sudo ln -s "$src" "$dest"
+      else ln -s "$src" "$dest"
+      fi
    fi
 }

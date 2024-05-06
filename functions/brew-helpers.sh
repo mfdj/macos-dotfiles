@@ -5,7 +5,7 @@ brew_ensure() {
    local package=$1
 
    if ! ls -l1 "$(brew --prefix)/opt/$package" &> /dev/null; then
-      (( $# != 1 )) && shift
+      if (( $# != 1 )); then shift; fi
       brew install "$@" && echo -n " ✔ $package"
    else
       echo -n " ✔ $package"
@@ -17,7 +17,7 @@ brew_ensure_command() {
    local cmd=$1
 
    if ! command -v $cmd > /dev/null; then
-      (( $# != 1 )) && shift
+      if (( $# != 1 )); then shift; fi
       brew install "$@" && echo -n " ✔ $cmd"
    else
       echo -n " ✔ $cmd"

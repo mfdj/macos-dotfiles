@@ -6,9 +6,9 @@ mkdir -p "$backup_dir"
 rsync_version=$(rsync --version | grep version | awk '{print $3}')
 
 progress='--progress'
-[[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )) && {
+if [[ $rsync_version ]] && (( ${rsync_version:0:1} > 2 )); then
    progress='--info=progress2'
-}
+fi
 
 do_sync () {
    rsync --recursive --perms --times --delete $progress --stats \

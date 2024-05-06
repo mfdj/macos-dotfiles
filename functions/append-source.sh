@@ -6,7 +6,9 @@ append_source() {
    local execute=
    local paths
 
-   [[ ${3:-} == --exectue ]] && execute=true
+   if [[ ${3:-} == --exectue ]]; then 
+      execute=true
+   fi
 
    # wrap paths in an array
    if [[ -f $source_path ]]; then

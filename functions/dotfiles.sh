@@ -3,7 +3,7 @@
 dotfiles() {
    DOTFILES_DIR=${DOTFILES_DIR:-~/dotfiles}
 
-   [[ $# == 0 || $1 == help ]] && {
+   if [[ $# == 0 || $1 == help ]]; then
       echo "
 dotfiles <command> <options>
 
@@ -16,7 +16,7 @@ commands:
   run <name> <options>  run a script
 "
       return
-   }
+   fi
 
    local cmd=$1
    shift
@@ -51,7 +51,9 @@ commands:
       # shellcheck disable=SC1090
       time source ~/.bash_profile
 
-      [[ $do_reload ]] && dotfiles reload
+      if [[ $do_reload ]]; then 
+         dotfiles reload
+      fi
 
       return
    fi
@@ -66,17 +68,17 @@ commands:
       shift
       script_path="$DOTFILES_DIR/scripts/${script_name}.sh"
 
-      [[ -z $script_name ]] && {
+      if [[ -z $script_name ]]; then
          echo 'missing script-name argument - valid script-names:'
          dotfiles scripts
          return
-      }
+      fi
 
-      [[ -f $script_path ]] || {
+      if [[ -f $script_path ]]; then
          echo "could not find ${script_name}.sh in ${DOTFILES_DIR}/scripts - valid script-names:"
          dotfiles scripts
          return
-      }
+      fi
 
       [[ -x $script_path ]] || {
          echo "$script_path not executable"

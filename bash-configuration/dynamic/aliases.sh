@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-command -v grc > /dev/null && {
+if command -v grc > /dev/null; then
    echo alias tree=\'grc tree\'
-}
+fi
 
-command -v bat > /dev/null && {
+if command -v bat > /dev/null; then
    echo alias cat=\'bat --paging=never\'
-}
+fi
 
 if ls --color &> /dev/null; then
    # GNU http://www.gnu.org/software/coreutils/manual/html_node/General-output-formatting.html#General-output-formatting
