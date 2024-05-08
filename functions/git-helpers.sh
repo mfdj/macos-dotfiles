@@ -27,16 +27,16 @@ gchb() {
    branch=$1
 
    # special-meta-character
-   [[ $branch == '-' ]] && {
+   if [[ $branch == '-' ]]; then
       git checkout -
       return 0
-   }
+   fi
 
    # already a local-branch
-   git rev-parse --verify "$branch" &> /dev/null && {
+   if git rev-parse --verify "$branch" &> /dev/null; then
       git checkout "$branch"
       return 0
-   }
+   fi
 
    # start matching
    [[ $branch ]] && echo -e "\nbranches like '$branch':\n" \
@@ -85,10 +85,10 @@ gchb() {
 
    git checkout -b "$branch" "$remote/$branch" || {
       echo -e "\033[1mprefixing branch with remote name: '$remote-$branch'\033[0m"
-      git rev-parse --verify "$remote-$branch" &> /dev/null && {
+      if git rev-parse --verify "$remote-$branch" &> /dev/null; then
          git checkout "$remote-$branch"
          return 0
-      }
+      fi
       git checkout -b "$remote-$branch" "$remote/$branch"
    }
 }
@@ -104,11 +104,11 @@ gpu() {
    # and to maybe start a draft PR: at this point I don't care about cleanliness checks
    git push --no-verify "$remote" --set-upstream "$local_name"
    remote_url=$(git remote -v | grep "$remote" | grep push | awk '{print $2}')
-   [[ $remote_url =~ git@github.com ]] && {
+   if [[ $remote_url =~ git@github.com ]]; then
       github_repo=${remote_url#git@github.com:}
       github_repo=${github_repo%.git}
       open "https://github.com/${github_repo}/compare/${local_name}?expand=1"
-   }
+   fi
 }
 
 # git branch with colorz
@@ -126,6 +126,7 @@ gchr() {
    git checkout -b "rebased/$(git_current_branch)" && gsrb "$@"
 }
 
+# TODO: make safer
 # aka: git-stash-rebase-from-branch
 gsrb() {
    local rebase_from=$1
@@ -133,15 +134,18 @@ gsrb() {
    local selection
    local stashed
 
-   git rev-parse --verify "$rebase_from" &> /dev/null || {
+   if git rev-parse --verify "$rebase_from" &> /dev/null; then
       echo -e "\nbranches '$rebase_from':\n"
-      [[ -z $branch ]] && branch='.*'
       list=$(git branch -r | cut -f 2- -d / | grep -i "$rebase_from")
       echo "$list" | nl -ba -s '. ' -w 4
       echo -en "\n select: "
       read -r selection
-      branch=$(echo "$list" | sed "${selection}q;d") || echo return
-   }
+      branch=$(echo "$list" | sed "${selection}q;d")
+   fi
+
+   if [[ -z $branch ]]; then
+      return 1
+   fi
 
    # git status uses "??" at the start of the line to indicate an untracked file
    if [[ $(git status --porcelain | grep -v '^??') != '' ]]; then
@@ -149,8 +153,11 @@ gsrb() {
       git stash
    fi
 
-   [[ $2 == fetch ]] && git fetch --prune
-   git checkout "$rebase_from" && {
+   if [[ $2 == fetch ]]; then
+      git fetch --prune
+   fi
+
+   if git checkout "$rebase_from"; then
       origin_branch="origin/$(git_current_branch)"
       if git branch -r | grep "^  ${origin_branch}\$"; then
          git reset --hard "$origin_branch"
@@ -163,9 +170,13 @@ gsrb() {
       # shellcheck disable=SC2034
       read -r noop
       git rebase "$rebase_from"
-   }
+   else
+      return 1
+   fi
 
-   [[ $stashed ]] && git stash pop
+   if [[ $stashed ]]; then
+      git stash pop
+   fi
 }
 
 # aka: git-diff-fancy
@@ -181,7 +192,7 @@ gdf() {
 gps() {
    local complete
    local current_branch
-   local delay
+   local delay=''
    local depth
    local start_at
    local stack_size
@@ -204,7 +215,7 @@ gps() {
    fi
 
    if (( stack_size < 1 )) || (( stack_size > 99 )); then
-      ( 1>&2 echo "Error: invalid stack_size, should be 2–99 but got '$stack_size'" )
+      ( 1>&2 echo "Error: invalid stack_size, should be 1–99 but got '$stack_size'" )
       return 1
    fi
 
@@ -220,23 +231,25 @@ gps() {
 
    # Visualize parsed arguments
    1>&2 echo -n "Parsed start-at: $start_at stack-size: $stack_size"
-   [[ $delay ]] && 1>&2 echo -n " delay: $delay"
+   if [[ $delay ]]; then 1>&2 echo -n " delay: $delay"; fi
    if (( delay < 60 )) && (( stack_size > 1 )); then
       ( 1>&2 echo -n ' (setting minimum delay: 60 seconds)' )
       delay=60
+   elif (( stack_size == 1 )) && [[ $delay ]]; then
+      ( 1>&2 echo -n ' (delay will be unused because stack-size is 1)' )
    fi
    echo # line break
 
    # Display stack
    prettyp 7:green "Pushing following stack"
-   (( stack_size > 1 )) && prettyp 7:green " at $delay second interval"
+   if (( stack_size > 1 )); then prettyp 7:green " at $delay second interval"; fi
    if (( $# > 0 )); then
       prettyp 7:green " with these git push flags: $*"
    else
       prettyp 7:green ':'
    fi
    echo
-   git log --abbrev-commit --max-count="$depth" --format=oneline | tail -r -n "$stack_size"
+   git log --abbrev-commit --max-count="$start_at" --format=oneline | tail -r -n "$stack_size"
 
    # Wait for confirmation
    echo
