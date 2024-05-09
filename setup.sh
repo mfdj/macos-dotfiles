@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "Using bash $BASH_VERSION"
+
 if [[ ${DOTFILES_DIR:-} ]] && [[ -f "$DOTFILES_DIR/setup-modules/_env.bash" ]]; then
    source "$DOTFILES_DIR/setup-modules/_env.bash"
 elif [[ -f setup-modules/_env.bash ]]; then
