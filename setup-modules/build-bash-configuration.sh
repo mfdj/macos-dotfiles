@@ -34,7 +34,13 @@ echo 'Building .bashrc'
 
 # reuse custom wrapper to install + bootstrap brew command
 append_source "$DOTFILES_DIR/functions/brew-helpers.sh" "$BASH_CONFIG_FILE"
-echo "ensure_brew_ready" >> "$BASH_CONFIG_FILE"
+
+# `brew shellenv`` aims to be idempotent when eval'd but we can trick it to always output by
+# appending a non-Homebrew path at the start - keep in mind that `PATH= brew shellenv` will fail
+# because the brew command won't be found
+# see: https://github.com/Homebrew/brew/blob/21e130056a009e48e863dc9969b9008b4626f1fe/Library/Homebrew/cmd/shellenv.sh#L6
+PATH="/hack-shellenv:$PATH" brew shellenv >> "$BASH_CONFIG_FILE"
+# alternatively: echo 'ensure_brew_ready' >> "$BASH_CONFIG_FILE"
 
 # startup-cost: 0m0.025s
 append_source "$DOTFILES_DIR/bash-configuration" "$BASH_CONFIG_FILE"
