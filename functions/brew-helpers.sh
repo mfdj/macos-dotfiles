@@ -16,7 +16,7 @@ brew_ensure() {
 brew_ensure_command() {
    local cmd=$1
 
-   if ! command -v $cmd > /dev/null; then
+   if ! command -v "$cmd" > /dev/null; then
       if (( $# != 1 )); then shift; fi
       brew install "$@" && echo -n " ✔ $cmd"
    else
@@ -46,7 +46,6 @@ cask_ensure_unless_directory() {
       cask_ensure "$package"
    fi
 }
-
 
 # install brew and bootstrap it for shell
 # supports both default prefixes (Intel and Apple Silicon)
