@@ -51,7 +51,7 @@ commands:
       # shellcheck disable=SC1090
       time source ~/.bash_profile
 
-      if [[ $do_reload ]]; then 
+      if [[ $do_reload ]]; then
          dotfiles reload
       fi
 
@@ -74,11 +74,11 @@ commands:
          return
       fi
 
-      if [[ -f $script_path ]]; then
+      [[ -f $script_path ]] || {
          echo "could not find ${script_name}.sh in ${DOTFILES_DIR}/scripts - valid script-names:"
          dotfiles scripts
          return
-      fi
+      }
 
       [[ -x $script_path ]] || {
          echo "$script_path not executable"
