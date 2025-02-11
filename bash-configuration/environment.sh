@@ -4,10 +4,9 @@
 # +  common across multiple machines    +
 # + + + + + + + + + + + + + + + + + + + +
 
-# dotfiles-commands
+# dotfiles commands
 PATH=$PATH:${DOTFILES_DIR}/commands
-
-PATH=$PATH:${DOTFILES_DIR}/local/bin/
+PATH=$PATH:${DOTFILES_DIR}/local/bin
 
 # contextual bin folders
 PATH=$PATH:./node_modules/.bin # npm

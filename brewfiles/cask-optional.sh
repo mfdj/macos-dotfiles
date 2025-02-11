@@ -8,7 +8,6 @@ cask_ensure  charles
 cask_ensure  firefox
 cask_ensure  kap
 cask_ensure  licecap
-cask_ensure  lighttable
 cask_ensure  murus
 cask_ensure  openoffice
 cask_ensure  rubymine

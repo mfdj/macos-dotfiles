@@ -10,7 +10,7 @@ cask_ensure  flux
 #cask_ensure  kaleidoscope
 cask_ensure  macdown
 cask_ensure  sourcetree
-cask_ensure  sequel-pro
+cask_ensure  sequel-ace
 
 # kaleidoscope v3
 if which -s ksdiff; then
