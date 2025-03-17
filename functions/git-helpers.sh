@@ -196,6 +196,9 @@ gps() {
    local depth
    local start_at
    local stack_size
+   local wait_start
+   local wait_done
+   local wait_duration
 
    # Parse depth (start_at and stack_size)
    depth=${1:?'missing depth param'}
@@ -270,8 +273,14 @@ gps() {
       stack_size=$(( stack_size - 1 ))
       if (( stack_size > 0 )); then
          head_backdex=$(( head_backdex - 1 ))
-         echo "Sleeping for $delay seconds"
-         sleep "$delay"
+         echo "Wait for $delay seconds"
+         wait_start=$(date +%s)
+         wait_duration=0
+         while (( wait_duration < delay )); do
+            wait_duration="$(( $(date +%s) - wait_start ))"
+            echo -ne " • $wait_duration\033[0K\r"
+            sleep 1
+         done
       else
          complete=1
          echo
