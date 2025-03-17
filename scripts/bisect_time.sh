@@ -4,9 +4,9 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-pattern=$1
+pattern=${1:?'missing pattern param'}
 current_commit=$(git rev-parse HEAD)
-next_commit=$(git rev-parse "$2")
+next_commit=$(git rev-parse "${2:?'missing next-commit param'}")
 
 if [[ $current_commit == "$next_commit" ]]; then
    prettyp break red "current and next need to be different - both are: $next_commit"
