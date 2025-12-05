@@ -197,8 +197,9 @@ gps() {
    local start_at
    local stack_size
    local wait_start
-   local wait_done
-   local wait_duration
+   local wait_duration=0
+   local pr_checks_passed
+   local countdown
 
    # Parse depth (start_at and stack_size)
    depth=${1:?'missing depth param'}
@@ -254,6 +255,11 @@ gps() {
    echo
    git log --abbrev-commit --max-count="$start_at" --format=oneline | tail -r -n "$stack_size"
 
+   current_branch=$(git_current_branch)
+
+   # check upstream
+   maybe_github pr list --head "$current_branch"
+
    # Wait for confirmation
    echo
    prettyp 7:1 'Press any key to continue'
@@ -261,7 +267,6 @@ gps() {
    read -r noop
 
    # Work through the stack
-   current_branch=$(git_current_branch)
    head_backdex=$(( start_at - 1 ))
    while [[ -z $complete ]]; do
       echo # empty line for visual organization
@@ -270,15 +275,21 @@ gps() {
       echo git push origin "HEAD~$head_backdex:$current_branch" --force-with-lease "$@"
       git push origin "HEAD~$head_backdex:$current_branch" --force-with-lease "$@"
 
+      pr_checks_passed=
+      if github_pr_checks --watch; then
+         pr_checks_passed=1
+      fi
+
       stack_size=$(( stack_size - 1 ))
       if (( stack_size > 0 )); then
          head_backdex=$(( head_backdex - 1 ))
          echo "Wait for $delay seconds"
          wait_start=$(date +%s)
          wait_duration=0
-         while (( wait_duration < delay )); do
+         while [[ ! $pr_checks_passed ]] && (( wait_duration < delay )); do
             wait_duration="$(( $(date +%s) - wait_start ))"
-            echo -ne " • $wait_duration\033[0K\r"
+            countdown=$(( delay - wait_duration ))
+            echo -ne " ⏰ $countdown\033[0K\r"
             sleep 1
          done
       else
@@ -305,5 +316,42 @@ git_files_deleted_by() {
          cut -c 3-
    else
       echo "$ref_show"
+   fi
+}
+
+# gh/github specific
+
+# if `gh` is available use it
+maybe_github() {
+   which -s gh && gh "$@"
+}
+
+#
+#
+#
+github_pr_checks() {
+   local gh_exit_code
+
+   if ! which -s gh; then
+      prettyp break yellow 'github_pr_checks: gh helper not available'
+      return 127
+   fi
+
+   if gh pr checks "$@"; then
+      prettyp break green 'github_pr_checks: exited with success'
+      return 0
+   else
+      # Example 1 with --watch:
+      # no checks reported on the 'mfdj/TPE-5780/spc-experiment-participation' branch
+      # github_pr_checks: exited with failure (1)
+
+      # Example 2 without --watch
+      # (several in progress checks)
+      # github_pr_checks: exited with failure (8)
+
+      gh_exit_code=$?
+      # white text on red
+      prettyp break 37:41 "github_pr_checks: exited with failure ($gh_exit_code)"
+      return "$gh_exit_code"
    fi
 }
