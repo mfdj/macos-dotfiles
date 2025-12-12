@@ -51,18 +51,6 @@ if [[ -d /Applications/Xcode.app ]]; then
 fi
 
 # + + + + + + + + + + +
-# +  Sublime Text 3   +
-# +    subl helper    +
-# + + + + + + + + + + +
-
-if [[ -d /Applications/Sublime\ Text.app ]]; then
-   echo Ensuring SublimeText subl command
-   ensure_symlink \
-      /Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl \
-      "$DOTFILES_DIR"/local/bin/subl
-fi
-
-# + + + + + + + + + + +
 # +  PhpStorm Themes  +
 # + + + + + + + + + + +
 
