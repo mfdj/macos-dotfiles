@@ -188,18 +188,17 @@ gdf() {
    fi
 }
 
-# aka git push stacked
+# aka git push (commit) stack
 gps() {
    local complete
    local current_branch
-   local delay=''
    local depth
    local start_at
    local stack_size
-   local wait_start
-   local wait_duration=0
    local pr_checks_passed
-   local countdown
+   local push_cadence=''
+   local push_start
+   local push_duration
 
    # Parse depth (start_at and stack_size)
    depth=${1:?'missing depth param'}
@@ -229,24 +228,24 @@ gps() {
    fi
 
    if [[ $1 =~ [0-9]+ ]]; then
-      delay=$1
+      push_cadence=$1
       shift
    fi
 
    # Visualize parsed arguments
-   1>&2 echo -n "Parsed start-at: $start_at stack-size: $stack_size"
-   if [[ $delay ]]; then 1>&2 echo -n " delay: $delay"; fi
-   if (( delay < 60 )) && (( stack_size > 1 )); then
-      ( 1>&2 echo -n ' (setting minimum delay: 60 seconds)' )
-      delay=60
-   elif (( stack_size == 1 )) && [[ $delay ]]; then
-      ( 1>&2 echo -n ' (delay will be unused because stack-size is 1)' )
+   1>&2 echo -n "Parsed start-at: $start_at, stack-size: $stack_size"
+   if [[ $push_cadence ]]; then 1>&2 echo -n ", push-cadence: $push_cadence seconds"; fi
+   if (( push_cadence < 60 )) && (( stack_size > 1 )); then
+      ( 1>&2 echo -n ' (setting minimum push-cadence: 60 seconds)' )
+      push_cadence=60
+   elif (( stack_size == 1 )) && [[ $push_cadence ]]; then
+      ( 1>&2 echo -n ' (push-cadence will be unused because stack-size is 1)' )
    fi
    echo # line break
 
    # Display stack
    prettyp 7:green "Pushing following stack"
-   if (( stack_size > 1 )); then prettyp 7:green " at $delay second interval"; fi
+   if (( stack_size > 1 )); then prettyp 7:green " at $push_cadence second interval"; fi
    if (( $# > 0 )); then
       prettyp 7:green " with these git push flags: $*"
    else
@@ -275,28 +274,41 @@ gps() {
       echo git push origin "HEAD~$head_backdex:$current_branch" --force-with-lease "$@"
       git push origin "HEAD~$head_backdex:$current_branch" --force-with-lease "$@"
 
+      push_start=$(date +%s)
       pr_checks_passed=
-      if github_pr_checks --watch; then
+      if github_pr_checks push-buffered --watch; then
          pr_checks_passed=1
       fi
 
       stack_size=$(( stack_size - 1 ))
       if (( stack_size > 0 )); then
          head_backdex=$(( head_backdex - 1 ))
-         echo "Wait for $delay seconds"
-         wait_start=$(date +%s)
-         wait_duration=0
-         while [[ ! $pr_checks_passed ]] && (( wait_duration < delay )); do
-            wait_duration="$(( $(date +%s) - wait_start ))"
-            countdown=$(( delay - wait_duration ))
-            echo -ne " ⏰ $countdown\033[0K\r"
-            sleep 1
-         done
+
+         [[ $pr_checks_passed ]] || {
+            push_duration="$(( $(date +%s) - push_start ))"
+
+            (( push_duration > push_cadence )) || countdown "$(( push_duration - push_cadence ))"
+         }
       else
          complete=1
          echo
          echo "✨ Stack pushed ✨"
       fi
+   done
+}
+
+countdown() {
+   local countdown_from_seconds=${1:-5}
+   local wait_start
+   local wait_duration=0
+   local current_countdown
+
+   wait_start=$(date +%s)
+   while (( wait_duration < countdown_from_seconds )); do
+      wait_duration="$(( $(date +%s) - wait_start ))"
+      current_countdown=$(( countdown_from_seconds - wait_duration ))
+      echo -ne " ⏰ $current_countdown\033[0K\r"
+      sleep 1
    done
 }
 
@@ -331,27 +343,55 @@ maybe_github() {
 #
 github_pr_checks() {
    local gh_exit_code
+   local github_output
+   local push_buffered=
 
    if ! which -s gh; then
       prettyp break yellow 'github_pr_checks: gh helper not available'
       return 127
    fi
 
+   if [[ $1 == push-buffered ]]; then
+      push_buffered=1
+      countdown 5
+      shift
+   fi
+
+   github_output=$(mktemp)
+
+   # since we just pushed we have to wait 5 seconds for CI checks to reset (otherwise we can get stale push)
+   if [[ $push_buffered ]]; then
+      if gh pr checks > "$github_output"; then
+         # checks passed
+         prettyp break white:42 "github_pr_checks: buffered initial"
+      else
+         gh_exit_code=$?
+
+         if [[ $gh_exit_code == 1 ]]; then
+            # Known reasons:
+            #  (1) no checks reported [can happen right after push, when new actions are being spun up]
+            #  (2) there were failing checks
+            prettyp break white:41 "github_pr_checks: buffered initial ($gh_exit_code)"
+            cat "$github_output"
+         elif [[ $gh_exit_code == 8 ]]; then
+            # checks are in progress
+            prettyp break white:43 "github_pr_checks: in progress ($gh_exit_code)"
+         else
+            # some other issue
+            prettyp break white:41 "github_pr_checks: buffered initial ($gh_exit_code)"
+            cat "$github_output"
+         fi
+      fi
+   fi
+
    if gh pr checks "$@"; then
       prettyp break green 'github_pr_checks: exited with success'
       return 0
    else
-      # Example 1 with --watch:
-      # no checks reported on the 'mfdj/TPE-5780/spc-experiment-participation' branch
-      # github_pr_checks: exited with failure (1)
-
-      # Example 2 without --watch
-      # (several in progress checks)
-      # github_pr_checks: exited with failure (8)
-
       gh_exit_code=$?
+
       # white text on red
-      prettyp break 37:41 "github_pr_checks: exited with failure ($gh_exit_code)"
+      prettyp break white:41 "github_pr_checks: exited with failure ($gh_exit_code)"
       return "$gh_exit_code"
    fi
 }

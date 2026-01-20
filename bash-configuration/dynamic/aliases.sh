@@ -2,6 +2,7 @@
 
 if command -v grc > /dev/null; then
    echo alias tree=\'grc tree\'
+   echo alias docker=\'grc docker\'
 fi
 
 if command -v bat > /dev/null; then

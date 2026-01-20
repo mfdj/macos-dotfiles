@@ -23,6 +23,12 @@ alias hidedot='defaults write com.apple.finder AppleShowAllFiles FALSE && killal
 alias blueoff='blueutil --power 0'
 alias blueon='blueutil --power 1'
 
+# ruby/rails/bundler
+alias rake='bundle exec rake'
+alias rails='bundle exec rails'
+alias rspec='bundle exec rspec'
+alias rubocop='bundle exec rubocop'
+
 # php
 alias c='composer'
 alias cul='composer update --lock'
