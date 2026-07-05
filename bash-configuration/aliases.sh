@@ -32,6 +32,7 @@ alias rubocop='bundle exec rubocop'
 # php
 alias c='composer'
 alias cul='composer update --lock'
+alias sf='./bin/console'
 # NOTE: conventional pecl-installed extension path (homebrew-php does not use this path)
 alias phpext="ls -l1 \$(php -i | grep ^extension_dir | sed 's/.* => //')"
 alias phpini="php -i | grep 'php.ini.*=> ' | sed 's/.* => //'"

@@ -33,7 +33,7 @@ while [[ $index -le $# ]]; do
    esac
 done
 
-mkdir -p "$DOTFILES_DIR"/local/bin
+mkdir -p "$DOTFILES_DIR"/local/{bin,completion}
 
 sourcedot setup-modules/packages-and-tools
 sourcedot setup-modules/application-configuration

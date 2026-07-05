@@ -93,3 +93,15 @@ if command -v grc > /dev/null; then
       "$DOTFILES_DIR"/configs/grc \
       ~/.grc
 fi
+
+# + + + + + + + + + + + +
+# +  Symfony/Composer   +
+# + + + + + + + + + + + +
+
+if command -v composer; then
+   composer completion > "$DOTFILES_DIR"/local/completion/composer.bash
+fi
+
+if command -v symfony; then
+   symfony completion > "$DOTFILES_DIR"/local/completion/symfony.bash
+fi

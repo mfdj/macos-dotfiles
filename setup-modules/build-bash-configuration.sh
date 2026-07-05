@@ -62,9 +62,9 @@ fi
 append_source "$DOTFILES_DIR/bash-configuration/dynamic" "$BASH_CONFIG_FILE" --exectue
 
 # use bash-completion package if installed
-if [[ -f "$(brew --prefix)/share/bash-completion/bash_completion" ]]; then
-   # shellcheck source=/opt/homebrew/share/bash-completion/bash_completion
-   echo "source '$(brew --prefix)/share/bash-completion/bash_completion'" >> "$BASH_CONFIG_FILE"
+if [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
+   # shellheck source="/opt/homebrew/etc/profile.d/bash_completion.sh"
+   echo "source '$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh'" >> "$BASH_CONFIG_FILE"
 fi
 
 # ----------- LOCAL-STATIC --------------
