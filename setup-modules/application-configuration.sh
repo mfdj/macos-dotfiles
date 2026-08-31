@@ -24,9 +24,6 @@ ensure_symlink \
    "$DOTFILES_DIR/configs/global-gitignore" \
    ~/.gitignore_global
 
-echo Ensuring nano is git core.editor
-git config --global core.editor nano
-
 # + + + + + + + + + + + +
 # +  Xcode Toolchains   +
 # + + + + + + + + + + + +

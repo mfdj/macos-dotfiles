@@ -4,7 +4,6 @@ Much of this is good, some of this depends on certain software (Kaleidoscope, so
 
 ```
 [core]
-	editor = nano
 	excludesfile = /Users/mfox/.gitignore_global
 	pager = delta
 [user]

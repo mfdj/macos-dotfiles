@@ -9,6 +9,7 @@ cask_ensure  flux
 # mainline kaleidoscope is version 4; see version 3 installer
 #cask_ensure  kaleidoscope
 cask_ensure  macdown
+cask_ensure  visual-studio-code
 cask_ensure  sourcetree
 cask_ensure  sequel-ace
 

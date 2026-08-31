@@ -34,8 +34,7 @@ else
    echo bash "${BASH_VERSINFO[0]}" does not support globstar
 fi
 
-# ensure EDITOR fallsback to nano; otherwise git, et al. default to vim
-export EDITOR=${EDITOR:-nano}
+export EDITOR=${EDITOR:-nvim}
 
 # add grc aliases to path
 

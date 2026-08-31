@@ -33,6 +33,7 @@ brew_ensure  pstree
 brew_ensure_command rbenv # there may be a custom-build
 brew_ensure  ruby-build
 brew_ensure  tree
+brew_ensure  tree-sitter-cli # required by nvim-treesitter
 brew_ensure  vcprompt
 brew_ensure  wget
 
