@@ -26,7 +26,7 @@ bash_cut() {
 
 # profiler
 saturate() {
-   echo "running: $*"
+   printf '\nrunning: %s\n' "$*"
    # shellcheck disable=SC2155
    local start=$(gdate +%s%3N)
    for _ in {1..300}; do
@@ -39,8 +39,7 @@ saturate() {
 }
 
 # setup test-context
-echo "setup"
-echo
+printf 'setup\n\n'
 
 rm -rf /tmp/test-git-current-branch 2> /dev/null
 mkdir -p "$_"
@@ -53,21 +52,16 @@ git checkout -b 'second'
 git status
 
 # run tests
-echo
-echo "test"
-echo
+printf '\ntest\n'
 
 # fastest
 saturate vcprompt -f '%b'
 
-# second
-saturate bash_cut
+# distant second (2x slower)
+saturate git branch --show-current
 
 # nearly-second
-saturate bash_seded
-
-# third
+saturate bash_cut
 saturate bash_piped
-
-# fourth
+saturate bash_seded
 saturate bash_subshell

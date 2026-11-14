@@ -20,6 +20,38 @@ gls() {
    fi
 }
 
+# prints the worktree path that has the given local branch checked out (if any)
+git_worktree_for_branch() {
+   local branch=${1:?'missing branch param'}
+
+   git worktree list --porcelain | awk -v ref="refs/heads/$branch" '
+      /^worktree / { path=substr($0, 10) }
+      $0 == "branch " ref { print path; exit }
+   '
+}
+
+# checkout a local branch; or, when it is checked out in another worktree, cd into that worktree instead
+# (preserving the current subdirectory when it exists there)
+git_checkout_or_cd_worktree() {
+   local branch=${1:?'missing branch param'}
+   local worktree prefix
+
+   worktree=$(git_worktree_for_branch "$branch")
+
+   if [[ -z $worktree ]] || [[ $worktree == "$(git rev-parse --show-toplevel)" ]]; then
+      git checkout "$branch"
+      return
+   fi
+
+   prefix=$(git rev-parse --show-prefix)
+   echo -e "\033[1mbranch '$branch' is checked out in worktree: $worktree\033[0m"
+   if [[ $prefix ]] && [[ -d "$worktree/$prefix" ]]; then
+      cd "$worktree/$prefix" || return 1
+   else
+      cd "$worktree" || return 1
+   fi
+}
+
 # aka: git-checkout-branch-plus-fuzzy-matching
 gchb() {
    local branch selection branches remote
@@ -28,14 +60,21 @@ gchb() {
 
    # special-meta-character
    if [[ $branch == '-' ]]; then
-      git checkout -
-      return 0
+      # resolve the previous branch's name so we can cd into its worktree; when there isn't one (fresh repo, or the
+      # previous checkout was a detached HEAD, which resolves to an empty name) defer to plain `git checkout -`
+      branch=$(git rev-parse --abbrev-ref '@{-1}' 2> /dev/null)
+      if [[ -z $branch ]]; then
+         git checkout -
+         return
+      fi
+      git_checkout_or_cd_worktree "$branch"
+      return
    fi
 
    # already a local-branch
-   if git rev-parse --verify "$branch" &> /dev/null; then
-      git checkout "$branch"
-      return 0
+   if git rev-parse --verify --quiet "refs/heads/$branch" &> /dev/null; then
+      git_checkout_or_cd_worktree "$branch"
+      return
    fi
 
    # start matching
@@ -47,7 +86,7 @@ gchb() {
    #   remote, remote-name, branch-path
    branch=${branch:-.*}
    branches=$({
-      git branch | grep -i "$branch" | tr -d ' *' | awk '{print "local "$1}';
+      git branch | grep -i "$branch" | tr -d ' *+' | awk '{print "local "$1}';
       git branch -r | grep -i "$branch" | tr -d ' *' | grep -v 'HEAD->' | awk '{
          at=index($1, "/"); remote=substr($1, 0, at - 1); branch=substr($1, at + 1); print "remote "remote" "branch
       }'
@@ -75,8 +114,8 @@ gchb() {
    # local-branches are easy
    if grep '^local ' -q <<< "$selection"; then
       branch=$(awk '{print $2}' <<< "$selection")
-      git checkout "$branch"
-      return 0
+      git_checkout_or_cd_worktree "$branch"
+      return
    fi
 
    # remotes are less easy
@@ -85,9 +124,9 @@ gchb() {
 
    git checkout -b "$branch" "$remote/$branch" || {
       echo -e "\033[1mprefixing branch with remote name: '$remote-$branch'\033[0m"
-      if git rev-parse --verify "$remote-$branch" &> /dev/null; then
-         git checkout "$remote-$branch"
-         return 0
+      if git rev-parse --verify --quiet "refs/heads/$remote-$branch" &> /dev/null; then
+         git_checkout_or_cd_worktree "$remote-$branch"
+         return
       fi
       git checkout -b "$remote-$branch" "$remote/$branch"
    }
@@ -134,7 +173,7 @@ gsrb() {
    local selection
    local stashed
 
-   if git rev-parse --verify "$rebase_from" &> /dev/null; then
+   if git rev-parse --verify "refs/heads/$rebase_from" &> /dev/null; then
       echo -e "\nbranches '$rebase_from':\n"
       list=$(git branch -r | cut -f 2- -d / | grep -i "$rebase_from")
       echo "$list" | nl -ba -s '. ' -w 4
