@@ -4,21 +4,22 @@ require functions/brew-helpers
 
 echo -n Ensuring cask-core packages
 
-cask_ensure  app-tamer
-cask_ensure  flux
+cask_ensure app-tamer
+cask_ensure flux
 # mainline kaleidoscope is version 4; see version 3 installer
-#cask_ensure  kaleidoscope
-cask_ensure  macdown
-cask_ensure  visual-studio-code
-cask_ensure  sourcetree
-cask_ensure  sequel-ace
+#cask_ensure kaleidoscope
+cask_ensure obsidian
+cask_ensure sourcetree
+cask_ensure sequel-ace
+cask_ensure zed
 
 # kaleidoscope v3
 if which -s ksdiff; then
    echo -n " ✔ kaleidoscope (v3)"
 else
    curl https://raw.githubusercontent.com/Homebrew/homebrew-cask/d81b3ccdd74823f6c9ef5f1adbbd6e717e2b1e0a/Casks/kaleidoscope.rb > ~/Downloads/kaleidoscope.rb
-   brew install ~/Downloads/kaleidoscope.rb && echo -n " ✔ kaleidoscope (v3)"
+   # See: https://github.com/Homebrew/brew/pull/20414
+   HOMEBREW_DEVELOPER=1 brew install ~/Downloads/kaleidoscope.rb && echo -n " ✔ kaleidoscope (v3)"
    rm ~/Downloads/kaleidoscope.rb || true
 fi
 
